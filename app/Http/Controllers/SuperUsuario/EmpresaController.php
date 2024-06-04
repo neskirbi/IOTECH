@@ -9,11 +9,13 @@ use App\Models\Empresa;
 
 class EmpresaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    
+    public function __construct(){
+        $this->middleware('sulog');
+    }
+
+    
     public function index(Request $filtros)
     {
         $empresas = Empresa::orderby('empresa','asc')->where('empresa','like','%'.$filtros->empresa.'%')->paginate(20);

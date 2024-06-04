@@ -10,12 +10,14 @@ use App\Models\Administrador;
 use App\Models\Empresa;
 
 class AdministradorController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+{    
+    
+    
+    public function __construct(){
+        $this->middleware('sulog');
+    }
+
+
     public function index(Request $filtros)
     {
         $administradores = Administrador::select('id','nombres','apellidos','mail','pass','empresa as empresa_id',
