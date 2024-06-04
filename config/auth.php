@@ -40,6 +40,27 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'superusuarios' => [
+            'driver' => 'session',
+            'provider' => 'superusuarios',
+        ],
+
+        'administradores' => [
+            'driver' => 'session',
+            'provider' => 'administradores',
+        ],
+
+        'clientes' => [
+            'driver' => 'session',
+            'provider' => 'clientes',
+        ],
+
+        'operadores' => [
+            'driver' => 'session',
+            'provider' => 'operadores',
+        ],
+
     ],
 
     /*
@@ -60,9 +81,21 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'superusuarios' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\SuperUsuario::class,
+        ],
+        'administrador' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Administradore::class,
+        ],
+        'cliente' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Cliente::class,
+        ],
+        'opeardor' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Operador::class,
         ],
 
         // 'users' => [

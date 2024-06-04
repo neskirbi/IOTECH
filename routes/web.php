@@ -14,11 +14,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+
+    if(Auth::guard('superusuarios')->check()){
+        return redirect('administradores');
+    }  
+
+
+
     return view('home.home');
 });
 
 
 Route::resource('login', 'App\Http\Controllers\Login\LoginController');
 
+Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
+
+
+
+/**
+ * Rutas Super Usuarios
+ */
+
+ Route::resource('empresas', 'App\Http\Controllers\SuperUsuario\EmpresaController');
+
+ Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\AdministradorController');
 
 
