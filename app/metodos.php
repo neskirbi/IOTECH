@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\SuperUsuario;
+use App\Models\Administrador;
+use App\Models\Cliente;
+use App\Models\Operador;
 
 function Memoria(){
     set_time_limit(0);
@@ -18,6 +22,30 @@ function GetUuid(){
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80); 
     return str_replace("-","",vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)));
 }
+
+
+function ValidarMail($mail){
+    
+    if(SuperUsuario::where('mail',$mail)->first()){
+        return true;
+    }
+
+    if(Administrador::where('mail',$mail)->first()){
+        return true;
+    }
+
+    if(Cliente::where('mail',$mail)->first()){
+        return true;
+    }
+
+    if(Operador::where('mail',$mail)->first()){
+        return true;
+    }
+
+    
+    return false;
+}
+
 
 
 ?>

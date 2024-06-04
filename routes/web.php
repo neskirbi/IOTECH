@@ -39,5 +39,5 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
  Route::get('BorrarEmpresa/{id}', 'App\Http\Controllers\SuperUsuario\EmpresaController@BorrarEmpresa');
 
  Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\AdministradorController');
-
+ Route::get('BorrarAdmin/{id}', 'App\Http\Controllers\SuperUsuario\AdministradorController@BorrarAdmin');
 

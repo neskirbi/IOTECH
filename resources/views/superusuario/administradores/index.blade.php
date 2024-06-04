@@ -65,6 +65,75 @@
               <!-- /.card-header -->
               <div class="card-body" style="overflow-x: scroll;">
 
+              @foreach($administradores as $administrador)
+
+              <div class="row">
+                <div class="col-12">
+                    <div class="card ">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="nav-icon fa fa-user" aria-hidden="true"></i> Administrador</h3> 
+                            <div class="card-tools">
+                                <div class="btn-group dropleft">
+                                    <button class="btn btn-default " type="button" id="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="menu">
+                                        <a class="dropdown-item" href="{{url('BorrarAdmin').'/'.$administrador->id}}"><i class="fa fa-trash" aria-hidden="true"></i> Quitar</a>
+                                    </div>
+                                </div>
+                            </div>                           
+                        </div>     
+                        <div class="card-body">
+                          <form action="{{url('administradores')}}/{{$administrador->id}}" id="Nadmin" method="post">
+                            @csrf                            
+                            @method('put')
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class='form-group'>
+                                        <label for="nombre">Nombre(s)</label>
+                                        <input required type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombre(s)" value="{{$administrador->nombres}}">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class='form-group'>
+                                        <label for="apellidos">Apellidos</label>
+                                        <input required type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos" value="{{$administrador->apellidos}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">                            
+                               
+                               <div class="col-sm-4">
+                                   <div class='form-group'>
+                                       <label for="mail">Correo</label>
+                                       <input onkeyup="Cambio(this,'mail');" data-valor="{{$administrador->mail}}" required type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$administrador->mail}}">
+                                   </div>
+                               </div>                         
+                               
+                               <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="empresa">Empresa</label>
+                                        <select required class="form-control" name="empresa" id="empresa">
+                                            <option value=" {{$administrador->empresa_id}}"> {{$administrador->empresa}}</option>
+                                            <optgroup></optgroup>
+                                            @foreach($empresas as $empresa)
+                                            <option value="{{$empresa->id}}">{{$empresa->empresa}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div> 
+                                </div>
+                               
+                            </div>   
+                            <button type="submit" class="btn btn-info float-right">Guardar</button>                     
+                          </form>
+                        </div>
+                             
+                    </div>                    
+                </div>
+              </div>
+                
+              @endforeach
+
               <div class="row">
                 <div class="col-12">
                     <div class="card card-info">
@@ -74,6 +143,7 @@
                         @csrf
                         <div class="card-body">
                           <form action="{{url('administradores')}}" id="Nadmin" method="post">
+                            @csrf
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class='form-group'>
@@ -116,8 +186,11 @@
                              
                     </div>                    
                 </div>
-            </div>
+              </div>
                 
+
+
+              
                 
               </div>
               <div class="card-footer">
