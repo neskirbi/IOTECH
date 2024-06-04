@@ -36,6 +36,7 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
  */
 
  Route::resource('empresas', 'App\Http\Controllers\SuperUsuario\EmpresaController');
+ Route::get('BorrarEmpresa/{id}', 'App\Http\Controllers\SuperUsuario\EmpresaController@BorrarEmpresa');
 
  Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\AdministradorController');
 

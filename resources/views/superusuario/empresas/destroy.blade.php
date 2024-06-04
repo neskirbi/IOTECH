@@ -32,20 +32,19 @@
         <div class="row">
           <div class="col-md-12">
 
-            <div class="card ">
+            <div class="card card-danger">
               <div class="card-header">
-                <h3 class="card-title"><i class="nav-icon fa fa-building" aria-hidden="true"></i> Registro de Empresa</h3>
+                <h3 class="card-title"><i class="nav-icon fa fa-building" aria-hidden="true"></i> Borrar Empresa</h3>
               </div>
 
 
-              <form action="{{url('empresas')}}" method="POST">
-                @csrf
+              
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="empresa">Empresa</label>
-                        <input required type="text" class="form-control" id="empresa" name="empresa" placeholder="Empresa">
+                        <input disabled type="text" class="form-control" id="empresa" name="empresa" placeholder="Empresa" value="{{$empresa->empresa}}">
                       </div>
                     </div>
                   </div>
@@ -53,7 +52,7 @@
                     <div class="col-md-8">
                       <div class="form-group">
                         <label for="razonsocial">Razon Social</label>
-                        <input required type="text" class="form-control" id="razonsocial" name="razonsocial" placeholder="Razon Social">
+                        <input disabled type="text" class="form-control" id="razonsocial" name="razonsocial" placeholder="Razon Social" value="{{$empresa->razonsocial}}">
                       </div>
                     </div>
                   </div>
@@ -64,7 +63,7 @@
                 <div class="card-footer">
                   <div class="row">
                     <div class="col-md-3">
-                      
+                    <button onclick="history.back();" class="btn btn-primary btn-block"><i class="fa fa-times" aria-hidden="true"></i> Cancelar</button>
                     </div>
                     <div class="col-md-3">
                       
@@ -73,12 +72,15 @@
                       
                     </div>
                     <div class="col-md-3">
-                      <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+                      <form action="{{url('empresas')}}/{{$empresa->id}}" method="POST">
+                        @csrf
+                        @method('delete')
+                        <button class="btn btn-danger btn-block" ><i class="fa fa-times" aria-hidden="true"></i> Borrar</button>  
+                      </form>
                     </div>
                   </div>
                 
                 </div>
-              </form>
             </div>
           </div>
 

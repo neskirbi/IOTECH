@@ -86,15 +86,10 @@
                         <div class="card-body">
                           <div class="row">
                             <div class="col-md-12">
-                              <h5 class="card-title" title="{{$empresa->razonsocial}}"><b>{{strlen($empresa->razonsocial)<81 ? $empresa->razonsocial : mb_substr($empresa->razonsocial,0,80,"UTF-8").'...'}}</b></h5>
-                              @if($empresa->verificado==0)
-                                <small class="badge badge-warning float-right"><i class="fa fa-exclamation" aria-hidden="true"></i> Pendiente</small>
-                              @else
-                                <small class="badge badge-success float-right"><i class="fa fa-check" aria-hidden="true"></i>  Verificado</small>
-                              @endif
-
+                              <h5 class="card-title" title="{{$empresa->empresa}}"><b>{{strlen($empresa->empresa)<81 ? $empresa->empresa : mb_substr($empresa->empresa,0,80,"UTF-8").'...'}}</b></h5>
                               <br>
-                              <h5 class="card-title" title="{{$empresa->obra}}"><b>{{strlen($empresa->obra)<81 ? $empresa->obra : mb_substr($empresa->obra,0,80,"UTF-8").'...'}}</b></h5>
+                              <h5 class="card-title" title="{{$empresa->razonsocial}}">{{strlen($empresa->razonsocial)<81 ? $empresa->razonsocial : mb_substr($empresa->razonsocial,0,80,"UTF-8").'...'}}</h5>
+                              
                              
                             </div>
                           </div>
@@ -108,7 +103,7 @@
                           <div class="row">
                                                     
                             <div class="col-md-3" >
-                              <a href="obra/{{$empresa->id}}" class="btn btn-info btn-block" ><i class="fa fa-eye" aria-hidden="true"></i> Revisar</a>
+                              <a href="{{url('empresas')}}/{{$empresa->id}}" class="btn btn-info btn-block" ><i class="fa fa-eye" aria-hidden="true"></i> Editar</a>
                             </div>   
 
                             <div class="col-md-3" > 
@@ -118,11 +113,8 @@
                             </div>        
 
                             <div class="col-md-3" >
-                              @if($empresa->cancelado==0)
-                              <a href="CancelarManifiestos/{{$empresa->id}}" class="btn btn-danger btn-block" ><i class="fa fa-times" aria-hidden="true"></i> Manifiestos</a>  
-                              @elseif($empresa->cancelado==1)
-                              <a href="ActivarManifiestos/{{$empresa->id}}" class="btn btn-success btn-block" ><i class="fa fa-check" aria-hidden="true"></i> Manifiestos</a>  
-                              @endif
+                              <a href="{{url('BorrarEmpresa')}}/{{$empresa->id}}" class="btn btn-danger btn-block"><i class="fa fa-times" aria-hidden="true"></i> Borrar</a>
+                              
                             </div>                          
                           
                           </div>

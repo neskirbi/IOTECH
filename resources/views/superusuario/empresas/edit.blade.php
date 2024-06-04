@@ -38,14 +38,15 @@
               </div>
 
 
-              <form action="{{url('empresas')}}" method="POST">
+              <form action="{{url('empresas')}}/{{$empresa->id}}" method="POST">
                 @csrf
+                @method('put')
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="empresa">Empresa</label>
-                        <input required type="text" class="form-control" id="empresa" name="empresa" placeholder="Empresa">
+                        <input required type="text" class="form-control" id="empresa" name="empresa" placeholder="Empresa" value="{{$empresa->empresa}}">
                       </div>
                     </div>
                   </div>
@@ -53,7 +54,7 @@
                     <div class="col-md-8">
                       <div class="form-group">
                         <label for="razonsocial">Razon Social</label>
-                        <input required type="text" class="form-control" id="razonsocial" name="razonsocial" placeholder="Razon Social">
+                        <input required type="text" class="form-control" id="razonsocial" name="razonsocial" placeholder="Razon Social" value="{{$empresa->razonsocial}}">
                       </div>
                     </div>
                   </div>

@@ -38,7 +38,14 @@ class EmpresaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $empresa = new Empresa();
+        $empresa->id = GetUuid();
+        $empresa->empresa = $request->empresa;
+        $empresa->razonsocial = $request->razonsocial;
+        $empresa->token ='';
+        $empresa->save();
+
+        return redirect('empresas');
     }
 
     /**
@@ -49,7 +56,8 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        //
+        $empresa = Empresa::find($id);
+        return view('superusuario.empresas.edit',['empresa'=>$empresa]);
     }
 
     /**
@@ -60,7 +68,7 @@ class EmpresaController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**
@@ -72,7 +80,11 @@ class EmpresaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $empresa = Empresa::find($id);
+        $empresa->empresa = $request->empresa;
+        $empresa->razonsocial = $request->razonsocial;
+        $empresa->save();
+        return redirect(url('empresas'))->with('success','Se guardaron los datos.');
     }
 
     /**
@@ -83,6 +95,13 @@ class EmpresaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $empresa = Empresa::find($id);
+        $empresa->delete();
+        return redirect(url('empresas'))->with('danger','Se borraron los datos.');
+    }
+
+    public function BorrarEmpresa($id){
+        $empresa = Empresa::find($id);
+        return view('superusuario.empresas.destroy',['empresa'=>$empresa]);
     }
 }
