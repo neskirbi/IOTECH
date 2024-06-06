@@ -47,5 +47,18 @@ function ValidarMail($mail){
 }
 
 
+function GetId(){
+    $id='';
+
+    if(Auth::guard('superusuarios')->check()){
+        return Auth::guard('superusuarios')->user()->id;
+    }
+
+    if(Auth::guard('administradores')->check()){
+        return Auth::guard('administradores')->user()->id;
+    }
+}
+
+
 
 ?>

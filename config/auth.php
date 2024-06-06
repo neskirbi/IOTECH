@@ -89,9 +89,9 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\SuperUsuario::class,
         ],
-        'administrador' => [
+        'administradores' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Administradore::class,
+            'model' => App\Models\Administrador::class,
         ],
         'cliente' => [
             'driver' => 'eloquent',

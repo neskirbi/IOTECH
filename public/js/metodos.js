@@ -44,3 +44,25 @@ function GenerarPass(id_administrador){
         
     });
 }
+
+
+function ValidarPassRegistro(){
+    if($('#pass').val().length>0 && $('#pass2').val().length>0){
+        if($('#pass').val()!=$('#pass2').val()){
+            $('#pass').addClass('is-invalid');
+            $('#pass2').addClass('is-invalid');
+        } else{
+            $('#pass').removeClass('is-invalid');
+            $('#pass').addClass('is-valid');
+            $('#pass2').removeClass('is-invalid');
+            $('#pass2').addClass('is-valid');
+        }
+    }else{
+        $('#pass').removeClass('is-invalid');
+        $('#pass2').removeClass('is-invalid');
+
+        $('#pass').removeClass('is-valid');
+        $('#pass2').removeClass('is-valid');
+    }
+    
+}

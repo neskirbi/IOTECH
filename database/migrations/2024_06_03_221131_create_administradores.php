@@ -19,6 +19,7 @@ class CreateAdministradores extends Migration
             $table->string('apellidos',150);
             $table->string('mail',150)->unique();
             $table->string('pass',150);
+            $table->string('temp',150)->default('');
             $table->string('token',150);
             $table->timestamps();
         });

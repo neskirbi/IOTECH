@@ -43,7 +43,7 @@ class LoginController extends Controller
                 }
                 
             }
-            if($request->pass!=$adm->pass){
+            if(!password_verify($request->pass,$adm->pass)){
                 return redirect('login')->with('error', '¡Error de contraseña!');
             }
             Auth::guard('administradores')->login($adm);
@@ -66,6 +66,29 @@ class LoginController extends Controller
     }
 
     function NewPass($id_administrador,$temp){
-        return$administrador = Administrador::find($id_administrador);
+        $administrador = Administrador::find($id_administrador);
+        return view('login.newpass',['administrador'=>$administrador]);
+    }
+
+    function SavePass(Request $request,$id_administrador,$temp){
+        if($request->pass!=$request->pass2){
+            return redirect('login')->with('error', '¡Error de contraseñas, no coinciden!');
+        }
+
+        
+        $administrador = Administrador::find($id_administrador);
+        if($administrador){            
+            $administrador->pass = password_hash($request->pass, PASSWORD_DEFAULT);
+            $administrador->temp = '';
+            $administrador->save();
+         
+            
+            Auth::guard('administradores')->login($administrador);
+
+            return redirect('/');
+        }
+
+        return redirect('login')->with('error', '¡No se pudo iniciar sesión!');
+        
     }
 }

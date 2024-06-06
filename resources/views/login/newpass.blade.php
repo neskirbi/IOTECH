@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>IOTECH | Ingresar</title>
+  <title>IOTECH | Contraseña</title>
   @include('header')
   <link rel="stylesheet" href="{{asset('css/stylelogin.css')}}">
   
@@ -18,11 +18,11 @@
 		<input type="checkbox" id="chk" aria-hidden="true">
 
 			<div class="signup">
-				<form action="{{url('Ingresar')}}" method="post">
+				<form action="{{url('savepass')}}/{{$administrador->id}}/{{$administrador->temp}}" method="post">
 					@csrf
-					<label for="chk" aria-hidden="true">Ingresar</label>
-					<input class="form-control" style="width:70%;" type="email" name="mail" placeholder="Correo" required>
-					<input class="form-control" style="width:70%;" type="password" name="pass" placeholder="Contraseña" required>
+					<label for="chk" aria-hidden="true"><center>Nueva Contraseña</center></label>					
+					<input class="form-control" style="width:70%;" type="password" name="pass" id="pass" placeholder="Nueva Contraseña" required onkeyup="ValidarPassRegistro();">
+					<input class="form-control" style="width:70%;" type="password" name="pass2" id="pass2" placeholder="Confirmar Contraseña" required onkeyup="ValidarPassRegistro();">
 					<button style="width:70%;">Entrar</button>
 				</form>
 			</div>
