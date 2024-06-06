@@ -27,6 +27,7 @@ Route::get('/', function () {
 
 Route::resource('login', 'App\Http\Controllers\Login\LoginController');
 Route::get('logout', 'App\Http\Controllers\Login\LoginController@Logout');
+Route::get('newpass/{id}/{temp}', 'App\Http\Controllers\Login\LoginController@NewPass');
 
 
 Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
