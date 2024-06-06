@@ -26,6 +26,8 @@ Route::get('/', function () {
 
 
 Route::resource('login', 'App\Http\Controllers\Login\LoginController');
+Route::get('logout', 'App\Http\Controllers\Login\LoginController@Logout');
+
 
 Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
 
@@ -41,3 +43,6 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
  Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\AdministradorController');
  Route::get('BorrarAdmin/{id}', 'App\Http\Controllers\SuperUsuario\AdministradorController@BorrarAdmin');
 
+
+
+  

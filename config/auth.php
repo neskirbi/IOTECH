@@ -81,6 +81,10 @@ return [
     */
 
     'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
         'superusuarios' => [
             'driver' => 'eloquent',
             'model' => App\Models\SuperUsuario::class,

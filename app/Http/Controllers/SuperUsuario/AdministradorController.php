@@ -20,7 +20,7 @@ class AdministradorController extends Controller
 
     public function index(Request $filtros)
     {
-        $administradores = Administrador::select('id','nombres','apellidos','mail','pass','empresa as empresa_id',
+        $administradores = Administrador::select('id','nombres','apellidos','mail','pass','temp','empresa as empresa_id',
         DB::RAW('(select empresa from empresas where id = administradores.empresa ) as empresa'))
         ->orderby('nombres','asc')
         ->orderby('apellidos','asc')
@@ -102,6 +102,8 @@ class AdministradorController extends Controller
         $administrador->nombres = $request->nombres;
         $administrador->apellidos = $request->apellidos;
         $administrador->empresa = $request->empresa;
+        
+        if(isset($request->mail))
         $administrador->mail = $request->mail;
         
         $administrador->save();

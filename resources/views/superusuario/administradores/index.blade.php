@@ -101,14 +101,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">                            
-                               
-                               <div class="col-sm-4">
-                                   <div class='form-group'>
-                                       <label for="mail">Correo</label>
-                                       <input onkeyup="Cambio(this,'mail');" data-valor="{{$administrador->mail}}" required type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$administrador->mail}}">
-                                   </div>
-                               </div>                         
+                            <div class="row">                     
                                
                                <div class="col-sm-4">
                                     <div class="form-group">
@@ -121,7 +114,27 @@
                                             @endforeach
                                         </select>
                                     </div> 
-                                </div>
+                                </div>                           
+                               
+                               <div class="col-sm-4">
+                                   <div class='form-group'>
+                                       <label for="mail">Correo</label>
+                                       <input onkeyup="Cambio(this,'mail');" data-valor="{{$administrador->mail}}" required type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$administrador->mail}}">
+                                   </div>
+                               </div> 
+                               
+                               
+                               <div class="col-sm-4">
+                                   <div class='form-group'>
+                                      <label for="temp">Generar Contraseña</label>
+                                      <div class="input-group mb-3">
+                                        <div class="input-group-prepend" style="cursor:pointer;" onclick="GenerarPass('{{$administrador->id}}');">
+                                          <span class="input-group-text"><i class="fa fa-recycle"></i></span>
+                                        </div>
+                                        <input disabled type="text" class="form-control" id="temp" value="{{$administrador->temp}}">
+                                      </div>
+                                   </div>
+                               </div> 
                                
                             </div>   
                             <button type="submit" class="btn btn-info float-right">Guardar</button>                     

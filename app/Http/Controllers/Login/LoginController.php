@@ -30,4 +30,11 @@ class LoginController extends Controller
 
         return redirect('login')->with('error', '¡Correo no registrado!');
     }
+
+    function Logout(){
+        if( Auth::guard('superusuarios')->check()){
+            Auth::guard('superusuarios')->logout();
+            return redirect('/');
+        }
+    }
 }

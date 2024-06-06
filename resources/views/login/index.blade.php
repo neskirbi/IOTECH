@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Sign up / Login Form</title>
+  <title>IOTECH / Ingresar</title>
   @include('header')
   <link rel="stylesheet" href="{{asset('css/stylelogin.css')}}">
   
@@ -23,7 +23,7 @@
 					<label for="chk" aria-hidden="true">Ingresar</label>
 					<input class="form-control" style="width:70%;" type="email" name="mail" placeholder="Correo" required>
 					<input class="form-control" style="width:70%;" type="password" name="pass" placeholder="Contraseña" required>
-					<button>Entrar</button>
+					<button style="width:70%;">Entrar</button>
 				</form>
 			</div>
 
