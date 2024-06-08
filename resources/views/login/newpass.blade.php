@@ -18,7 +18,7 @@
 		<input type="checkbox" id="chk" aria-hidden="true">
 
 			<div class="signup">
-				<form action="{{url('savepass')}}/{{$administrador->id}}/{{$administrador->temp}}" method="post">
+				<form action="{{url('savepass')}}/{{$usuario->id}}" method="post">
 					@csrf
 					<label for="chk" aria-hidden="true"><center>Nueva Contraseña</center></label>					
 					<input class="form-control" style="width:70%;" type="password" name="pass" id="pass" placeholder="Nueva Contraseña" required onkeyup="ValidarPassRegistro();">

@@ -25,20 +25,20 @@ function Cambio(_this,nombre){
     
 }
 
-function GenerarPass(id_administrador){
+function GenerarPass(id){
     
     $.ajax({
         headers: {    },
         async:true,
         method:'post',
         url:  Url()+"api/GenerarPass",
-        data:{id_administrador:id_administrador}
+        data:{id:id}
     }).done(function(data) {
         console.log(data);
         if(data.status==1){
             $('#temp').val(data[0].temp);            
         }else{
-            alert('Error al generar la contraseña');
+            alert('Error al generar la contraseña.');
         }
     }).fail(function() {
         

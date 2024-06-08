@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Administrador;
+use App\Models\Operador;
 
 class ApiController extends Controller
 {
@@ -16,11 +17,20 @@ class ApiController extends Controller
         $str = substr($str, 0, 8);
        
 
-        $administrador = Administrador::find($request->id_administrador);
-        $administrador->pass = '';
-        $administrador->temp = $str;
-        $administrador->save();
+        if($administrador = Administrador::find($request->id)){
+            $administrador->pass = '';
+            $administrador->temp = $str;
+            $administrador->save();
+            return array('status'=>1,$administrador);
+        }
+
+        if($operador = Operador::find($request->id)){
+            $operador->pass = '';
+            $operador->temp = $str;
+            $operador->save();
+            return array('status'=>1,$operador);
+        }
         
-        return array('status'=>1,$administrador);
+        return array('status'=>0,array());
     }
 }

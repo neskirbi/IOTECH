@@ -57,6 +57,10 @@ function GetId(){
     if(Auth::guard('administradores')->check()){
         return Auth::guard('administradores')->user()->id;
     }
+
+    if(Auth::guard('operadores')->check()){
+        return Auth::guard('operadores')->user()->id;
+    }
 }
 
 

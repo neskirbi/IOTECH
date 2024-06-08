@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  @include('superusuario.header')
-  <title>IOTECH | Administradores</title>
+  @include('administradores.header')
+  <title>IOTECH | Operadores</title>
 
   
 </head>
@@ -12,11 +12,11 @@
 
   <!-- Navbar -->
  
-  @include('superusuario.navigations.navigation')
+  @include('administradores.navigations.navigation')
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  @include('superusuario.sidebars.sidebar')
+  @include('administradores.sidebars.sidebar')
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -35,7 +35,7 @@
           <div class="col-12">
               <div class="card card-danger">
                   <div class="card-header">
-                      <h3 class="card-title"><i class="nav-icon fa fa-trash" aria-hidden="true"></i> Quitar Administrador</h3> 
+                      <h3 class="card-title"><i class="nav-icon fa fa-trash" aria-hidden="true"></i> Quitar Operador</h3> 
                                                
                   </div>     
                   <div class="card-body">
@@ -45,13 +45,13 @@
                           <div class="col-sm-6">
                               <div class='form-group'>
                                   <label for="nombre">Nombre(s)</label>
-                                  <input disabled type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombre(s)" value="{{$administrador->nombres}}">
+                                  <input disabled type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombre(s)" value="{{$operador->nombres}}">
                               </div>
                           </div>
                           <div class="col-sm-6">
                               <div class='form-group'>
                                   <label for="apellidos">Apellidos</label>
-                                  <input disabled type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos" value="{{$administrador->apellidos}}">
+                                  <input disabled type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos" value="{{$operador->apellidos}}">
                               </div>
                           </div>
                       </div>
@@ -62,25 +62,17 @@
                           <div class="col-sm-4">
                             <div class='form-group'>
                               <label for="mail">Correo</label>
-                              <input onkeyup="Cambio(this,'mail');" data-valor="{{$administrador->mail}}" disabled type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$administrador->mail}}">
+                              <input onkeyup="Cambio(this,'mail');" data-valor="{{$operador->mail}}" disabled type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$operador->mail}}">
                             </div>
                           </div>                         
                           
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                              <label for="empresa">Empresa</label>
-                              <select disabled class="form-control" name="empresa" id="empresa">
-                                <option value=" {{$administrador->empresa_id}}"> {{$administrador->empresa}}</option>
-                                <optgroup></optgroup>
-                              </select>                                     
-                            </div> 
-                          </div>
+                          
                         </div>
                       
 
                         <div class="row">
                           <div class="col-md-3">
-                          <a href="{{url('administradores')}}" class="btn btn-info btn-block"><i class="nav-icon fa fa-times" aria-hidden="true"></i> Cancelar</a>                     
+                          <a href="{{url('operadores')}}" class="btn btn-info btn-block"><i class="nav-icon fa fa-times" aria-hidden="true"></i> Cancelar</a>                     
                           </div>
 
                           <div class="col-md-3">
@@ -92,7 +84,7 @@
                           </div>
 
                           <div class="col-md-3">
-                            <form action="{{url('administradores')}}/{{$administrador->id}}" id="Nadmin" method="post">
+                            <form action="{{url('operadores')}}/{{$operador->id}}" id="Nadmin" method="post">
                               @csrf
                               @method('delete')
                               <button class="btn btn-danger btn-block"><i class="nav-icon fa fa-times" aria-hidden="true"></i> Borrar</button>                     
@@ -132,6 +124,6 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-@include('superusuario.footer')
+@include('administradores.footer')
 </body>
 </html>

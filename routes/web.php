@@ -20,7 +20,11 @@ Route::get('/', function () {
     }  
 
     if(Auth::guard('administradores')->check()){
-        return redirect('clientes');
+        return redirect('operadores');
+    }   
+
+    if(Auth::guard('operadores')->check()){
+        return redirect('principal');
     }  
 
 
@@ -32,8 +36,8 @@ Route::get('/', function () {
 
 Route::resource('login', 'App\Http\Controllers\Login\LoginController');
 Route::get('logout', 'App\Http\Controllers\Login\LoginController@Logout');
-Route::get('newpass/{id}/{temp}', 'App\Http\Controllers\Login\LoginController@NewPass');
-Route::post('savepass/{id}/{temp}', 'App\Http\Controllers\Login\LoginController@SavePass');
+Route::get('newpass/{id}', 'App\Http\Controllers\Login\LoginController@NewPass');
+Route::post('savepass/{id}', 'App\Http\Controllers\Login\LoginController@SavePass');
 
 
 Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
@@ -53,9 +57,16 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
 
 
  /**
-  * Ruta Administradores 
+  * Rutas Administradores 
   */
 
 
-  Route::resource('clientes', 'App\Http\Controllers\Administrador\ClienteController');
+  Route::resource('operadores', 'App\Http\Controllers\Administrador\OperadorController');
+  Route::get('BorrarOperador/{id}', 'App\Http\Controllers\Administrador\OperadorController@BorrarOperador');
   
+
+  /**
+   * Rutas Operadores
+   */
+
+   Route::resource('principal', 'App\Http\Controllers\Operadores\PrincipalController');

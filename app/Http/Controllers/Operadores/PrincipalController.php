@@ -1,22 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Administrador;
+namespace App\Http\Controllers\Operadores;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Cliente;
 
-class ClienteController extends Controller
+class PrincipalController extends Controller
 {
+
+
+    public function __construct(){
+        $this->middleware('oplog');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $clientes = Cliente::where('id_administrador',GetId())->paginate(15);
-        return view('administradores.clientes.index',['clientes'=>$clientes]);
+        return view('operadores.principal.index');
     }
 
     /**

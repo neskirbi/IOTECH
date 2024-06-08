@@ -97,7 +97,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Cliente::class,
         ],
-        'opeardor' => [
+        'operadores' => [
             'driver' => 'eloquent',
             'model' => App\Models\Operador::class,
         ],

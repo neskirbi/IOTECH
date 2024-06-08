@@ -13,7 +13,7 @@
           <!--<img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">-->
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{Auth::guard('administradores')->user()->nombres.' '.Auth::guard('administradores')->user()->apellidos}}</a>
+          <a href="#" class="d-block">{{Auth::guard('operadores')->user()->nombres.' '.Auth::guard('operadores')->user()->apellidos}}</a>
         </div>
       </div>
 
@@ -42,10 +42,10 @@
           
 
           <li class="nav-item">
-            <a href="{{url('operadores')}}" class="nav-link">
-            <i class="nav-icon fa fa-group" aria-hidden="true"></i>
+            <a href="{{url('principal')}}" class="nav-link">
+            <i class="nav-icon fa fa-home" aria-hidden="true"></i>
               <p>
-                Operadores
+                Principal
               </p>
             </a>
           </li>
