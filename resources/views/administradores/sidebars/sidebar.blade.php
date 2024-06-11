@@ -42,6 +42,15 @@
           
 
           <li class="nav-item">
+            <a href="{{url('equipos')}}" class="nav-link">
+            <i class="nav-icon fa fa-tablet" aria-hidden="true"></i>
+              <p>
+                Equipos
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
             <a href="{{url('operadores')}}" class="nav-link">
             <i class="nav-icon fa fa-group" aria-hidden="true"></i>
               <p>

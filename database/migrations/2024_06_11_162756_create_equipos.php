@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOperadores extends Migration
+class CreateEquipos extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateOperadores extends Migration
      */
     public function up()
     {
-        Schema::create('operadores', function (Blueprint $table) {
+        Schema::create('equipos', function (Blueprint $table) {
             $table->string('id',32)->unique();
             $table->string('id_administrador',32);
-            $table->string('nombres',150);
-            $table->string('apellidos',150);
-            $table->string('mail',150)->unique();
-            $table->string('pass',150);
-            $table->string('token',150);
+            $table->string('mac',50);
+            $table->string('numeconomico',20);
+            $table->string('matricula',20);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateOperadores extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('operadores');
+        Schema::dropIfExists('equipos');
     }
 }

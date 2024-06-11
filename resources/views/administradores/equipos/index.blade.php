@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   @include('administradores.header')
-  <title>IOTECH | Operadores</title>
+  <title>IOTECH | Equipos</title>
 
   
 </head>
@@ -33,7 +33,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title"><i class="nav-icon fa fa-group" aria-hidden="true"></i> Operadores</h3>
+                <h3 class="card-title"><i class="nav-icon fa fa-group" aria-hidden="true"></i> Equipos</h3>
 
                 <div class="card-tools">
                   <!--
@@ -65,39 +65,39 @@
               <!-- /.card-header -->
               <div class="card-body" style="overflow-x: scroll;">
 
-              @foreach($operadores as $operador)
+              @foreach($equipos as $equipo)
 
               <div class="row">
                 <div class="col-12">
                     <div class="card ">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="nav-icon fa fa-user" aria-hidden="true"></i> Operador</h3> 
+                            <h3 class="card-title"><i class="nav-icon fa fa-user" aria-hidden="true"></i> Equipo</h3> 
                             <div class="card-tools">
                                 <div class="btn-group dropleft">
                                     <button class="btn btn-default " type="button" id="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa fa-bars" aria-hidden="true"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="menu">
-                                        <a class="dropdown-item" href="{{url('BorrarOperador').'/'.$operador->id}}"><i class="fa fa-trash" aria-hidden="true"></i> Quitar</a>
+                                        <a class="dropdown-item" href="{{url('BorrarEquipo').'/'.$equipo->id}}"><i class="fa fa-trash" aria-hidden="true"></i> Quitar</a>
                                     </div>
                                 </div>
                             </div>                           
                         </div>     
                         <div class="card-body">
-                          <form action="{{url('operadores')}}/{{$operador->id}}" id="Nadmin" method="post">
+                          <form action="{{url('equipos')}}/{{$equipo->id}}" id="Nadmin" method="post">
                             @csrf                            
                             @method('put')
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class='form-group'>
-                                        <label for="nombre">Nombre(s)</label>
-                                        <input required type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombre(s)" value="{{$operador->nombres}}">
+                                        <label for="numeconomico">Número Económico</label>
+                                        <input required type="text" class="form-control" id="numeconomico" name="numeconomico" placeholder="Número Económico" value="{{$equipo->numeconomico}}">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class='form-group'>
-                                        <label for="apellidos">Apellidos</label>
-                                        <input required type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos" value="{{$operador->apellidos}}">
+                                        <label for="matricula">Matrícula</label>
+                                        <input required type="text" class="form-control" id="matricula" name="matricula" placeholder="Matrícula" value="{{$equipo->matricula}}">
                                     </div>
                                 </div>
                             </div>
@@ -106,24 +106,12 @@
                                
                                <div class="col-sm-4">
                                    <div class='form-group'>
-                                       <label for="mail">Correo</label>
-                                       <input onkeyup="Cambio(this,'mail');" data-valor="{{$operador->mail}}" required type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$operador->mail}}">
+                                    <label for="mac">MAC</label>
+                                    <input required type="text" class="form-control" id="mac" name="mac" placeholder="MAC" value="{{$equipo->mac}}">
                                    </div>
-                               </div> 
+                               </div>                                
                                
-                               
-                               <div class="col-sm-4">
-                                   <div class='form-group'>
-                                      <label for="temp">Generar Contraseña</label>
-                                      <div class="input-group mb-3">
-                                        <div class="input-group-prepend" style="cursor:pointer;" onclick="GenerarPass('{{$operador->id}}');">
-                                          <span class="input-group-text"><i class="fa fa-recycle"></i></span>
-                                        </div>
-                                        <input disabled type="text" class="form-control" id="temp" value="{{$operador->temp}}">
-                                      </div>
-                                   </div>
-                               </div> 
-                               
+                              
                             </div>   
                             <button type="submit" class="btn btn-info float-right">Guardar</button>                     
                           </form>
@@ -139,38 +127,37 @@
                 <div class="col-12">
                     <div class="card card-info">
                         <div class="card-header">
-                            <h3 class="card-title">Agregar Operador</h3>                            
+                            <h3 class="card-title">Agregar Equipo</h3>                            
                         </div>                        
                         @csrf
                         <div class="card-body">
-                          <form action="{{url('operadores')}}" id="Nadmin" method="post">
+                          <form action="{{url('equipos')}}" id="Nadmin" method="post">
                             @csrf
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class='form-group'>
-                                        <label for="nombre">Nombre(s)</label>
-                                        <input required type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombre(s)">
+                                        <label for="numeconomico">Número Económico</label>
+                                        <input required type="text" class="form-control" id="numeconomico" name="numeconomico" placeholder="Número Económico" value="">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class='form-group'>
-                                        <label for="apellidos">Apellidos</label>
-                                        <input required type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos">
+                                        <label for="matricula">Matrícula</label>
+                                        <input required type="text" class="form-control" id="matricula" name="matricula" placeholder="Matrícula" value="">
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">                            
+                            <div class="row">                     
+                                                   
                                
                                <div class="col-sm-4">
                                    <div class='form-group'>
-                                       <label for="mail">Correo</label>
-                                       <input required type="mail" class="form-control" id="mail" name="mail" placeholder="Correo">
+                                    <label for="mac">MAC</label>
+                                    <input required type="text" class="form-control" id="mac" name="mac" placeholder="MAC" value="">
                                    </div>
-                               </div>            
+                               </div>                                
                                
-                            
-                             
-                               
+                              
                             </div>   
                             <button type="submit" class="btn btn-info float-right">Guardar</button>                     
                           </form>

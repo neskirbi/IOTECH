@@ -61,6 +61,10 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
   */
 
 
+  Route::resource('equipos', 'App\Http\Controllers\Administrador\EquipoController');
+  Route::get('BorrarEquipo/{id}', 'App\Http\Controllers\Administrador\EquipoController@BorrarEquipo');
+
+
   Route::resource('operadores', 'App\Http\Controllers\Administrador\OperadorController');
   Route::get('BorrarOperador/{id}', 'App\Http\Controllers\Administrador\OperadorController@BorrarOperador');
   
