@@ -33,4 +33,10 @@ class ApiController extends Controller
         
         return array('status'=>0,array());
     }
+
+
+    function GenerarCodigo(Request $request){
+        $request->id;
+        return array('status'=>1,'codigo'=>$request->codent."--"."Codigo");
+    }
 }

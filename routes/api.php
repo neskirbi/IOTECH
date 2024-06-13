@@ -25,3 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   */
 
 Route::post('GenerarPass','App\Http\Controllers\Api\ApiController@GenerarPass');
+Route::post('GenerarCodigo','App\Http\Controllers\Api\ApiController@GenerarCodigo');

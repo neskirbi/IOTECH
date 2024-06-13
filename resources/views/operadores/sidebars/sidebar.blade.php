@@ -42,10 +42,10 @@
           
 
           <li class="nav-item">
-            <a href="{{url('principal')}}" class="nav-link">
-            <i class="nav-icon fa fa-home" aria-hidden="true"></i>
+            <a href="{{url('equiposop')}}" class="nav-link">
+            <i class="nav-icon fa fa-truck" aria-hidden="true"></i>
               <p>
-                Principal
+                Equipos
               </p>
             </a>
           </li>

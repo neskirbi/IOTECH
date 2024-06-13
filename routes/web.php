@@ -24,7 +24,7 @@ Route::get('/', function () {
     }   
 
     if(Auth::guard('operadores')->check()){
-        return redirect('principal');
+        return redirect('equiposop');
     }  
 
 
@@ -73,4 +73,4 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
    * Rutas Operadores
    */
 
-   Route::resource('principal', 'App\Http\Controllers\Operadores\PrincipalController');
+   Route::resource('equiposop', 'App\Http\Controllers\Operadores\EquipoController');

@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Operadores;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class PrincipalController extends Controller
+use App\Models\Equipo;
+
+class EquipoController extends Controller
 {
 
 
@@ -17,9 +20,13 @@ class PrincipalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $filtros)
     {
-        return view('operadores.principal.index');
+        $equipos = Equipo::where('id_administrador',Auth::guard('operadores')->user()->id_administrador)
+        ->where('numeconomico','like','%'.$filtros->numeconomico.'%')
+        ->orderby('numeconomico','asc')
+        ->get();
+        return view('operadores.equipos.index',['equipos'=>$equipos,'filtros'=>$filtros]);
     }
 
     /**

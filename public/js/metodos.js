@@ -66,3 +66,43 @@ function ValidarPassRegistro(){
     }
     
 }
+
+
+function PreCodigo(id){
+    $('#codent').val('');    
+    $('#codsal').html('-----');  
+    $('.bgenerar').attr("data-id", id);
+    
+}
+
+
+
+function GenerarCodigo(_this){
+    var id = $(_this).data('id');
+    var codent = $('#codent').val();
+    if($('#codent').val().length==0){
+        $('#codent').removeClass('is-valid');
+        $('#codent').addClass('is-invalid');
+        return ; 
+    }else{
+        
+        $('#codent').removeClass('is-invalid');        
+        $('#codent').addClass('is-valid');
+    }
+    $.ajax({
+        headers: {    },
+        async:true,
+        method:'post',
+        url:  Url()+"api/GenerarCodigo",
+        data:{id:id,codent:codent}
+    }).done(function(data) {
+        console.log(data);
+        if(data.status==1){
+            $('#codsal').html(data.codigo);            
+        }else{
+            alert('Error al generar el código.');
+        }
+    }).fail(function() {
+        
+    });
+}
