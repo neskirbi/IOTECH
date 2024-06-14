@@ -38,7 +38,7 @@ class LoginController extends Controller
         if($adm){
             if($adm->temp!='' ){
                 if($adm->temp==$request->pass){
-                    return redirect(('newpass/'.$adm->id.'/'.$request->pass.''));
+                    return redirect(('newpass/'.$adm->id));
                 }else{
                     return redirect('login')->with('error','Contraseña erronea.');
                 }

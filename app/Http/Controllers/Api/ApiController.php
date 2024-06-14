@@ -36,7 +36,9 @@ class ApiController extends Controller
 
 
     function GenerarCodigo(Request $request){
-        $request->id;
-        return array('status'=>1,'codigo'=>$request->codent."--"."Codigo");
+        $codigo='';
+
+        $codigo = hash('sha256', $request->codent);
+        return array('status'=>1,'codigo'=>hexdec(hex2bin(bin2hex(substr($codigo,20,4)))));
     }
 }
