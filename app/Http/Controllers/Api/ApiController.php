@@ -36,12 +36,35 @@ class ApiController extends Controller
 
 
     function GenerarCodigo(Request $request){
+        
         $codigo='';
+        $rango=0;
+        switch(($request->opcion*1)){
+            case 1:
+                $rango = 15;
+            break;
+
+            
+            case 1:
+                $rango = 20;
+            break;
+
+            
+            case 1:
+                $rango = 25;
+            break;
+
+
+            
+            case 1:
+                $rango = 2;
+            break;
+        }
 
         //haseando
         $codigo = hash('sha256', $request->codent);
         //Extrayendo del 20 al 24 servicio y del 15 al 19 para el motor
-        $codigo = substr($codigo,20,4);
+        $codigo = substr($codigo,$rango,4);
         //String to e=hexadecimal
         $codigo = hex2bin(bin2hex($codigo));
         //Exadecimal to decimal

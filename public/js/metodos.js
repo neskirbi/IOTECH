@@ -80,6 +80,9 @@ function PreCodigo(id){
 function GenerarCodigo(_this){
     var id = $(_this).data('id');
     var codent = $('#codent').val();
+    var opcion=$('input[name="opcion"]:checked').val();
+    
+    
     if($('#codent').val().length==0){
         $('#codent').removeClass('is-valid');
         $('#codent').addClass('is-invalid');
@@ -94,9 +97,9 @@ function GenerarCodigo(_this){
         async:true,
         method:'post',
         url:  Url()+"api/GenerarCodigo",
-        data:{id:id,codent:codent}
+        data:{id:id,codent:codent,opcion:opcion}
     }).done(function(data) {
-        console.log(data);
+        
         if(data.status==1){
             $('#codsal').html(data.codigo);            
         }else{

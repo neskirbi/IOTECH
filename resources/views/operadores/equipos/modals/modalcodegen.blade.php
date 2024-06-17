@@ -18,45 +18,33 @@
         <div class="row">
           <div class="col-md-6">
             <div class="form-check">
-              <input class="form-check-input" type="radio" value="" name="servicio" checked="">
-              <label class="form-check-label">Servicio</label>
+              <input class="form-check-input" type="radio" value="1" name="opcion" checked="">
+              <label class="form-check-label">Activar Motor</label>
             </div>
           </div>
         
           <div class="col-md-6">
             <div class="form-check">
-              <input class="form-check-input" type="radio" value="" name="servicio" >
+              <input class="form-check-input" type="radio" value="2" name="opcion" >
               <label class="form-check-label">Chapa</label>
             </div>
           </div>
        
           <div class="col-md-6">
             <div class="form-check">
-              <input class="form-check-input" type="radio" value="" name="servicio" >
-              <label class="form-check-label">Motor</label>
+              <input class="form-check-input" type="radio" value="3" name="opcion" >
+              <label class="form-check-label">Reset</label>
             </div>
           </div>
        
           <div class="col-md-6">
             <div class="form-check">
-              <input class="form-check-input" type="radio" value="" name="servicio" >
-              <label class="form-check-label">Radio checked</label>
-            </div>
-          </div>
-       
-          <div class="col-md-6">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" value="" name="servicio" >
-              <label class="form-check-label">Radio checked</label>
+              <input class="form-check-input" type="radio" value="4" name="opcion" >
+              <label class="form-check-label">Apertura Libre</label>
             </div>
           </div>
         
-          <div class="col-md-6">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" value="" name="servicio" >
-              <label class="form-check-label">Radio checked</label>
-            </div>
-          </div>
+         
         </div>
         <center><h2><b><div id="codsal">-----</div></b></h2></center>
         
