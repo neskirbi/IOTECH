@@ -13,7 +13,50 @@
         @csrf                        
         <div class="form-group">              
           <label for="codent">Código Entrada</label>
-          <input type="text" class="form-control" id="codent" name="codent">
+          <center><input type="text" class="form-control" id="codent" name="codent"></center>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="" name="servicio" checked="">
+              <label class="form-check-label">Servicio</label>
+            </div>
+          </div>
+        
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="" name="servicio" >
+              <label class="form-check-label">Chapa</label>
+            </div>
+          </div>
+       
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="" name="servicio" >
+              <label class="form-check-label">Motor</label>
+            </div>
+          </div>
+       
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="" name="servicio" >
+              <label class="form-check-label">Radio checked</label>
+            </div>
+          </div>
+       
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="" name="servicio" >
+              <label class="form-check-label">Radio checked</label>
+            </div>
+          </div>
+        
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="" name="servicio" >
+              <label class="form-check-label">Radio checked</label>
+            </div>
+          </div>
         </div>
         <center><h2><b><div id="codsal">-----</div></b></h2></center>
         
