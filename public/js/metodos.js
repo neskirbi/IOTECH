@@ -68,10 +68,11 @@ function ValidarPassRegistro(){
 }
 
 
-function PreCodigo(id){
+function PreCodigo(id,numeconomico){
     $('#codent').val('');    
     $('#codsal').html('-----');  
     $('.bgenerar').attr("data-id", id);
+    $('.bgenerar').attr("data-numeconomico", numeconomico);
     
 }
 
@@ -79,6 +80,8 @@ function PreCodigo(id){
 
 function GenerarCodigo(_this){
     var id = $(_this).data('id');
+    var numeconomico = $(_this).data('numeconomico');
+    var id_operador = $(_this).data('id_operador');
     var codent = $('#codent').val();
     var opcion=$('input[name="opcion"]:checked').val();
     
@@ -97,7 +100,7 @@ function GenerarCodigo(_this){
         async:true,
         method:'post',
         url:  Url()+"api/GenerarCodigo",
-        data:{id:id,codent:codent,opcion:opcion}
+        data:{id:id,codent:codent,opcion:opcion,numeconomico:numeconomico,id_operador:id_operador}
     }).done(function(data) {
         
         if(data.status==1){

@@ -50,7 +50,7 @@
         
       </div>
       <div class="modal-footer">
-          <button data-id="0" id="" onclick="GenerarCodigo(this);" class="btn btn-warning btn-block bgenerar"><i class="fa fa-recycle" aria-hidden="true"><span> Generar</span></i></button>
+          <button data-id="0" id="" onclick="GenerarCodigo(this);" class="btn btn-warning btn-block bgenerar" data-id_operador="{{GetId();}}"><i class="fa fa-recycle" aria-hidden="true"><span> Generar</span></i></button>
       </div>
     
     </div>

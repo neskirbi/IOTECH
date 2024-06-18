@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Administrador;
 use App\Models\Operador;
+use App\Models\Registro;
 
 class ApiController extends Controller
 {
@@ -36,7 +37,15 @@ class ApiController extends Controller
 
 
     function GenerarCodigo(Request $request){
-        
+        //return $request;
+        $registro = new Registro();
+
+        $registro->id = GetUuid();
+        $registro->id_operador = $request->id_operador;
+        $registro->numeconomico = $request->numeconomico;
+        $registro->opcion = $request->opcion;
+        $registro->save();
+
         $codigo='';
         $rango=0;
         switch(($request->opcion*1)){

@@ -78,7 +78,7 @@
                           
                           <div class="row" > 
                             <div class="col-md-12"> 
-                              <button type="button" class="btn btn-info btn-block" onclick="PreCodigo('{{$equipo->id}}');" data-toggle="modal" data-target="#modalcodegen">
+                              <button type="button" class="btn btn-info btn-block" onclick="PreCodigo('{{$equipo->id}}','{{$equipo->numeconomico}}');" data-toggle="modal" data-target="#modalcodegen" >
                                 <i class="fa fa-terminal" aria-hidden="true"></i> Generar
                               </button>
                             </div>
