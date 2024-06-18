@@ -59,6 +59,7 @@
                     <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">IOTECH</span>Tecnology</h1>
                 </a>
             </div>
+            <!--
             <div class="col-lg-8 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
                     <div class="d-inline-flex flex-column text-center pr-3 border-right">
@@ -74,7 +75,7 @@
                         <p class="m-0">+012 345 6789</p>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
     <!-- Topbar End -->
@@ -157,6 +158,7 @@
 
 
     <!-- Booking Start -->
+    <!--
     <div class="container-fluid bg-light">
         <div class="container">
             <div class="row align-items-center">
@@ -239,10 +241,12 @@
             </div>
         </div>
     </div>
+    -->
     <!-- Booking Start -->
 
 
     <!-- About Start -->
+     <!--
     <div class="container py-5">
         <div class="row py-5">
             <div class="col-lg-7 pb-5 pb-lg-0 px-3 px-lg-5">
@@ -272,6 +276,7 @@
             </div>
         </div>
     </div>
+    -->
     <!-- About End -->
 
 
@@ -380,6 +385,7 @@
 
 
     <!-- Pricing Plan Start -->
+     <!--
     <div class="container-fluid bg-light pt-5 pb-4">
         <div class="container py-5">
             <div class="d-flex flex-column text-center mb-5">
@@ -462,10 +468,12 @@
             </div>
         </div>
     </div>
+-->
     <!-- Pricing Plan End -->
 
 
     <!-- Team Start -->
+     <!--
     <div class="container mt-5 pt-5 pb-3">
         <div class="d-flex flex-column text-center mb-5">
             <h4 class="text-secondary mb-3">Team Member</h4>
@@ -542,10 +550,12 @@
             </div>
         </div>
     </div>
+-->
     <!-- Team End -->
 
 
     <!-- Testimonial Start -->
+     <!--
     <div class="container-fluid bg-light my-5 p-0 py-5">
         <div class="container p-0 py-5">
             <div class="d-flex flex-column text-center mb-5">
@@ -596,10 +606,12 @@
             </div>
         </div>
     </div>
+-->
     <!-- Testimonial End -->
 
 
     <!-- Blog Start -->
+     <!--
     <div class="container pt-5">
         <div class="d-flex flex-column text-center mb-5">
             <h4 class="text-secondary mb-3">Pet Blog</h4>
@@ -653,6 +665,7 @@
             </div>
         </div>
     </div>
+-->
     <!-- Blog End -->
 
 
