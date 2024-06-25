@@ -40,7 +40,7 @@
           <div class="col-md-6">
             <div class="form-check">
               <input class="form-check-input" type="radio" value="4" name="opcion" >
-              <label class="form-check-label">Apertura Libre</label>
+              <label class="form-check-label">Apertura Chapa</label>
             </div>
           </div>
         

@@ -54,18 +54,18 @@ class ApiController extends Controller
             break;
 
             
-            case 1:
+            case 2:
                 $rango = 20;
             break;
 
             
-            case 1:
+            case 3:
                 $rango = 25;
             break;
 
 
             
-            case 1:
+            case 4:
                 $rango = 2;
             break;
         }
