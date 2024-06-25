@@ -34,11 +34,11 @@
         <div class="row bg-secondary py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-white pr-3" href="">FAQs</a>
+                    <!--<a class="text-white pr-3" href="">FAQs</a>
                     <span class="text-white">|</span>
                     <a class="text-white px-3" href="">Help</a>
                     <span class="text-white">|</span>
-                    <a class="text-white pl-3" href="">Support</a>
+                    <a class="text-white pl-3" href="">Support</a>-->
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -46,18 +46,36 @@
                     <a class="text-white px-3" href="{{url('login')}}">
                         <i class="fa fa-user"></i> Ingresar
                     </a>
-
-                    
                    
                    
                 </div>
             </div>
         </div>
         <div class="row py-3 px-lg-5">
+            
             <div class="col-lg-4">
                 <a href="" class="navbar-brand d-none d-lg-block">
                     <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">IOTECH</span>Tecnology</h1>
                 </a>
+            </div>
+            
+            <div class="col-md-2">
+                
+            </div>
+            
+            <div class="col-md-2">
+                
+            </div>
+            
+            <div class="col-md-2">
+                
+            </div>
+            
+            <div class="col-md-1">
+                
+            </div>
+            <div class="col-md-1">
+                <img src="{{asset('images/imaiotech2.jpg')}}" width="80px">
             </div>
             <!--
             <div class="col-lg-8 text-center text-lg-right">
@@ -118,26 +136,26 @@
         <div id="header-carousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100" src="img/carousel-1.jpg" alt="Image">
+                    <img class="w-100" src="img/c3.jpg" alt="Image">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
-                            <h3 class="text-white mb-3 d-none d-sm-block">Best Pet Services</h3>
-                            <h1 class="display-3 text-white mb-3">Keep Your Pet Happy</h1>
-                            <h5 class="text-white mb-3 d-none d-sm-block">Duo nonumy et dolor tempor no et. Diam sit diam sit diam erat</h5>
-                            <a href="" class="btn btn-lg btn-primary mt-3 mt-md-4 px-4">Book Now</a>
-                            <a href="" class="btn btn-lg btn-secondary mt-3 mt-md-4 px-4">Learn More</a>
+                            <h3 class="text-white mb-3 d-none d-sm-block">Seguridad en cada dispositivo.</h3>
+                            <h1 class="display-3 text-white mb-3">Tu protección, nuestra misión.</h1>
+                            <h5 class="text-white mb-3 d-none d-sm-block">Confía en la seguridad, elige nuestros dispositivos.</h5>
+                            <!--<a href="" class="btn btn-lg btn-primary mt-3 mt-md-4 px-4">Book Now</a>
+                            <a href="" class="btn btn-lg btn-secondary mt-3 mt-md-4 px-4">Learn More</a>-->
                         </div>
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img class="w-100" src="img/carousel-2.jpg" alt="Image">
+                    <img class="w-100" src="img/c2.jpg" alt="Image">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
-                            <h3 class="text-white mb-3 d-none d-sm-block">Best Pet Services</h3>
-                            <h1 class="display-3 text-white mb-3">Pet Spa & Grooming</h1>
-                            <h5 class="text-white mb-3 d-none d-sm-block">Duo nonumy et dolor tempor no et. Diam sit diam sit diam erat</h5>
-                            <a href="" class="btn btn-lg btn-primary mt-3 mt-md-4 px-4">Book Now</a>
-                            <a href="" class="btn btn-lg btn-secondary mt-3 mt-md-4 px-4">Learn More</a>
+                            <h3 class="text-white mb-3 d-none d-sm-block">En tus manos</h3>
+                            <h1 class="display-3 text-white mb-3">A la vanguardia de la seguridad.</h1>
+                            <h5 class="text-white mb-3 d-none d-sm-block">Protegiendo lo que más importa, con cada dispositivo.</h5>
+                            <!--<a href="" class="btn btn-lg btn-primary mt-3 mt-md-4 px-4">Book Now</a>
+                            <a href="" class="btn btn-lg btn-secondary mt-3 mt-md-4 px-4">Learn More</a>-->
                         </div>
                     </div>
                 </div>
@@ -280,12 +298,12 @@
     <!-- About End -->
 
 
-    <!-- Services Start -->
+    <!-- Services Start 
     <div class="container-fluid bg-light pt-5">
         <div class="container py-5">
             <div class="d-flex flex-column text-center mb-5">
-                <h4 class="text-secondary mb-3">Our Services</h4>
-                <h1 class="display-4 m-0"><span class="text-primary">Premium</span> Pet Services</h1>
+                <h4 class="text-secondary mb-3"></h4>
+                <h1 class="display-4 m-0"><span class="text-primary"></span> Nuestros Servicios</h1>
             </div>
             <div class="row pb-3">
                 <div class="col-md-6 col-lg-4 mb-4">
@@ -338,11 +356,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     <!-- Services End -->
 
 
-    <!-- Features Start -->
+    <!-- Features Start 
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-5">
@@ -380,7 +398,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     <!-- Features End -->
 
 
@@ -669,7 +687,7 @@
     <!-- Blog End -->
 
 
-    <!-- Footer Start -->
+    <!-- Footer Start
     <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
         <div class="row pt-5">
             <div class="col-lg-4 col-md-12 mb-5">
@@ -743,7 +761,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Footer End -->
 
 
