@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   @include('superusuario.header')
-  <title>IOTECH | Administradores</title>
+  <title>IOTECH | Operadores</title>
 
   
 </head>
@@ -33,7 +33,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title"><i class="nav-icon fa fa-group" aria-hidden="true"></i> Administradores</h3>
+                <h3 class="card-title"><i class="nav-icon fa fa-group" aria-hidden="true"></i> Operadores</h3>
 
                 <div class="card-tools">
                   <!--
@@ -65,61 +65,49 @@
               <!-- /.card-header -->
               <div class="card-body" style="overflow-x: scroll;">
 
-              @foreach($administradores as $administrador)
+              @foreach($operadores as $operador)
 
               <div class="row">
                 <div class="col-12">
                     <div class="card ">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="nav-icon fa fa-user" aria-hidden="true"></i> Administrador</h3> 
+                            <h3 class="card-title"><i class="nav-icon fa fa-user" aria-hidden="true"></i> Operador</h3> 
                             <div class="card-tools">
                                 <div class="btn-group dropleft">
                                     <button class="btn btn-default " type="button" id="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa fa-bars" aria-hidden="true"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="menu">
-                                        <a class="dropdown-item" href="{{url('BorrarAdmin').'/'.$administrador->id}}"><i class="fa fa-trash" aria-hidden="true"></i> Quitar</a>
+                                        <a class="dropdown-item" href="{{url('BorrarOperador').'/'.$operador->id}}"><i class="fa fa-trash" aria-hidden="true"></i> Quitar</a>
                                     </div>
                                 </div>
                             </div>                           
                         </div>     
                         <div class="card-body">
-                          <form action="{{url('administradores')}}/{{$administrador->id}}" id="Nadmin" method="post">
+                          <form action="{{url('operadoress')}}/{{$operador->id}}" id="Nadmin" method="post">
                             @csrf                            
                             @method('put')
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class='form-group'>
                                         <label for="nombre">Nombre(s)</label>
-                                        <input required type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombre(s)" value="{{$administrador->nombres}}">
+                                        <input required type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombre(s)" value="{{$operador->nombres}}">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class='form-group'>
                                         <label for="apellidos">Apellidos</label>
-                                        <input required type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos" value="{{$administrador->apellidos}}">
+                                        <input required type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos" value="{{$operador->apellidos}}">
                                     </div>
                                 </div>
                             </div>
                             <div class="row">                     
-                               
-                               <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="empresa">Empresa</label>
-                                        <select required class="form-control" name="empresa" id="empresa">
-                                            <option value=" {{$administrador->empresa_id}}"> {{$administrador->empresa}}</option>
-                                            <optgroup></optgroup>
-                                            @foreach($empresas as $empresa)
-                                            <option value="{{$empresa->id}}">{{$empresa->empresa}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> 
-                                </div>                           
+                                                   
                                
                                <div class="col-sm-4">
                                    <div class='form-group'>
                                        <label for="mail">Correo</label>
-                                       <input onkeyup="Cambio(this,'mail');" data-valor="{{$administrador->mail}}" required type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$administrador->mail}}">
+                                       <input onkeyup="Cambio(this,'mail');" data-valor="{{$operador->mail}}" required type="mail" class="form-control" id="mail" placeholder="Correo"  value="{{$operador->mail}}">
                                    </div>
                                </div> 
                                
@@ -128,15 +116,29 @@
                                    <div class='form-group'>
                                       <label for="temp">Generar Contraseña</label>
                                       <div class="input-group mb-3">
-                                        <div class="input-group-prepend" style="cursor:pointer;" onclick="GenerarPass('{{$administrador->id}}');">
+                                        <div class="input-group-prepend" style="cursor:pointer;" onclick="GenerarPass('{{$operador->id}}');">
                                           <span class="input-group-text"><i class="fa fa-recycle"></i></span>
                                         </div>
-                                        <input disabled type="text" class="form-control" id="temp{{$administrador->id}}" value="{{$administrador->temp}}">
+                                        <input disabled type="text" class="form-control" id="temp{{$operador->id}}" value="{{$operador->temp}}">
                                       </div>
                                    </div>
                                </div> 
                                
                             </div>   
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <div class='form-group'>
+                                  <label for="mail">Administrador</label>
+                                  <select required class="form-control" id="administrador" name="administrador" >
+                                    <option value="{{$operador->id_admin}}">{{$operador->administrador}} - {{$operador->empresa}}</option>
+                                    <optgroup></optgroup>
+                                    @foreach($administradores as $admin)
+                                    <option value="{{$admin->id}}">{{$admin->apellidos}} {{$admin->nombres}} - {{$admin->empresa}}</option>
+                                    @endforeach
+                                  </select>
+                                </div>
+                               </div>  
+                            </div>
                             <button type="submit" class="btn btn-info float-right">Guardar</button>                     
                           </form>
                         </div>
@@ -151,11 +153,11 @@
                 <div class="col-12">
                     <div class="card card-info">
                         <div class="card-header">
-                            <h3 class="card-title">Agregar Administrador</h3>                            
+                            <h3 class="card-title">Agregar Operador</h3>                            
                         </div>                        
                         @csrf
                         <div class="card-body">
-                          <form action="{{url('administradores')}}" id="Nadmin" method="post">
+                          <form action="{{url('operadoress')}}" id="Nadmin" method="post">
                             @csrf
                             <div class="row">
                                 <div class="col-sm-6">
@@ -178,19 +180,23 @@
                                        <label for="mail">Correo</label>
                                        <input required type="mail" class="form-control" id="mail" name="mail" placeholder="Correo">
                                    </div>
-                               </div>                         
+                               </div>  
                                
-                               <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="empresa">Empresa</label>
-                                        <select required class="form-control" name="empresa" id="empresa">
-                                            <option value="">--Seleccione Opción--</option>
-                                            @foreach($empresas as $empresa)
-                                            <option value="{{$empresa->id}}">{{$empresa->empresa}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> 
-                                </div>
+                               <div class="col-sm-6">
+                                   <div class='form-group'>
+                                      <label for="mail">Administrador</label>
+                                      <select required class="form-control" id="administrador" name="administrador" >
+                                        <option value="">----Administrador----</option>
+                                        <optgroup></optgroup>
+                                        @foreach($administradores as $admin)
+                                        <option value="{{$admin->id}}">{{$admin->apellidos}} {{$admin->nombres}} - {{$admin->empresa}}</option>
+                                        @endforeach
+                                      </select>
+                                   </div>
+                               </div>  
+                               
+                            
+                             
                                
                             </div>   
                             <button type="submit" class="btn btn-info float-right">Guardar</button>                     

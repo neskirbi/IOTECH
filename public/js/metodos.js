@@ -36,7 +36,7 @@ function GenerarPass(id){
     }).done(function(data) {
         console.log(data);
         if(data.status==1){
-            $('#temp').val(data[0].temp);            
+            $('#temp'+id).val(data[0].temp);            
         }else{
             alert('Error al generar la contraseña.');
         }

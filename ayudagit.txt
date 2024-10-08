@@ -1,17 +1,10 @@
-/*
-*Esto crea todas las tablas (pero borra datos)
-*/
-php artisan migrate:refresh
+1.- Complementar la interface de super usuario con la opcion de dar de alta equipos y operadores 
 
-/*
-*Refresca solo una tabla en base de datos
-*Cambiar tabla por el nombre de la migracion que se creo
-*/
-php artisan migrate:refresh --path=/database/migrations/2024_06_18_162902_create_registros.php
+2.-En equipos tener el campo de la vercion de dispositivo("Chapa") ej. V3 V4 V5
 
-/*
-*Crea una migracion en laravel para el diseño de una tabla de la base de datos 
-*Cambiar tabla por el nombre de la tabla(en minusculas)
-*/
 
-php artisan make:migrtion create_table
+3.- Agregar Fechas de alta de equipos
+
+
+4.-Agregar bloqueo por falta de pago 
+5.-Agregar modulo para la administracion de pagos 

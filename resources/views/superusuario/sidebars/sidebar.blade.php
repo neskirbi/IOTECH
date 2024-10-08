@@ -57,6 +57,15 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{url('operadoress')}}" class="nav-link">
+            <i class="nav-icon fa fa-group" aria-hidden="true"></i>
+              <p>
+                Operadores
+              </p>
+            </a>
+          </li>
+
           
 
 
