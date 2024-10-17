@@ -59,6 +59,15 @@
             </a>
           </li>
 
+
+          <li class="nav-item">
+            <a href="{{url('soporte')}}" class="nav-link">
+            <i class="nav-icon fa fa-tablet" aria-hidden="true"></i>
+              <p>
+                Soporte
+              </p>
+            </a>
+          </li>
           
 
 

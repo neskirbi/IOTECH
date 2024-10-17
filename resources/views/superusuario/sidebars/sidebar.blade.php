@@ -66,6 +66,15 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{url('equiposs')}}" class="nav-link">
+            <i class="nav-icon fa fa-tablet" aria-hidden="true"></i>
+              <p>
+                Equipos
+              </p>
+            </a>
+          </li>
+
           
 
 

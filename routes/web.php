@@ -56,6 +56,8 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
 
  Route::resource('operadoress', 'App\Http\Controllers\SuperUsuario\OperadorController');
 
+ Route::resource('equiposs', 'App\Http\Controllers\SuperUsuario\EquipoController');
+
  /**
   * Rutas Administradores 
   */
