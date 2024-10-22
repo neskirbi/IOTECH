@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  @include('operadores.header')
+  @include('administradores.header')
   <title>IOTECH | Equipos</title>
 
   
@@ -12,11 +12,11 @@
 
   <!-- Navbar -->
  
-  @include('operadores.navigations.navigation')
+  @include('administradores.navigations.navigation')
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  @include('operadores.sidebars.sidebar')
+  @include('administradores.sidebars.sidebar')
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -156,6 +156,6 @@
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App, funcion de sidebar -->
 <script src="dist/js/adminlte.js"></script>
-@include('operadores.equipos.modals.modalcodegen')
+@include('administradores.soporte.modals.modalcodegen')
 </body>
 </html>
