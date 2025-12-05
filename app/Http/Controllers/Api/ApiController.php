@@ -12,29 +12,45 @@ use App\Models\Registro;
 class ApiController extends Controller
 {
     function GenerarPass(Request $request){
-        $str = random_bytes(8);
-        $str = base64_encode($str);
-        $str = str_replace(["+", "/", "="], "", $str);
-        $str = substr($str, 0, 8);
-       
-
-        if($administrador = Administrador::find($request->id)){
-            $administrador->pass = '';
-            $administrador->temp = $str;
-            $administrador->save();
-            return array('status'=>1,$administrador);
+    // Lista de tablas a buscar (COMENTARIO: Agregar nuevas tablas aquí)
+    $tablas = [
+        'administrador' => 'App\Models\Administrador',
+        'operador' => 'App\Models\Operador', 
+        'cliente' => 'App\Models\Cliente'
+        // COMENTARIO: Agregar nuevas líneas para nuevas tablas
+        // 'nuevo_tipo' => 'App\Models\NuevoModelo',
+    ];
+    
+    // Generar 8 caracteres alfanuméricos
+    $str = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 8);
+    
+    // Buscar en todas las tablas
+    foreach($tablas as $tipo => $modeloClass) {
+        if(class_exists($modeloClass)) {
+            $usuario = $modeloClass::find($request->id);
+            if($usuario) {
+                // Verificar que tenga campos mail y pass
+                if(isset($usuario->mail) && isset($usuario->pass)) {
+                    $usuario->pass = ''; // Limpiar pass anterior
+                    $usuario->temp = $str;
+                    $usuario->save();
+                    
+                    return response()->json([
+                        'status' => 1,
+                        'temp' => $str,
+                        'tipo' => $tipo,
+                        'nombre' => $usuario->nombres ?? $usuario->name ?? ''
+                    ]);
+                }
+            }
         }
-
-        if($operador = Operador::find($request->id)){
-            $operador->pass = '';
-            $operador->temp = $str;
-            $operador->save();
-            return array('status'=>1,$operador);
-        }
-        
-        return array('status'=>0,array());
     }
-
+    
+    return response()->json([
+        'status' => 0,
+        'message' => 'Usuario no encontrado en ninguna tabla'
+    ]);
+}
 
     function GenerarCodigo(Request $request){
         //return $request;

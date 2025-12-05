@@ -42,11 +42,7 @@
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-3" href="https://{{$_SERVER['HTTP_HOST']}}/control/public/login">
-                        <i class="fa fa-user-md"></i> Médicos
-                    </a>
-                </div>
+                
 
                 <div class="d-inline-flex align-items-center">
                     <a class="text-white px-3" href="{{url('login')}}">

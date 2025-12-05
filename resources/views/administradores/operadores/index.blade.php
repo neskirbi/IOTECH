@@ -112,18 +112,19 @@
                                </div> 
                                
                                
-                               <div class="col-sm-4">
-                                   <div class='form-group'>
-                                      <label for="temp">Generar Contraseña</label>
-                                      <div class="input-group mb-3">
-                                        <div class="input-group-prepend" style="cursor:pointer;" onclick="GenerarPass('{{$operador->id}}');">
-                                          <span class="input-group-text"><i class="fa fa-recycle"></i></span>
+                               <!-- Para cualquier tipo de usuario - Mismo código para todos -->
+                                <div class="col-sm-4">
+                                    <div class='form-group'>
+                                        <label>Contraseña Temporal</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend" style="cursor:pointer;" onclick="GenerarPass('{{$operador->id}}');">
+                                                <span class="input-group-text"><i class="fa fa-recycle"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" id="temp_{{ $operador->id }}" 
+                                                  name="temp" value="{{ $operador->temp }}" readonly>
                                         </div>
-                                        <input disabled type="text" class="form-control" id="temp" value="{{$operador->temp}}">
-                                      </div>
-                                   </div>
-                               </div> 
-                               
+                                    </div>
+                                </div>
                             </div>   
                             <button type="submit" class="btn btn-info float-right">Guardar</button>                     
                           </form>

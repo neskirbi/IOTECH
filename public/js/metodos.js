@@ -25,24 +25,66 @@ function Cambio(_this,nombre){
     
 }
 
-function GenerarPass(id){
+function GenerarPass(id) {
+    console.log("Generando pass para ID:", id);
+    
+    // Si es nuevo, generar localmente
+    if(id === 'nuevo') {
+        var temp = generarPasswordLocal();
+        $('#temp_nuevo').val(temp);
+        
+        if(typeof toastr !== 'undefined') {
+            toastr.success('Contraseña generada: ' + temp);
+        }
+        return;
+    }
+    
+    // URL CORREGIDA - usar ruta absoluta
+    var url = '/IOTECH/public/api/GenerarPass';
+    // O mejor, definir la base URL globalmente:
+    // var url = baseUrl + '/api/GenerarPass';
     
     $.ajax({
-        headers: {    },
-        async:true,
-        method:'post',
-        url:  Url()+"api/GenerarPass",
-        data:{id:id}
-    }).done(function(data) {
-        console.log(data);
-        if(data.status==1){
-            $('#temp'+id).val(data[0].temp);            
-        }else{
-            alert('Error al generar la contraseña.');
+        url: url, // URL absoluta
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'), // Obtener token de meta tag
+            id: id
         }
-    }).fail(function() {
+    }).done(function(response) {
+        console.log("Respuesta:", response);
         
+        if(response.status == 1) {
+            // Actualizar campo correspondiente
+            $('#temp_' + id).val(response.temp);
+            
+            if(typeof toastr !== 'undefined') {
+                toastr.success('Contraseña generada para ' + (response.nombre || 'usuario') + ': ' + response.temp);
+            }
+        } else {
+            if(typeof toastr !== 'undefined') {
+                toastr.error(response.message || 'Error al generar contraseña');
+            }
+        }
+    }).fail(function(xhr, status, error) {
+        console.error("Error AJAX:", error);
+        console.error("Status:", status);
+        console.error("Response:", xhr.responseText);
+        
+        if(typeof toastr !== 'undefined') {
+            toastr.error('Error de conexión: ' + error);
+        }
     });
+}
+
+// Función para generar contraseña localmente (para nuevos usuarios)
+function generarPasswordLocal() {
+    var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var temp = '';
+    for (var i = 0; i < 8; i++) {
+        temp += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return temp;
 }
 
 
