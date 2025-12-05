@@ -372,7 +372,7 @@ async function enviarPorBluetooth(datos) {
         
         // Simular retardo de red
         setTimeout(() => {
-            procesarConServidor('1234');
+            //procesarConServidor('1234');
         }, 1000);
         
         return false;
