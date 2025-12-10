@@ -153,15 +153,17 @@
 let mapa = null;
 let marcador = null;
 let dispositivoBluetooth = null;
-let caracteristicaBluetooth = null;
-let coordenadasActuales = null; // Variable global de coordenadas
+let servidorGATT = null;
+let caracteristicaTX = null;
+let caracteristicaRX = null;
+let coordenadasActuales = null;
 let watchId = null;
 let procesoActivo = false;
 let gpsDisponible = false;
 
-// Configuración
-const UUID_SERVICIO = 0xFFE0;
-const UUID_CARACTERISTICA = 0xFFE1;
+// UUIDs para Bluetooth Serial del ESP32
+const UUID_SERVICIO_BLUETOOTH = '0000ffe0-0000-1000-8000-00805f9b34fb';
+const UUID_CARACTERISTICA_TX_RX = '0000ffe1-0000-1000-8000-00805f9b34fb';
 const SERVER_URL = '{{ url("api/GenerarCodigo") }}';
 
 // ==================== INICIALIZACIÓN ====================
@@ -174,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!navigator.bluetooth) {
         mostrarToast('Bluetooth no disponible en este navegador', 'error');
         actualizarEstadoBluetooth(false, 'no-soportado');
+        agregarLog('Web Bluetooth no disponible', 'warning');
     } else {
         verificarDispositivosConectados();
     }
@@ -307,7 +310,7 @@ async function obtenerDireccion(lat, lng) {
     }
 }
 
-// ==================== BLUETOOTH ====================
+// ==================== FUNCIONES BLUETOOTH ====================
 function mostrarModalBluetooth() {
     $('#modal-bluetooth').show();
     buscarDispositivos();
@@ -317,296 +320,338 @@ function cerrarModalBluetooth() {
     $('#modal-bluetooth').hide();
 }
 
-async function buscarDispositivos() {
-    try {
-        const dispositivos = await navigator.bluetooth.getDevices();
-        const lista = $('#lista-dispositivos');
-        lista.empty();
-        
-        if (dispositivos.length === 0) {
-            lista.append(`
-                <div class="text-center py-3 text-muted">
-                    <i class="fas fa-search fa-2x mb-2"></i>
-                    <p>No hay dispositivos Bluetooth pareados</p>
-                    <small>Conecta un dispositivo primero desde ajustes del sistema</small>
-                </div>
-            `);
-        } else {
-            dispositivos.forEach(dispositivo => {
-                lista.append(`
-                    <label class="list-group-item">
-                        <input class="form-check-input me-2" type="radio" name="dispositivo" value="${dispositivo.id}">
-                        <div>
-                            <strong>${dispositivo.name || 'Dispositivo desconocido'}</strong>
-                            <small class="text-muted d-block">${dispositivo.id}</small>
-                            <small class="text-success" style="font-size:10px;">
-                                ${dispositivo.gatt?.connected ? '✅ Conectado' : '🔴 Desconectado'}
-                            </small>
-                        </div>
-                    </label>
-                `);
-            });
-        }
-    } catch (error) {
-        mostrarToast('Error buscando dispositivos', 'error');
-        agregarLog(`Error buscando dispositivos: ${error.message}`, 'error');
-    }
+function buscarDispositivos() {
+    const lista = $('#lista-dispositivos');
+    lista.empty();
+    
+    lista.append(`
+        <div class="text-center py-4">
+            <i class="fas fa-bluetooth-b fa-3x text-primary mb-3"></i>
+            <h6>ESP32 Control de Chapas</h6>
+            <p class="text-muted small">
+                Conecta al dispositivo ESP32 del vehículo
+            </p>
+            <button class="btn btn-primary w-100 mt-2" onclick="conectarESP32()">
+                <i class="fas fa-search me-2"></i>Buscar y Conectar ESP32
+            </button>
+        </div>
+    `);
 }
 
-async function conectarDispositivoSeleccionado() {
-    const dispositivoId = $('input[name="dispositivo"]:checked').val();
-    
-    if (!dispositivoId) {
-        mostrarToast('Selecciona un dispositivo', 'warning');
-        return;
-    }
-    
+async function conectarESP32() {
     try {
-        const dispositivos = await navigator.bluetooth.getDevices();
-        const dispositivo = dispositivos.find(d => d.id === dispositivoId);
-        
-        if (!dispositivo) {
-            throw new Error('Dispositivo no encontrado');
-        }
-        
-        const server = await dispositivo.gatt.connect();
-        const service = await server.getPrimaryService(UUID_SERVICIO);
-        caracteristicaBluetooth = await service.getCharacteristic(UUID_CARACTERISTICA);
-        
-        await caracteristicaBluetooth.startNotifications();
-        caracteristicaBluetooth.addEventListener('characteristicvaluechanged', manejarDatosBluetooth);
-        
-        dispositivoBluetooth = dispositivo;
-        
-        // Manejar desconexión
-        dispositivo.addEventListener('gattserverdisconnected', () => {
-            mostrarToast('Dispositivo desconectado', 'warning');
-            actualizarEstadoBluetooth(false);
-            agregarLog(`Dispositivo desconectado: ${dispositivo.name}`, 'warning');
-            dispositivoBluetooth = null;
-            caracteristicaBluetooth = null;
+        // 1. Solicitar dispositivo Bluetooth
+        dispositivoBluetooth = await navigator.bluetooth.requestDevice({
+            filters: [{ services: [UUID_SERVICIO_BLUETOOTH] }],
+            optionalServices: [UUID_SERVICIO_BLUETOOTH]
         });
         
-        mostrarToast(`✅ Conectado a ${dispositivo.name}`, 'success');
-        actualizarEstadoBluetooth(true, dispositivo.name);
-        cerrarModalBluetooth();
+        // 2. Conectar al servidor GATT
+        servidorGATT = await dispositivoBluetooth.gatt.connect();
         
-        agregarLog(`Conectado a dispositivo: ${dispositivo.name}`, 'success');
+        // 3. Obtener el servicio
+        const servicio = await servidorGATT.getPrimaryService(UUID_SERVICIO_BLUETOOTH);
+        
+        // 4. Obtener la característica para TX/RX
+        caracteristicaTX = await servicio.getCharacteristic(UUID_CARACTERISTICA_TX_RX);
+        caracteristicaRX = caracteristicaTX;
+        
+        // 5. Configurar notificaciones
+        await caracteristicaRX.startNotifications();
+        caracteristicaRX.addEventListener('characteristicvaluechanged', manejarDatosESP32);
+        
+        // 6. Configurar desconexión
+        dispositivoBluetooth.addEventListener('gattserverdisconnected', manejarDesconexion);
+        
+        // 7. Actualizar interfaz
+        actualizarEstadoBluetooth(true, dispositivoBluetooth.name || 'ESP32');
+        cerrarModalBluetooth();
+        mostrarToast('✅ Conectado al ESP32', 'success');
+        agregarLog('Conectado al dispositivo ESP32', 'success');
         
     } catch (error) {
         console.error('Error conectando:', error);
-        mostrarToast(`❌ Error al conectar: ${error.message}`, 'error');
-        agregarLog(`Error conexión Bluetooth: ${error.message}`, 'error');
+        
+        if (error.name === 'NotFoundError') {
+            mostrarToast('No se encontró ningún ESP32', 'warning');
+        } else if (error.name === 'SecurityError') {
+            mostrarToast('Permiso de Bluetooth denegado', 'error');
+        } else {
+            mostrarToast(`Error: ${error.message}`, 'error');
+        }
+        
+        actualizarEstadoBluetooth(false);
+        agregarLog(`Error conexión: ${error.message}`, 'error');
     }
 }
 
-function manejarDatosBluetooth(evento) {
+function manejarDatosESP32(event) {
     try {
-        const valor = evento.target.value;
-        const datos = new TextDecoder().decode(valor).trim();
+        const value = event.target.value;
+        if (!value) return;
         
-        if (datos && procesoActivo) {
-            agregarLog(`📥 Dispositivo → "${datos}"`, 'bluetooth');
-            
-            // Solo procesar números (respuesta del dispositivo al "1")
-            if (/^\d+$/.test(datos)) {
-                enviarAlServidorConCoordenadas(datos);
-            }
+        const decoder = new TextDecoder('utf-8');
+        const datos = decoder.decode(value).trim();
+        
+        if (!datos) return;
+        
+        agregarLog(`📥 ESP32 → "${datos}"`, 'bluetooth');
+        
+        if (procesoActivo && /^\d{3}$/.test(datos)) {
+            enviarNumeroAlServidor(datos);
         }
+        
     } catch (error) {
-        console.error('Error Bluetooth:', error);
-        agregarLog(`Error procesando datos Bluetooth: ${error.message}`, 'error');
+        console.error('Error procesando datos:', error);
+        agregarLog(`Error: ${error.message}`, 'error');
     }
+}
+
+function manejarDesconexion() {
+    mostrarToast('ESP32 desconectado', 'warning');
+    actualizarEstadoBluetooth(false);
+    
+    dispositivoBluetooth = null;
+    servidorGATT = null;
+    caracteristicaTX = null;
+    caracteristicaRX = null;
+    
+    agregarLog('ESP32 desconectado', 'warning');
 }
 
 async function enviarPorBluetooth(datos) {
-    // VERIFICACIÓN: Si hay dispositivo conectado, usar Bluetooth real
-    if (caracteristicaBluetooth && dispositivoBluetooth && dispositivoBluetooth.gatt.connected) {
-        try {
-            const encoder = new TextEncoder();
-            const buffer = encoder.encode(datos + '\n');
-            await caracteristicaBluetooth.writeValue(buffer);
-            
-            agregarLog(`📤 Enviado a ${dispositivoBluetooth.name}: "${datos}"`, 'bluetooth');
-            return true;
-            
-        } catch (error) {
-            agregarLog(`❌ Error enviando por Bluetooth: ${error.message}`, 'error');
-            
-            // Si hay error de conexión, actualizar estado
-            if (error.name === 'NetworkError' || error.message.includes('disconnected')) {
-                actualizarEstadoBluetooth(false);
-                dispositivoBluetooth = null;
-                caracteristicaBluetooth = null;
-            }
-            
-            return false;
-        }
-    } else {
-        // SIMULACIÓN: Si no hay dispositivo, usar "12345"
-        agregarLog('⚠️ Sin dispositivo Bluetooth, usando simulación: "12345"', 'warning');
+    if (!dispositivoBluetooth || 
+        !dispositivoBluetooth.gatt.connected || 
+        !caracteristicaTX) {
         
-        // Simular retardo de red
-        setTimeout(() => {
-            if (procesoActivo) {
-                agregarLog('📥 Simulación: Dispositivo respondió "12345"', 'bluetooth');
-                enviarAlServidorConCoordenadas('12345');
-            }
-        }, 1000);
+        mostrarToast('❌ No conectado al ESP32', 'error');
+        agregarLog('Error: No hay conexión Bluetooth', 'error');
+        return false;
+    }
+    
+    try {
+        const encoder = new TextEncoder('utf-8');
+        const buffer = encoder.encode(datos + '\n');
         
-        return true; // Devuelve true porque la simulación se inició
+        await caracteristicaTX.writeValue(buffer);
+        
+        agregarLog(`📤 Web → ESP32: "${datos}"`, 'bluetooth');
+        return true;
+        
+    } catch (error) {
+        console.error('Error enviando:', error);
+        agregarLog(`❌ Error: ${error.message}`, 'error');
+        mostrarToast('Error enviando al ESP32', 'error');
+        return false;
     }
 }
 
-// ==================== PROCESO CHAPA ====================
-async function iniciarProcesoChapa() {
-    if (procesoActivo) return;
+function actualizarEstadoBluetooth(conectado, nombreDispositivo = null) {
+    const statusText = $('#status-text');
+    const bluetoothAlert = $('#bluetooth-alert');
+    const bluetoothText = $('#bluetooth-status-text');
+    const btnAbrirChapa = $('#btn-abrir-chapa');
+    const bluetoothDot = $('#bluetooth-dot');
     
-    // VERIFICAR GPS
+    if (conectado && nombreDispositivo) {
+        bluetoothDot.removeClass('bluetooth-disconnected').addClass('bluetooth-connected');
+        statusText.html(`<span class="bluetooth-status bluetooth-connected"></span> ${nombreDispositivo}`);
+        
+        bluetoothAlert.removeClass('alert-info').addClass('alert-success');
+        bluetoothText.html(`<strong>✅ Conectado:</strong> ${nombreDispositivo}`);
+        
+        btnAbrirChapa.prop('disabled', false);
+        
+    } else {
+        bluetoothDot.removeClass('bluetooth-connected').addClass('bluetooth-disconnected');
+        statusText.html('<span class="bluetooth-status bluetooth-disconnected"></span> Bluetooth desconectado');
+        
+        bluetoothAlert.removeClass('alert-success').addClass('alert-info');
+        bluetoothText.html('<strong>🔵 Estado:</strong> Desconectado');
+        
+        btnAbrirChapa.prop('disabled', true);
+    }
+}
+
+async function verificarDispositivosConectados() {
+    try {
+        if (!navigator.bluetooth) {
+            actualizarEstadoBluetooth(false, 'no-soportado');
+            return;
+        }
+        
+        const dispositivos = await navigator.bluetooth.getDevices();
+        
+        if (dispositivos.length > 0) {
+            for (const dispositivo of dispositivos) {
+                if (dispositivo.gatt && dispositivo.gatt.connected) {
+                    await reconectarDispositivo(dispositivo);
+                    break;
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error verificando dispositivos:', error);
+    }
+}
+
+async function reconectarDispositivo(dispositivo) {
+    try {
+        servidorGATT = await dispositivo.gatt.connect();
+        const servicio = await servidorGATT.getPrimaryService(UUID_SERVICIO_BLUETOOTH);
+        caracteristicaTX = await servicio.getCharacteristic(UUID_CARACTERISTICA_TX_RX);
+        caracteristicaRX = caracteristicaTX;
+        
+        await caracteristicaRX.startNotifications();
+        caracteristicaRX.addEventListener('characteristicvaluechanged', manejarDatosESP32);
+        dispositivo.addEventListener('gattserverdisconnected', manejarDesconexion);
+        
+        actualizarEstadoBluetooth(true, dispositivo.name || 'ESP32');
+        agregarLog('Reconectado al ESP32', 'success');
+        
+    } catch (error) {
+        console.error('Error reconectando:', error);
+        actualizarEstadoBluetooth(false);
+    }
+}
+
+// ==================== PROCESO COMPLETO ====================
+async function iniciarProcesoChapa() {
+    if (!dispositivoBluetooth || !dispositivoBluetooth.gatt.connected) {
+        mostrarToast('❌ Conecta primero al ESP32', 'error');
+        mostrarModalBluetooth();
+        return;
+    }
+    
     if (!gpsDisponible || !coordenadasActuales) {
         mostrarToast('❌ Error: GPS no disponible', 'error');
         return;
     }
     
+    if (procesoActivo) return;
+    
     procesoActivo = true;
     
-    // Activar loading en el botón
     $('#btn-text').hide();
     $('#btn-loading').show();
     $('#btn-abrir-chapa').prop('disabled', true);
-    
-    // Mostrar estado en tarjeta
     $('#estado-proceso').show();
     $('#loader').show();
     $('#mensaje-proceso').html('Iniciando proceso...');
     $('#resultado-container').hide();
     
     agregarLog('🚀 Iniciando proceso de apertura de chapa', 'info');
-    agregarLog(`📍 Coordenadas: ${coordenadasActuales.lat.toFixed(6)}, ${coordenadasActuales.lng.toFixed(6)}`, 'info');
+    agregarLog(`📍 GPS: ${coordenadasActuales.lat.toFixed(6)}, ${coordenadasActuales.lng.toFixed(6)}`, 'info');
     
     try {
-        // PASO 1: Enviar "1" al dispositivo Bluetooth
-        $('#mensaje-proceso').html('Enviando señal al dispositivo...');
-        agregarLog('📤 Enviando "1" al dispositivo...', 'info');
+        $('#mensaje-proceso').html('Enviando señal al ESP32...');
+        agregarLog('📤 Enviando "1" al ESP32...', 'info');
         
-        await enviarPorBluetooth('1');
+        const enviado = await enviarPorBluetooth('1');
         
-        // El flujo continúa en manejarDatosBluetooth o en el setTimeout de simulación
+        if (!enviado) {
+            throw new Error('Fallo al enviar al ESP32');
+        }
         
     } catch (error) {
-        finalizarProcesoConError('Error iniciando proceso: ' + error.message);
+        finalizarProcesoConError(`Error: ${error.message}`);
     }
 }
 
-async function enviarAlServidorConCoordenadas(codigoDispositivo) {
+async function enviarNumeroAlServidor(numeroESP32) {
     try {
-        // VERIFICAR QUE TENEMOS COORDENADAS MÁS RECIENTES
-        if (!coordenadasActuales) {
-            finalizarProcesoConError('No se pudieron obtener coordenadas');
-            return;
-        }
+        $('#mensaje-proceso').html('Consultando al servidor...');
+        agregarLog(`📤 Enviando número ${numeroESP32} al servidor`, 'info');
         
-        $('#mensaje-proceso').html('Enviando al servidor...');
-        agregarLog(`📤 Enviando código ${codigoDispositivo} al servidor con coordenadas`, 'info');
+        const datosServidor = {
+            _token: '{{ csrf_token() }}',
+            id: 0,
+            codent: numeroESP32,
+            opcion: '2',
+            numeconomico: 'Móvil',
+            id_operador: '{{ Auth::guard("operadores")->user()->id }}',
+            lat: coordenadasActuales.lat,
+            lng: coordenadasActuales.lng,
+            precision: coordenadasActuales.precision,
+            timestamp: coordenadasActuales.timestamp,
+            ubicacion: `${coordenadasActuales.lat},${coordenadasActuales.lng}`
+        };
         
-        // Enviar al servidor con las coordenadas más recientes
         const respuesta = await $.ajax({
             url: SERVER_URL,
             method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                id: 0,
-                codent: codigoDispositivo,
-                opcion: '2',
-                numeconomico: 'Móvil',
-                id_operador: '{{ Auth::guard("operadores")->user()->id }}',
-                lat: coordenadasActuales.lat,
-                lng: coordenadasActuales.lng,
-                precision: coordenadasActuales.precision,
-                timestamp: coordenadasActuales.timestamp,
-                ubicacion: `${coordenadasActuales.lat},${coordenadasActuales.lng}`
-            }
+            data: datosServidor,
+            dataType: 'json'
         });
         
         if (respuesta.status == 1) {
             const codigoServidor = respuesta.codigo || respuesta.resultado;
-            agregarLog(`✅ Servidor respondió: ${codigoServidor}`, 'success');
+            agregarLog(`✅ Servidor: ${codigoServidor}`, 'success');
             
-            // Mostrar código recibido
-            mostrarCodigoRecibido(codigoServidor);
+            mostrarResultadoCodigo(codigoServidor);
             
-            // Enviar código al dispositivo Bluetooth
             setTimeout(() => {
-                enviarCodigoAlDispositivo(codigoServidor);
+                enviarCodigoAlESP32(codigoServidor);
             }, 1000);
             
         } else {
-            throw new Error('Error en respuesta del servidor: ' + (respuesta.message || ''));
+            throw new Error(respuesta.message || 'Error del servidor');
         }
         
     } catch (error) {
-        finalizarProcesoConError('Error del servidor: ' + error.message);
+        finalizarProcesoConError(`Error servidor: ${error.message}`);
     }
 }
 
-function mostrarCodigoRecibido(codigo) {
-    $('#loader').hide();
-    $('#codigo-generado').text(codigo);
-    $('#resultado-container').show();
-    $('#mensaje-proceso').html(`✅ Código recibido: ${codigo}`);
-    
-    mostrarToast('Código recibido del servidor', 'success');
-    agregarLog(`📋 Mostrando código: ${codigo}`, 'info');
-}
-
-async function enviarCodigoAlDispositivo(codigo) {
+async function enviarCodigoAlESP32(codigo) {
     try {
-        $('#mensaje-proceso').html('Enviando código al dispositivo...');
-        agregarLog(`📤 Enviando código ${codigo} al dispositivo`, 'info');
+        $('#mensaje-proceso').html('Completando proceso...');
+        agregarLog(`📤 Enviando código ${codigo} al ESP32`, 'info');
         
-        // Usar Bluetooth real si está disponible, de lo contrario simular
-        if (caracteristicaBluetooth && dispositivoBluetooth && dispositivoBluetooth.gatt.connected) {
-            const encoder = new TextEncoder();
-            const buffer = encoder.encode(codigo + '\n');
-            await caracteristicaBluetooth.writeValue(buffer);
-            
-            agregarLog(`✅ Código enviado al dispositivo: ${codigo}`, 'success');
-            mostrarToast('Código enviado al dispositivo', 'success');
-        } else {
-            agregarLog('⚠️ Sin dispositivo, simulación completada', 'warning');
-            mostrarToast('Simulación completada (sin dispositivo Bluetooth)', 'info');
+        const enviado = await enviarPorBluetooth(codigo);
+        
+        if (enviado) {
+            agregarLog('✅ Código enviado al ESP32', 'success');
+            mostrarToast('Proceso completado', 'success');
         }
         
-        // Finalizar proceso
         finalizarProcesoConExito();
         
     } catch (error) {
-        agregarLog(`❌ Error enviando al dispositivo: ${error.message}`, 'error');
-        mostrarToast('Error enviando al dispositivo', 'error');
-        finalizarProcesoConExito(); // Finalizar de todos modos
+        agregarLog(`Error: ${error.message}`, 'error');
+        finalizarProcesoConExito();
     }
 }
 
+function mostrarResultadoCodigo(codigo) {
+    $('#loader').hide();
+    $('#codigo-generado').text(codigo);
+    $('#resultado-container').show();
+    $('#mensaje-proceso').html(`✅ Código: ${codigo}`);
+    
+    mostrarToast('Código recibido', 'success');
+    agregarLog(`📋 Código: ${codigo}`, 'info');
+}
+
 function finalizarProcesoConExito() {
-    // Restaurar estado del botón
     $('#btn-text').show();
     $('#btn-loading').hide();
     $('#btn-abrir-chapa').prop('disabled', false);
     
-    // Ocultar loader
-    $('#loader').hide();
-    procesoActivo = false;
+    setTimeout(() => {
+        $('#estado-proceso').hide();
+    }, 2000);
     
-    agregarLog('✅ Proceso completado exitosamente', 'success');
+    procesoActivo = false;
+    agregarLog('✅ Proceso completado', 'success');
 }
 
 function finalizarProcesoConError(mensaje) {
-    // Restaurar estado del botón
     $('#btn-text').show();
     $('#btn-loading').hide();
     $('#btn-abrir-chapa').prop('disabled', false);
     
-    // Mostrar error
     $('#loader').hide();
     $('#mensaje-proceso').html(`<span class="text-danger">${mensaje}</span>`);
     
@@ -615,91 +660,11 @@ function finalizarProcesoConError(mensaje) {
     }, 3000);
     
     procesoActivo = false;
-    
     agregarLog(`❌ Error: ${mensaje}`, 'error');
     mostrarToast(mensaje, 'error');
 }
 
 // ==================== FUNCIONES AUXILIARES ====================
-function actualizarEstadoBluetooth(conectado, dispositivoNombre = null) {
-    const dot = $('#bluetooth-dot');
-    const text = $('#status-text');
-    const alertDiv = $('#bluetooth-alert');
-    const alertText = $('#bluetooth-status-text');
-    
-    if (conectado && dispositivoNombre) {
-        // Estado conectado
-        dot.removeClass('bluetooth-disconnected').addClass('bluetooth-connected');
-        text.html('<span class="bluetooth-status bluetooth-connected"></span> ' + dispositivoNombre);
-        
-        alertDiv.removeClass('alert-info alert-danger').addClass('alert-success');
-        alertText.html('<strong>✅ Conectado:</strong> ' + dispositivoNombre);
-        
-        agregarLog(`Bluetooth conectado: ${dispositivoNombre}`, 'success');
-        
-    } else {
-        // Estado desconectado
-        dot.removeClass('bluetooth-connected').addClass('bluetooth-disconnected');
-        text.html('<span class="bluetooth-status bluetooth-disconnected"></span> Bluetooth desconectado');
-        
-        alertDiv.removeClass('alert-success').addClass('alert-info');
-        alertText.html('<strong>🔵 Estado:</strong> Desconectado');
-        
-        if (dispositivoNombre === 'no-soportado') {
-            alertDiv.removeClass('alert-info').addClass('alert-danger');
-            alertText.html('<strong>⚠️ No soportado:</strong> Bluetooth no disponible');
-            agregarLog('Bluetooth no es compatible con este navegador', 'warning');
-        }
-    }
-}
-
-async function verificarDispositivosConectados() {
-    try {
-        const dispositivos = await navigator.bluetooth.getDevices();
-        
-        if (dispositivos.length > 0) {
-            agregarLog(`${dispositivos.length} dispositivo(s) Bluetooth pareados`, 'info');
-            
-            for (const dispositivo of dispositivos) {
-                try {
-                    if (dispositivo.gatt.connected) {
-                        await reconectarDispositivo(dispositivo);
-                        return;
-                    }
-                } catch (e) {
-                    // Continuar con otros dispositivos
-                }
-            }
-        }
-        
-        actualizarEstadoBluetooth(false);
-        
-    } catch (error) {
-        console.error('Error verificando dispositivos:', error);
-        actualizarEstadoBluetooth(false);
-    }
-}
-
-async function reconectarDispositivo(dispositivo) {
-    try {
-        const server = await dispositivo.gatt.connect();
-        const service = await server.getPrimaryService(UUID_SERVICIO);
-        caracteristicaBluetooth = await service.getCharacteristic(UUID_CARACTERISTICA);
-        
-        await caracteristicaBluetooth.startNotifications();
-        caracteristicaBluetooth.addEventListener('characteristicvaluechanged', manejarDatosBluetooth);
-        
-        dispositivoBluetooth = dispositivo;
-        
-        actualizarEstadoBluetooth(true, dispositivo.name);
-        agregarLog(`Reconectado a dispositivo: ${dispositivo.name}`, 'success');
-        
-    } catch (error) {
-        console.error('Error reconectando:', error);
-        actualizarEstadoBluetooth(false);
-    }
-}
-
 function agregarLog(mensaje, tipo = 'info') {
     const logContainer = $('#log-container');
     const timestamp = new Date().toLocaleTimeString();
@@ -711,7 +676,7 @@ function agregarLog(mensaje, tipo = 'info') {
         bluetooth: 'fas fa-bluetooth-b text-primary'
     };
     
-    const iconoTipo = mensaje.includes('📤') || mensaje.includes('📥') || tipo === 'bluetooth' ? 'bluetooth' : tipo;
+    const iconoTipo = mensaje.includes('📤') || mensaje.includes('📥') ? 'bluetooth' : tipo;
     
     const logItem = `
         <div class="border-bottom py-1">
@@ -730,6 +695,10 @@ function agregarLog(mensaje, tipo = 'info') {
     logContainer.scrollTop(0);
 }
 
+function mostrarToast(mensaje, tipo = 'info') {
+    toastr[tipo](mensaje);
+}
+
 function actualizarHora() {
     const ahora = new Date();
     const hora = ahora.getHours().toString().padStart(2, '0');
@@ -745,13 +714,12 @@ function limpiarLogs() {
 function copiarCodigo() {
     const codigo = $('#codigo-generado').text();
     navigator.clipboard.writeText(codigo).then(() => {
-        mostrarToast('Código copiado al portapapeles', 'success');
+        mostrarToast('Código copiado', 'success');
     });
 }
 
-function mostrarToast(mensaje, tipo = 'info') {
-    toastr[tipo](mensaje);
-}
+// NOTA: La función conectarDispositivoSeleccionado() no está implementada
+// Si la necesitas, deberías agregarla o quitar el botón que la llama
 </script>
 
 <style>
@@ -837,9 +805,6 @@ function mostrarToast(mensaje, tipo = 'info') {
     color: #0c5460;
     border-left: 4px solid #17a2b8;
 }
-
-/* Bottom menu (ya incluido en bottom_menu.blade.php) */
 </style>
-
 </body>
 </html>
