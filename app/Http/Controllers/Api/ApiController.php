@@ -57,8 +57,8 @@ class ApiController extends Controller
         $registro = new Registro();
 
         $registro->id = GetUuid();
-        $registro->id_operador = $request->id_operador;
-        $registro->numeconomico = $request->numeconomico;
+        $registro->id_operador = $request->user_id;
+        $registro->numeconomico = isset($request->numeconomico) ? $request->numeconomico : '';
         $registro->opcion = $request->opcion;
         $registro->save();
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOperadores extends Migration
+class CreateOpeners extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateOperadores extends Migration
      */
     public function up()
     {
-        Schema::create('operadores', function (Blueprint $table) {
+        Schema::create('openers', function (Blueprint $table) {
             $table->string('id',32)->unique();
             $table->string('id_administrador',32);
             $table->string('nombres',150);
@@ -33,6 +33,6 @@ class CreateOperadores extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('operadores');
+        Schema::dropIfExists('openers');
     }
 }

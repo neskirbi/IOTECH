@@ -8,3 +8,4 @@
 
 4.-Agregar bloqueo por falta de pago 
 5.-Agregar modulo para la administracion de pagos 
+php artisan migrate:refresh --path=/database/migrations/2026_01_25_080025_create_openers.php
