@@ -21,7 +21,7 @@ class LoginController extends Controller
         // Validar campos requeridos
         $request->validate([
             'mail' => 'required|email',
-            'pass' => 'required|string|min:6',
+            'pass' => 'required|string|min:4',
         ]);
 
         // Buscar usuario por email
@@ -41,7 +41,7 @@ class LoginController extends Controller
 
         // Verificar contraseña (comparar con MD5 o texto plano)
         // Si usas MD5 en la base de datos:
-        $passwordMatches = ($user->pass === md5($request->pass)) || ($user->pass === $request->pass);
+        $passwordMatches = password_verify($request->pass,$user->pass);
         
         // Si usas bcrypt en Laravel:
         // $passwordMatches = Hash::check($request->pass, $user->pass);

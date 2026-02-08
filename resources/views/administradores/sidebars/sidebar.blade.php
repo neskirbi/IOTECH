@@ -59,6 +59,15 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{url('geocercas')}}" class="nav-link">
+            <i class="nav-icon fa fa-map" aria-hidden="true"></i>
+              <p>
+                Geocercas
+              </p>
+            </a>
+          </li>
+
 
           <li class="nav-item">
             <a href="{{url('soporte')}}" class="nav-link">

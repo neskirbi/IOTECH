@@ -1,0 +1,43 @@
+
+Solicitud de codigo de android a arduino {"solicitud":1}(Este es fijo siempre para empezar)
+
+//Estos dependen de el randomico los valores 
+Respuesta de aruduino {"status":1,"codigo":"6818","mensaje":"Código generado exitosamente"}
+Codigo que android manda a arduino que llega del servidor {"codigo":"20055"}
+REepuesta de arduino al recibir un codigo valido {"token":"Kgzqfe36V0rlH3iK","mensaje":"Token generado exitosamente","codigo_recibido":"20055"}
+
+Datos estructura del arduino de status 
+{
+  "tipo": "estatus_datos",
+  "contador": 1,
+  "tiempo_restante": 14,
+  "estado_chapa": "CERRADA",
+  "estado_out_gps": 3,
+  "gps_confirmacion": "NO_CONFIRMADO",
+  "sensor_chapa": 0,
+  "paro_m_gps": "INACTIVO",
+  "ign": "APAGADO"
+}
+
+
+Ordenes de android a arduino
+{"token":"Kgzqfe36V0rlH3iK","orden":"open"}=abrir chapa
+{"token":"Kgzqfe36V0rlH3iK","orden":"close"}cerrar chapa
+{"token":"Kgzqfe36V0rlH3iK","orden":"reboot"}reiniciar
+{"token":"Kgzqfe36V0rlH3iK","orden":"save","name":"","version":""}guardar
+name = valor del campo etDeviceName
+version = (radioV3 o
+radioV4 o
+radioV4Sensor o
+radioV4Mini ) valor de los radio button
+
+{"token":"null","error":""}
+en cualquier momento si llega a android token null cerrar la conexion en android , si tiene "error" mostar el mensaje de error 
+{"error":""} mostrar mensaje de error 
+{"mensaje":""} mostrar mensaje 
+
+
+
+activar motor 51041(yo lo tengo como abrir chapa ) 1
+chapa 57765(lo tengo como servico) 2
+reset 9567(yo lo tengo como status ) 3
