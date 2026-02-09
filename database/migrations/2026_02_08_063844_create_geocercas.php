@@ -19,7 +19,7 @@ class CreateGeocercas extends Migration
             $table->string('nombre');
             $table->text('descripcion')->nullable();
             $table->enum('tipo', ['poligono', 'circular'])->default('poligono');
-            $table->text('coordenadas')->nullable(); // Cambiado de json a text
+            $table->text('coordenadas')->nullable(); 
             $table->decimal('latitud', 10, 8)->nullable();
             $table->decimal('longitud', 11, 8)->nullable();
             $table->decimal('radio', 10, 2)->nullable();

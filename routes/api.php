@@ -40,3 +40,4 @@ Route::get('auth/profile', 'App\Http\Controllers\Api\LoginController@Profile')->
 
 Route::post('GenerarPass','App\Http\Controllers\Api\ApiController@GenerarPass');
 Route::post('GenerarCodigo','App\Http\Controllers\Api\ApiController@GenerarCodigo');
+Route::post('geofence/nearby','App\Http\Controllers\Api\ApiController@Geocercas');
