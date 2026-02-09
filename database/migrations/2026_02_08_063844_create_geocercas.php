@@ -18,20 +18,20 @@ class CreateGeocercas extends Migration
             $table->string('id_administrador', 32);
             $table->string('nombre');
             $table->text('descripcion')->nullable();
-            $table->enum('tipo', ['poligono', 'circular', 'radio'])->default('poligono');
-            $table->json('coordenadas')->nullable(); // Para polígonos: [[lat,lng],[lat,lng],...]
-            $table->decimal('latitud', 10, 8)->nullable(); // Para centro de círculo/radio
-            $table->decimal('longitud', 11, 8)->nullable(); // Para centro de círculo/radio
-            $table->decimal('radio', 10, 2)->nullable(); // En metros/kilómetros
+            $table->enum('tipo', ['poligono', 'circular'])->default('poligono');
+            $table->text('coordenadas')->nullable(); // Cambiado de json a text
+            $table->decimal('latitud', 10, 8)->nullable();
+            $table->decimal('longitud', 11, 8)->nullable();
+            $table->decimal('radio', 10, 2)->nullable();
             $table->enum('unidad_distancia', ['metros', 'kilometros'])->default('metros');
-            $table->string('color', 7)->default('#3B82F6'); // Código hex color
+            $table->string('color', 7)->default('#3B82F6');
             $table->boolean('activa')->default(true);
             $table->timestamps();
             
-            // Índices
             $table->index('id_administrador');
             $table->index('tipo');
             $table->index('activa');
+            $table->index('created_at');
         });
     }
 

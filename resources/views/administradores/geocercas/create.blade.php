@@ -3,8 +3,9 @@
 <head>
   @include('administradores.header')
   <title>IOTECH | Crear Geocerca</title>
-  <!-- Google Maps API -->
- <script src="https://maps.googleapis.com/maps/api/js?key={{  env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry"></script>
+  <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  
   <style>
     #map {
       height: 500px;
@@ -23,27 +24,16 @@
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    .coordinate-input {
-      font-size: 12px;
-      padding: 2px 5px;
-      height: 30px;
-    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 @include('toast.toasts')
 <div class="wrapper">
 
-  <!-- Navbar -->
   @include('administradores.navigations.navigation')
-  <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
   @include('administradores.sidebars.sidebar')
 
-  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -60,9 +50,7 @@
         </div>
       </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="row">
@@ -75,20 +63,37 @@
                 <div id="map"></div>
                 <div class="map-controls">
                   <div class="form-group mb-2">
-                    <small class="text-muted">Haz clic en el mapa para definir el centro</small>
+                    <label class="small mb-1"><i class="fas fa-mouse-pointer"></i> Tipo de dibujo:</label>
+                    <select id="tipo-dibujo" class="form-control form-control-sm">
+                      <option value="">Seleccionar tipo</option>
+                      <option value="circular">Círculo</option>
+                      <option value="poligono">Polígono</option>
+                    </select>
                   </div>
-                  <div class="input-group input-group-sm mb-2">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">Radio (m)</span>
+                  
+                  <div id="circle-controls" style="display: none;">
+                    <small class="text-muted">Haz clic en el mapa para el centro</small>
+                    <div class="input-group input-group-sm mb-2">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Radio (m)</span>
+                      </div>
+                      <input type="number" id="circle-radius" class="form-control" value="100" min="10">
                     </div>
-                    <input type="number" id="circle-radius" class="form-control" value="100" min="10">
+                    <button class="btn btn-sm btn-info btn-block" onclick="dibujarCirculo()">
+                      <i class="fas fa-draw-circle"></i> Dibujar Círculo
+                    </button>
                   </div>
-                  <button class="btn btn-sm btn-info btn-block" onclick="dibujarCirculo()">
-                    <i class="fas fa-draw-circle"></i> Dibujar Círculo
-                  </button>
-                  <button class="btn btn-sm btn-danger btn-block mt-1" onclick="limpiarDibujo()">
-                    <i class="fas fa-times"></i> Limpiar
-                  </button>
+                  
+                  <div id="polygon-controls" style="display: none;">
+                    <small class="text-muted">Haz clic para crear puntos</small><br>
+                    <small class="text-muted">Doble clic para terminar</small>
+                    <button class="btn btn-sm btn-info btn-block mt-1" onclick="iniciarDibujoPoligono()">
+                      <i class="fas fa-draw-polygon"></i> Empezar a dibujar
+                    </button>
+                    <button class="btn btn-sm btn-secondary btn-block mt-1" onclick="limpiarDibujo()">
+                      <i class="fas fa-eraser"></i> Limpiar
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -103,7 +108,7 @@
                 <form action="{{ route('geocercas.store') }}" method="POST" id="geocerca-form">
                   @csrf
                   
-                  <input type="hidden" name="tipo" value="circular">
+                  <input type="hidden" id="tipo" name="tipo" value="">
                   
                   <div class="form-group">
                     <label for="nombre">Nombre *</label>
@@ -117,35 +122,39 @@
                               placeholder="Descripción de la geocerca"></textarea>
                   </div>
 
-                  <div class="form-row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="latitud">Latitud *</label>
-                        <input type="text" class="form-control coordinate-input" id="latitud" name="latitud" 
-                               placeholder="Ej: 19.4326" readonly required>
+                  <div id="circle-fields" style="display: none;">
+                    <div class="form-row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="latitud">Latitud *</label>
+                          <input type="text" class="form-control" id="latitud" name="latitud" readonly>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="longitud">Longitud *</label>
+                          <input type="text" class="form-control" id="longitud" name="longitud" readonly>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="longitud">Longitud *</label>
-                        <input type="text" class="form-control coordinate-input" id="longitud" name="longitud" 
-                               placeholder="Ej: -99.1332" readonly required>
-                      </div>
+                    <div class="form-group">
+                      <label for="radio">Radio (metros) *</label>
+                      <input type="number" class="form-control" id="radio" name="radio" min="10" step="1">
                     </div>
                   </div>
 
-                  <div class="form-group">
-                    <label for="radio">Radio (metros) *</label>
-                    <input type="number" class="form-control" id="radio" name="radio" 
-                           placeholder="Ej: 100" min="10" step="1" required>
+                  <div id="polygon-fields" style="display: none;">
+                    <div class="form-group">
+                      <label>Coordenadas del Polígono</label>
+                      <input type="hidden" id="coordenadas" name="coordenadas">
+                      <small class="text-muted">Puntos: <span id="point-count">0</span></small>
+                    </div>
                   </div>
 
                   <div class="form-group">
                     <label for="color">Color</label>
                     <input type="color" class="form-control" id="color" name="color" value="#3B82F6">
                   </div>
-
-                  <input type="hidden" id="geocerca-definida" value="0">
 
                   <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block" id="submit-btn" disabled>
@@ -160,11 +169,9 @@
             </div>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
   
   <footer class="main-footer">
     <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
@@ -174,56 +181,102 @@
     </div>
   </footer>
 </div>
-<!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
 <script>
-  // Variables globales
   var map;
   var circle = null;
+  var polygon = null;
+  var polygonPath = [];
   var circleCenter = null;
+  var drawingMode = null;
+  var polygonClickListener = null;
 
-  // Inicializar mapa
-  function initMap() {
-    var defaultCenter = { lat: 19.4326, lng: -99.1332 };
+  function inicializarAplicacion() {
+    initMap();
+    configurarEventos();
+  }
+
+  function cargarGoogleMaps() {
+    if (typeof google !== 'undefined' && google.maps) {
+      inicializarAplicacion();
+      return;
+    }
     
+    var script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry&callback=inicializarAplicacion';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 12,
-      center: defaultCenter,
+      center: { lat: 19.4326, lng: -99.1332 },
       mapTypeId: 'roadmap',
       streetViewControl: false,
-      mapTypeControl: false
+      mapTypeControl: false,
+      fullscreenControl: true
     });
+  }
 
-    // Escuchar clics en el mapa para definir centro
-    google.maps.event.addListener(map, 'click', function(event) {
-      circleCenter = event.latLng;
-      $('#latitud').val(circleCenter.lat().toFixed(6));
-      $('#longitud').val(circleCenter.lng().toFixed(6));
+  function configurarEventos() {
+    $('#tipo-dibujo').change(function() {
+      var tipo = $(this).val();
+      drawingMode = tipo;
+      $('#tipo').val(tipo);
       
-      // Si ya hay un círculo, actualizarlo
-      if (circle) {
-        circle.setCenter(circleCenter);
+      if (tipo === 'circular') {
+        $('#circle-fields').show();
+        $('#polygon-fields').hide();
+        $('#circle-controls').show();
+        $('#polygon-controls').hide();
+        limpiarDibujo();
+      } else if (tipo === 'poligono') {
+        $('#circle-fields').hide();
+        $('#polygon-fields').show();
+        $('#circle-controls').hide();
+        $('#polygon-controls').show();
+        limpiarDibujo();
+      } else {
+        $('#circle-fields').hide();
+        $('#polygon-fields').hide();
+        $('#circle-controls').hide();
+        $('#polygon-controls').hide();
+        limpiarDibujo();
       }
       
       actualizarEstadoBoton();
     });
+
+    google.maps.event.addListener(map, 'click', function(event) {
+      if (drawingMode === 'circular') {
+        circleCenter = event.latLng;
+        $('#latitud').val(circleCenter.lat().toFixed(8));
+        $('#longitud').val(circleCenter.lng().toFixed(8));
+        actualizarEstadoBoton();
+      }
+    });
+
+    $('#color').change(function() {
+      var color = $(this).val();
+      if (circle) circle.setOptions({ fillColor: color, strokeColor: color });
+      if (polygon) polygon.setOptions({ fillColor: color, strokeColor: color });
+    });
+
+    $('#nombre, #latitud, #longitud, #radio').on('input', actualizarEstadoBoton);
   }
 
-  // Dibujar círculo
   function dibujarCirculo() {
     if (!circleCenter) {
-      alert('Por favor, haz clic en el mapa para definir el centro primero.');
+      alert('Haz clic en el mapa para definir el centro primero.');
       return;
     }
     
     var radius = parseInt($('#circle-radius').val()) || 100;
     
-    // Limpiar círculo anterior si existe
-    if (circle) {
-      circle.setMap(null);
-    }
+    if (circle) circle.setMap(null);
+    if (polygon) polygon.setMap(null);
     
     circle = new google.maps.Circle({
       center: circleCenter,
@@ -233,93 +286,138 @@
       strokeWeight: 2,
       strokeColor: $('#color').val(),
       map: map,
-      editable: true
+      editable: true,
+      draggable: true
     });
     
-    // Actualizar radio cuando se edite
+    $('#radio').val(radius);
+    
     google.maps.event.addListener(circle, 'radius_changed', function() {
       var newRadius = Math.round(circle.getRadius());
       $('#radio').val(newRadius);
       $('#circle-radius').val(newRadius);
-      actualizarEstadoBoton();
     });
     
-    // Actualizar centro cuando se edite
     google.maps.event.addListener(circle, 'center_changed', function() {
       var center = circle.getCenter();
-      circleCenter = center;
-      $('#latitud').val(center.lat().toFixed(6));
-      $('#longitud').val(center.lng().toFixed(6));
-      actualizarEstadoBoton();
+      $('#latitud').val(center.lat().toFixed(8));
+      $('#longitud').val(center.lng().toFixed(8));
     });
     
-    $('#radio').val(radius);
-    $('#geocerca-definida').val('1');
     actualizarEstadoBoton();
   }
 
-  // Limpiar dibujo
+  function iniciarDibujoPoligono() {
+    limpiarDibujo();
+    polygonPath = [];
+    
+    polygonClickListener = google.maps.event.addListener(map, 'click', function(event) {
+      agregarPuntoPoligono(event.latLng);
+    });
+  }
+
+  function agregarPuntoPoligono(latLng) {
+    polygonPath.push(latLng);
+    
+    if (!polygon) {
+      polygon = new google.maps.Polygon({
+        paths: polygonPath,
+        fillColor: $('#color').val(),
+        fillOpacity: 0.3,
+        strokeWeight: 2,
+        strokeColor: $('#color').val(),
+        map: map,
+        editable: true,
+        draggable: true
+      });
+      
+      google.maps.event.addListener(polygon.getPath(), 'set_at', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(polygon.getPath(), 'insert_at', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(polygon.getPath(), 'remove_at', actualizarCoordenadasPoligono);
+    } else {
+      polygon.setPath(polygonPath);
+    }
+    
+    actualizarCoordenadasPoligono();
+  }
+
+  function actualizarCoordenadasPoligono() {
+    if (!polygon || polygonPath.length < 3) {
+      $('#point-count').text(polygonPath.length);
+      $('#coordenadas').val('');
+      actualizarEstadoBoton();
+      return;
+    }
+    
+    var coordinates = [];
+    for (var i = 0; i < polygonPath.length; i++) {
+      coordinates.push([
+        parseFloat(polygonPath[i].lat().toFixed(8)),
+        parseFloat(polygonPath[i].lng().toFixed(8))
+      ]);
+    }
+    
+    $('#point-count').text(polygonPath.length);
+    $('#coordenadas').val(JSON.stringify(coordinates));
+    actualizarEstadoBoton();
+  }
+
   function limpiarDibujo() {
     if (circle) {
       circle.setMap(null);
       circle = null;
     }
+    if (polygon) {
+      polygon.setMap(null);
+      polygon = null;
+    }
     
     circleCenter = null;
+    polygonPath = [];
+    
     $('#latitud').val('');
     $('#longitud').val('');
     $('#radio').val('');
     $('#circle-radius').val('100');
-    $('#geocerca-definida').val('0');
+    $('#coordenadas').val('');
+    $('#point-count').text('0');
     
     actualizarEstadoBoton();
   }
 
-  // Actualizar estado del botón de guardar
   function actualizarEstadoBoton() {
+    var tipo = $('#tipo').val();
     var nombre = $('#nombre').val().trim();
-    var lat = $('#latitud').val();
-    var lng = $('#longitud').val();
-    var radio = $('#radio').val();
-    var definida = $('#geocerca-definida').val() === '1';
+    var habilitar = false;
     
-    var habilitar = nombre && lat && lng && radio && definida;
+    if (tipo === 'circular') {
+      var lat = $('#latitud').val();
+      var lng = $('#longitud').val();
+      var radio = $('#radio').val();
+      habilitar = nombre && lat && lng && radio && circle;
+    } else if (tipo === 'poligono') {
+      var pointCount = parseInt($('#point-count').text()) || 0;
+      habilitar = nombre && pointCount >= 3 && polygon;
+    }
+    
     $('#submit-btn').prop('disabled', !habilitar);
   }
 
-  // Cambiar color del círculo
-  $('#color').change(function() {
-    var color = $(this).val();
-    
-    if (circle) {
-      circle.setOptions({
-        fillColor: color,
-        strokeColor: color
-      });
-    }
-  });
-
-  // Inicializar cuando el DOM esté listo
   $(document).ready(function() {
-    initMap();
+    cargarGoogleMaps();
     
-    // Actualizar estado del botón al cambiar campos
-    $('#nombre, #latitud, #longitud, #radio, #circle-radius').on('input', actualizarEstadoBoton);
-    
-    // Prevenir envío del formulario si no hay geocerca definida
-    $('#geocerca-form').submit(function(e) {
-      if ($('#geocerca-definida').val() !== '1') {
-        e.preventDefault();
-        alert('Por favor, define un círculo en el mapa primero.');
-        return false;
+    $('#map').on('dblclick', function() {
+      if (drawingMode === 'poligono' && polygonPath.length >= 3) {
+        if (polygonClickListener) {
+          google.maps.event.removeListener(polygonClickListener);
+          polygonClickListener = null;
+        }
+        alert('Polígono completado con ' + polygonPath.length + ' puntos.');
       }
     });
   });
 </script>
 
-<!-- Bootstrap 4 -->
-<script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-<!-- AdminLTE App -->
-<script src="{{asset('dist/js/adminlte.js')}}"></script>
+<script src="{{ asset('dist/js/adminlte.js') }}"></script>
 </body>
 </html>

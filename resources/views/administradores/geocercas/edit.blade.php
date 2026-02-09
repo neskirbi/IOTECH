@@ -3,8 +3,9 @@
 <head>
   @include('administradores.header')
   <title>IOTECH | Editar Geocerca</title>
-  <!-- Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry&callback=inicializarAplicacion" async defer></script>
+  <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  
   <style>
     #map {
       height: 500px;
@@ -13,40 +14,16 @@
       border: 1px solid #ddd;
       margin-bottom: 20px;
     }
-    .map-controls {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-      background: white;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .coordinate-input {
-      font-size: 12px;
-      padding: 2px 5px;
-      height: 30px;
-    }
-    .circle-current {
-      border: 2px solid #28a745;
-    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 @include('toast.toasts')
 <div class="wrapper">
 
-  <!-- Navbar -->
   @include('administradores.navigations.navigation')
-  <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
   @include('administradores.sidebars.sidebar')
 
-  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -63,9 +40,7 @@
         </div>
       </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="row">
@@ -74,22 +49,8 @@
               <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-map-marked-alt"></i> Mapa</h3>
               </div>
-              <div class="card-body position-relative">
+              <div class="card-body">
                 <div id="map"></div>
-                <div class="map-controls">
-                  <div class="form-group mb-2">
-                    <small class="text-muted">Arrastra el círculo para moverlo</small>
-                  </div>
-                  <div class="input-group input-group-sm mb-2">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">Radio (m)</span>
-                    </div>
-                    <input type="number" id="circle-radius" class="form-control" value="{{ $geocerca->radio }}" min="10">
-                  </div>
-                  <button class="btn btn-sm btn-info btn-block" onclick="actualizarCirculo()">
-                    <i class="fas fa-sync-alt"></i> Actualizar
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -100,46 +61,50 @@
                 <h3 class="card-title"><i class="fas fa-info-circle"></i> Información de la Geocerca</h3>
               </div>
               <div class="card-body">
-                <form action="{{ route('geocercas.update', $geocerca->id) }}" method="POST" id="geocerca-form">
+                <form action="{{ route('geocercas.update', $geocerca->id) }}" method="POST">
                   @csrf
                   @method('PUT')
                   
-                  <input type="hidden" name="tipo" value="circular">
+                  <input type="hidden" name="tipo" value="{{ $geocerca->tipo }}">
                   
                   <div class="form-group">
                     <label for="nombre">Nombre *</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required 
-                           placeholder="Ej: Zona de trabajo, Área restringida" value="{{ $geocerca->nombre }}">
+                    <input type="text" class="form-control" id="nombre" name="nombre" required value="{{ $geocerca->nombre }}">
                   </div>
 
                   <div class="form-group">
                     <label for="descripcion">Descripción</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" 
-                              placeholder="Descripción de la geocerca">{{ $geocerca->descripcion }}</textarea>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3">{{ $geocerca->descripcion }}</textarea>
                   </div>
 
+                  @if($geocerca->tipo == 'circular')
                   <div class="form-row">
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="latitud">Latitud *</label>
-                        <input type="text" class="form-control coordinate-input" id="latitud" name="latitud" 
-                               placeholder="Ej: 19.4326" readonly required value="{{ $geocerca->latitud }}">
+                        <input type="text" class="form-control" id="latitud" name="latitud" required value="{{ $geocerca->latitud }}">
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="longitud">Longitud *</label>
-                        <input type="text" class="form-control coordinate-input" id="longitud" name="longitud" 
-                               placeholder="Ej: -99.1332" readonly required value="{{ $geocerca->longitud }}">
+                        <input type="text" class="form-control" id="longitud" name="longitud" required value="{{ $geocerca->longitud }}">
                       </div>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="radio">Radio (metros) *</label>
-                    <input type="number" class="form-control" id="radio" name="radio" 
-                           placeholder="Ej: 100" min="10" step="1" required value="{{ $geocerca->radio }}">
+                    <input type="number" class="form-control" id="radio" name="radio" min="10" step="1" required value="{{ $geocerca->radio }}">
                   </div>
+                  
+                  <input type="hidden" id="coordenadas" name="coordenadas" value="">
+                  @else
+                  <input type="hidden" id="coordenadas" name="coordenadas" value="{{ $geocerca->coordenadas }}">
+                  <input type="hidden" id="latitud" name="latitud" value="">
+                  <input type="hidden" id="longitud" name="longitud" value="">
+                  <input type="hidden" id="radio" name="radio" value="">
+                  @endif
 
                   <div class="form-group">
                     <label for="color">Color</label>
@@ -166,11 +131,9 @@
             </div>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
   
   <footer class="main-footer">
     <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
@@ -180,45 +143,58 @@
     </div>
   </footer>
 </div>
-<!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
 <script>
-  // Variables globales
   var map;
   var circle = null;
-  var circleCenter = null;
+  var polygon = null;
 
-  // Función que se llama cuando Google Maps está listo
   function inicializarAplicacion() {
-    // Inicializar mapa
     initMap();
+    configurarEventos();
   }
 
-  // Inicializar mapa
+  function cargarGoogleMaps() {
+    if (typeof google !== 'undefined' && google.maps) {
+      inicializarAplicacion();
+      return;
+    }
+    
+    var script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry&callback=inicializarAplicacion';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
   function initMap() {
-    // Usar las coordenadas de la geocerca existente
-    var center = { 
-      lat: parseFloat({{ $geocerca->latitud }}), 
-      lng: parseFloat({{ $geocerca->longitud }}) 
-    };
+    var center = { lat: 19.4326, lng: -99.1332 };
+    
+    @if($geocerca->tipo == 'circular' && $geocerca->latitud && $geocerca->longitud)
+      center = { 
+        lat: parseFloat({{ $geocerca->latitud }}), 
+        lng: parseFloat({{ $geocerca->longitud }}) 
+      };
+    @endif
     
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
       center: center,
       mapTypeId: 'roadmap',
       streetViewControl: false,
-      mapTypeControl: false
+      mapTypeControl: false,
+      fullscreenControl: true
     });
 
-    // Dibujar círculo existente
-    dibujarCirculoExistente();
+    @if($geocerca->tipo == 'circular')
+      dibujarCirculoExistente();
+    @else
+      dibujarPoligonoExistente();
+    @endif
   }
 
-  // Dibujar círculo existente
   function dibujarCirculoExistente() {
-    circleCenter = new google.maps.LatLng(
+    var circleCenter = new google.maps.LatLng(
       parseFloat({{ $geocerca->latitud }}), 
       parseFloat({{ $geocerca->longitud }})
     );
@@ -237,73 +213,85 @@
       draggable: true
     });
     
-    // Actualizar campos cuando se edite el círculo
     google.maps.event.addListener(circle, 'radius_changed', function() {
-      var newRadius = Math.round(circle.getRadius());
-      $('#radio').val(newRadius);
-      $('#circle-radius').val(newRadius);
+      $('#radio').val(Math.round(circle.getRadius()));
     });
     
-    // Actualizar centro cuando se mueva el círculo
     google.maps.event.addListener(circle, 'center_changed', function() {
       var center = circle.getCenter();
-      circleCenter = center;
-      $('#latitud').val(center.lat().toFixed(6));
-      $('#longitud').val(center.lng().toFixed(6));
-    });
-    
-    // Escuchar clics en el mapa para mover el círculo
-    google.maps.event.addListener(map, 'click', function(event) {
-      circle.setCenter(event.latLng);
-      circleCenter = event.latLng;
-      $('#latitud').val(event.latLng.lat().toFixed(6));
-      $('#longitud').val(event.latLng.lng().toFixed(6));
+      $('#latitud').val(center.lat().toFixed(8));
+      $('#longitud').val(center.lng().toFixed(8));
     });
   }
 
-  // Actualizar círculo desde controles
-  function actualizarCirculo() {
-    if (!circle) return;
+  function dibujarPoligonoExistente() {
+    @php
+      // Decodificar las coordenadas del string JSON
+      $coordsArray = json_decode($geocerca->coordenadas, true) ?: [];
+    @endphp
     
-    var radius = parseInt($('#circle-radius').val()) || {{ $geocerca->radio }};
-    
-    circle.setRadius(radius);
-    $('#radio').val(radius);
-    
-    // Actualizar color
-    var color = $('#color').val();
-    circle.setOptions({
-      fillColor: color,
-      strokeColor: color
-    });
-  }
-
-  // Cambiar color del círculo
-  $('#color').change(function() {
-    var color = $(this).val();
-    
-    if (circle) {
-      circle.setOptions({
-        fillColor: color,
-        strokeColor: color
+    @if(count($coordsArray) > 0)
+      var coordinates = [];
+      
+      @foreach($coordsArray as $coord)
+        var point = new google.maps.LatLng(parseFloat({{ $coord[0] }}), parseFloat({{ $coord[1] }}));
+        coordinates.push(point);
+      @endforeach
+      
+      polygon = new google.maps.Polygon({
+        paths: coordinates,
+        fillColor: '{{ $geocerca->color ?? "#3B82F6" }}',
+        fillOpacity: 0.3,
+        strokeWeight: 2,
+        strokeColor: '{{ $geocerca->color ?? "#3B82F6" }}',
+        map: map,
+        editable: true,
+        draggable: true
       });
-    }
-  });
+      
+      google.maps.event.addListener(polygon.getPath(), 'set_at', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(polygon.getPath(), 'insert_at', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(polygon.getPath(), 'remove_at', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(polygon, 'dragend', actualizarCoordenadasPoligono);
+      
+      var bounds = new google.maps.LatLngBounds();
+      for (var i = 0; i < coordinates.length; i++) {
+        bounds.extend(coordinates[i]);
+      }
+      map.fitBounds(bounds);
+    @endif
+  }
 
-  // Inicializar cuando el DOM esté listo
-  $(document).ready(function() {
-    // Sincronizar radio inputs
-    $('#circle-radius, #radio').on('input', function() {
-      var value = $(this).val();
-      $('#circle-radius').val(value);
-      $('#radio').val(value);
+  function actualizarCoordenadasPoligono() {
+    if (!polygon) return;
+    
+    var path = polygon.getPath();
+    var coordinates = [];
+    
+    for (var i = 0; i < path.getLength(); i++) {
+      var point = path.getAt(i);
+      coordinates.push([point.lat(), point.lng()]);
+    }
+    
+    $('#coordenadas').val(JSON.stringify(coordinates));
+  }
+
+  function configurarEventos() {
+    $('#color').change(function() {
+      var color = $(this).val();
+      @if($geocerca->tipo == 'circular')
+      if (circle) circle.setOptions({ fillColor: color, strokeColor: color });
+      @else
+      if (polygon) polygon.setOptions({ fillColor: color, strokeColor: color });
+      @endif
     });
+  }
+
+  $(document).ready(function() {
+    cargarGoogleMaps();
   });
 </script>
 
-<!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="dist/js/adminlte.js"></script>
+<script src="{{ asset('dist/js/adminlte.js') }}"></script>
 </body>
 </html>

@@ -20,10 +20,26 @@ class Geocerca extends Model
     protected $fillable = [
         'id',
         'id_administrador',
+        'nombre',
+        'descripcion',
+        'tipo',
+        'coordenadas',
+        'latitud',
+        'longitud',
+        'radio',
+        'unidad_distancia',
+        'color',
+        'activa',
     ];
     
     protected $casts = [
+        'activa' => 'boolean',
+        'latitud' => 'decimal:8',
+        'longitud' => 'decimal:8',
+        'radio' => 'decimal:2',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+    
+    // NADA MÁS. SIN getCoordenadasArrayAttribute, SIN appends, SIN relaciones extra
 }

@@ -78,10 +78,12 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
   Route::resource('soporte', 'App\Http\Controllers\Administrador\SoporteController');
   
 
-  Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
+  //Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
 
   /**
    * Rutas Operadores
    */
 
    Route::resource('equiposop', 'App\Http\Controllers\Operadores\EquipoController');
+
+   

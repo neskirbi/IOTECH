@@ -18,36 +18,10 @@
       margin-bottom: 15px;
       transition: all 0.3s;
     }
-    .geocerca-card:hover {
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .geocerca-badge {
-      font-size: 0.8em;
-      padding: 3px 8px;
-    }
-    .map-controls {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-    }
     .botones-columna {
       display: flex;
       flex-direction: column;
       gap: 5px;
-    }
-    .botones-columna .btn {
-      width: 100%;
-      text-align: center;
-    }
-    .modal-danger .modal-header {
-      background-color: #dc3545;
-      color: white;
-    }
-    .delete-icon {
-      font-size: 4rem;
-      color: #dc3545;
-      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -91,17 +65,10 @@
 </div>
 
 <div class="wrapper">
-
-  <!-- Navbar -->
   @include('administradores.navigations.navigation')
-  <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
   @include('administradores.sidebars.sidebar')
 
-  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -117,9 +84,7 @@
         </div>
       </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         
@@ -166,18 +131,23 @@
                           <h5 class="card-title">
                             {{ $geocerca->nombre }}
                             @if($geocerca->activa)
-                              <span class="badge badge-success geocerca-badge">Activa</span>
+                              <span class="badge badge-success">Activa</span>
                             @else
-                              <span class="badge badge-danger geocerca-badge">Inactiva</span>
+                              <span class="badge badge-danger">Inactiva</span>
                             @endif
+                            <span class="badge badge-info">{{ $geocerca->tipo }}</span>
                           </h5>
                           <p class="card-text text-muted">
-                            <i class="fas fa-info-circle"></i> {{ $geocerca->descripcion ?? 'Sin descripción' }}
+                            {{ $geocerca->descripcion ?? 'Sin descripción' }}
                           </p>
                           <p class="card-text">
                             <small class="text-muted">
-                              <i class="fas fa-map-marker-alt"></i> Lat: {{ $geocerca->latitud }}, Lng: {{ $geocerca->longitud }}<br>
-                              <i class="fas fa-expand-arrows-alt"></i> Radio: {{ $geocerca->radio }} {{ $geocerca->unidad_distancia ?? 'metros' }}<br>
+                              @if($geocerca->tipo == 'circular')
+                                <i class="fas fa-map-marker-alt"></i> Centro: {{ number_format($geocerca->latitud, 6) }}, {{ number_format($geocerca->longitud, 6) }}<br>
+                                <i class="fas fa-expand-arrows-alt"></i> Radio: {{ $geocerca->radio }} {{ $geocerca->unidad_distancia ?? 'metros' }}<br>
+                              @else
+                                <i class="fas fa-draw-polygon"></i> Polígono con puntos<br>
+                              @endif
                               <i class="far fa-clock"></i> Creada: {{ $geocerca->created_at->format('d/m/Y H:i') }}
                             </small>
                           </p>
@@ -187,9 +157,7 @@
                           <div class="botones-columna">
                             <button type="button" class="btn btn-info btn-sm ver-geocerca" 
                                     data-id="{{ $geocerca->id }}" 
-                                    data-nombre="{{ $geocerca->nombre }}"
-                                    data-lat="{{ $geocerca->latitud }}"
-                                    data-lng="{{ $geocerca->longitud }}">
+                                    data-tipo="{{ $geocerca->tipo }}">
                               <i class="fas fa-eye"></i> Ver en Mapa
                             </button>
                             <a href="{{ route('geocercas.edit', $geocerca->id) }}" class="btn btn-warning btn-sm">
@@ -225,11 +193,9 @@
           </div>
         </div>
 
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
   
   <footer class="main-footer">
     <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
@@ -239,56 +205,37 @@
     </div>
   </footer>
 </div>
-<!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
 <script>
-  // Variables globales
   var map;
   var geocercasEnMapa = [];
   var bounds = new google.maps.LatLngBounds();
 
-  // Función que se llama cuando Google Maps está listo
   function inicializarAplicacion() {
-    // Inicializar mapa
     initMap();
     
-    // Configurar eventos de botones después de que jQuery esté listo
     $(document).ready(function() {
-      // Eventos para los botones Ver
       $('.ver-geocerca').click(function() {
         var geocercaId = $(this).data('id');
-        var nombre = $(this).data('nombre');
-        var lat = $(this).data('lat');
-        var lng = $(this).data('lng');
-        verGeocercaEnMapa(geocercaId, nombre, lat, lng);
+        var tipo = $(this).data('tipo');
+        verGeocercaEnMapa(geocercaId, tipo);
       });
       
-      // Eventos para los botones Eliminar
       $('.btn-eliminar').click(function() {
-        var geocercaId = $(this).data('id');
         var geocercaNombre = $(this).data('nombre');
         var deleteUrl = $(this).data('url');
         
-        // Configurar el modal
         $('#geocercaName').text('"' + geocercaNombre + '"');
         $('#deleteForm').attr('action', deleteUrl);
-        
-        // Mostrar el modal
         $('#confirmDeleteModal').modal('show');
       });
     });
   }
 
-  // Inicializar mapa
   function initMap() {
-    // Coordenadas por defecto (Ciudad de México)
-    var defaultCenter = { lat: 19.4326, lng: -99.1332 };
-    
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 12,
-      center: defaultCenter,
+      center: { lat: 19.4326, lng: -99.1332 },
       mapTypeId: 'roadmap',
       streetViewControl: false,
       mapTypeControl: false,
@@ -296,13 +243,10 @@
       zoomControl: true
     });
 
-    // Cargar geocercas en el mapa
     cargarGeocercasEnMapa();
   }
 
-  // Cargar geocercas en el mapa
   function cargarGeocercasEnMapa() {
-    // Limpiar geocercas anteriores
     geocercasEnMapa.forEach(function(geocerca) {
       geocerca.setMap(null);
     });
@@ -326,44 +270,46 @@
             geocercaId: '{{ $geocerca->id }}'
           });
 
-          // Crear infowindow
-          var infowindow = new google.maps.InfoWindow({
-            content: `
-              <div class="p-2">
-                <h6 class="font-weight-bold">{{ $geocerca->nombre }}</h6>
-                <p class="mb-1">{{ $geocerca->descripcion ?? 'Sin descripción' }}</p>
-                <p class="mb-0 small">
-                  <i class="fas fa-circle"></i> Radio: {{ $geocerca->radio }} {{ $geocerca->unidad_distancia ?? 'metros' }}
-                </p>
-              </div>
-            `
-          });
-
-          // Evento para mostrar infowindow
-          circle.addListener('click', function() {
-            infowindow.open(map);
-            infowindow.setPosition(center);
-          });
-
           geocercasEnMapa.push(circle);
           bounds.extend(center);
+        @elseif($geocerca->tipo == 'poligono' && $geocerca->coordenadas)
+          @php
+            $coordsArray = json_decode($geocerca->coordenadas, true) ?: [];
+          @endphp
+          
+          @if(count($coordsArray) > 0)
+            var coordinates = [];
+            @foreach($coordsArray as $coord)
+              coordinates.push(new google.maps.LatLng(parseFloat({{ $coord[0] }}), parseFloat({{ $coord[1] }})));
+            @endforeach
+            
+            var polygon = new google.maps.Polygon({
+              strokeColor: '{{ $geocerca->color ?? "#3B82F6" }}',
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: '{{ $geocerca->color ?? "#3B82F6" }}',
+              fillOpacity: 0.3,
+              map: map,
+              paths: coordinates,
+              geocercaId: '{{ $geocerca->id }}'
+            });
+            
+            geocercasEnMapa.push(polygon);
+            
+            // Extender bounds para incluir todos los puntos del polígono
+            coordinates.forEach(function(point) {
+              bounds.extend(point);
+            });
+          @endif
         @endif
       @endforeach
 
-      // Ajustar zoom para mostrar todas las geocercas
       if (geocercasEnMapa.length > 0) {
         map.fitBounds(bounds);
-        // Limitar zoom máximo
-        google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
-          if (this.getZoom() > 15) {
-            this.setZoom(15);
-          }
-        });
       }
     @endif
   }
 
-  // Centrar mapa en las geocercas
   function centrarMapa() {
     if (geocercasEnMapa.length > 0) {
       map.fitBounds(bounds);
@@ -373,21 +319,28 @@
     }
   }
 
-  // Función para ver geocerca en el mapa
-  function verGeocercaEnMapa(geocercaId, nombre, lat, lng) {
-    var center = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
-    map.setCenter(center);
-    map.setZoom(14);
-    
-    // Destacar la geocerca
-    geocercasEnMapa.forEach(function(circle) {
-      if (circle.geocercaId === geocercaId) {
-        circle.setOptions({
+  function verGeocercaEnMapa(geocercaId, tipo) {
+    geocercasEnMapa.forEach(function(shape) {
+      if (shape.geocercaId === geocercaId) {
+        if (tipo === 'circular') {
+          map.setCenter(shape.getCenter());
+          map.setZoom(14);
+        } else {
+          var bounds = new google.maps.LatLngBounds();
+          var path = shape.getPath();
+          for (var i = 0; i < path.getLength(); i++) {
+            bounds.extend(path.getAt(i));
+          }
+          map.fitBounds(bounds);
+        }
+        
+        shape.setOptions({
           strokeWeight: 4,
           fillOpacity: 0.5
         });
+        
         setTimeout(function() {
-          circle.setOptions({
+          shape.setOptions({
             strokeWeight: 2,
             fillOpacity: 0.3
           });
@@ -397,9 +350,7 @@
   }
 </script>
 
-<!-- Bootstrap 4 -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
 </body>
 </html>
