@@ -9,7 +9,7 @@ function EscalaRojos(){
 
 function Url(){
     if(window.location.origin.includes('localhost') || window.location.origin.includes('192.168')){
-        return window.location.origin+'/IOTECH/public/';
+        return window.location.origin+'/auto/public/';
     }else{
        return window.location.origin+'/';
     }
