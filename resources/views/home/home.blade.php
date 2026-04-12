@@ -1,789 +1,476 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
-    <title>Iotech - Tecnology</title>
+    <title>Oll-ON | Seguridad con GPS y App Android - Monitoreo en Tiempo Real</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <meta name="description" content="Oll-ON: Soluciones avanzadas de seguridad con GPS y aplicación Android. Protege tu flota, familia o negocio con rastreo en tiempo real.">
+    <meta name="keywords" content="seguridad, GPS, app Android, rastreo vehicular, monitoreo, Oll-ON">
 
     <!-- Favicon -->
     <link href="{{asset('img/favicon.ico')}}" rel="icon">
 
-    <!-- Google Web Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet"> 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Flaticon Font -->
-    <link href="{{asset('lib/flaticon/font/flaticon.css')}}" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="{{asset('lib/owlcarousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
-    <link href="{{asset('lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css')}}" rel="stylesheet" />
+    <!-- AOS Animación -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="{{asset('css/style.css')}}" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #000000;
+            --secondary: #ffffff;
+            --accent: #00e0ff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        /* Logo Oll-ON: fondo negro, letras blancas */
+        .logo-ollon {
+            background-color: #000000;
+            padding: 8px 18px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-ollon h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .logo-ollon span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #cccccc;
+        }
+
+        .navbar {
+            background-color: #0a0a0a !important;
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .navbar-nav .nav-link {
+            color: #e2e8f0 !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: 0.2s;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: #00e0ff !important;
+        }
+
+        .btn-primary-custom {
+            background-color: #00e0ff;
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #ffffff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,224,255,0.3);
+        }
+
+        .btn-android {
+            background-color: #3DDC84;
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+
+        .btn-android:hover {
+            background-color: #ffffff;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-light-custom {
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-weight: 600;
+        }
+
+        .btn-outline-light-custom:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: white;
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .hero .highlight {
+            color: #00e0ff;
+            border-bottom: 3px solid #00e0ff;
+        }
+
+        /* Tarjetas de servicios */
+        .service-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem 1.5rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #eef2ff;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 40px rgba(0,0,0,0.1);
+            border-color: #00e0ff;
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: #00e0ff;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-section {
+            background: linear-gradient(120deg, #f0f9ff 0%, #e6f0fa 100%);
+        }
+
+        .footer {
+            background-color: #050505;
+            color: #aaa;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #00e0ff;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-size: 1.5rem;
+            z-index: 99;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .badge-android {
+            background-color: #3DDC84;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .logo-ollon h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Topbar Start -->
-    <div class="container-fluid">
-        <div class="row bg-secondary py-2 px-lg-5">
-            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center">
-                    <!--<a class="text-white pr-3" href="">FAQs</a>
-                    <span class="text-white">|</span>
-                    <a class="text-white px-3" href="">Help</a>
-                    <span class="text-white">|</span>
-                    <a class="text-white pl-3" href="">Support</a>-->
-                </div>
-            </div>
-            <div class="col-lg-6 text-center text-lg-right">
-                
 
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-3" href="{{url('login')}}">
-                        <i class="fa fa-user"></i> Ingresar
-                    </a> 
+    <!-- Topbar con acceso / login -->
+    <div class="container-fluid bg-dark py-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-end">
+                    <a href="{{url('login')}}" class="text-white-50 me-3">
+                        <i class="fa fa-user me-1"></i> Ingresar
+                    </a>
+                    <a href="#" class="text-white-50">
+                        <i class="fas fa-headset me-1"></i> Soporte 24/7
+                    </a>
                 </div>
             </div>
-        </div>
-        <div class="row py-3 px-lg-5">
-            
-            <div class="col-lg-4">
-                <a href="" class="navbar-brand d-none d-lg-block">
-                    <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">IOTECH</span>Tecnology</h1>
-                </a>
-            </div>
-            
-            <div class="col-md-2">
-                
-            </div>
-            
-            <div class="col-md-2">
-                
-            </div>
-            
-            <div class="col-md-2">
-                
-            </div>
-            
-            <div class="col-md-1">
-                
-            </div>
-            <div class="col-md-1">
-                <img src="{{asset('images/imaiotech2.jpg')}}" width="80px">
-            </div>
-            <!--
-            <div class="col-lg-8 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <div class="d-inline-flex flex-column text-center pr-3 border-right">
-                        <h6>Opening Hours</h6>
-                        <p class="m-0">8.00AM - 9.00PM</p>
-                    </div>
-                    <div class="d-inline-flex flex-column text-center px-3 border-right">
-                        <h6>Email Us</h6>
-                        <p class="m-0">info@example.com</p>
-                    </div>
-                    <div class="d-inline-flex flex-column text-center pl-3">
-                        <h6>Call Us</h6>
-                        <p class="m-0">+012 345 6789</p>
-                    </div>
-                </div>
-            </div>-->
         </div>
     </div>
-    <!-- Topbar End -->
 
-
-    <!-- Navbar Start 
-    <div class="container-fluid p-0">
-        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-lg-5">
-            <a href="" class="navbar-brand d-block d-lg-none">
-                <h1 class="m-0 display-5 text-capitalize font-italic text-white"><span class="text-primary">Safety</span>First</h1>
+    <!-- Navbar principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <!-- Logo Oll-ON -->
+            <a class="navbar-brand" href="#">
+                <div class="logo-ollon">
+                    <h1>Oll-ON</h1>
+                    <span><i class="fas fa-shield-alt"></i> Secure</span>
+                </div>
             </a>
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                <div class="navbar-nav mr-auto py-0">
-                    <a href="index.html" class="nav-item nav-link active">Home</a>
-                    <a href="about.html" class="nav-item nav-link">About</a>
-                    <a href="service.html" class="nav-item nav-link">Service</a>
-                    <a href="price.html" class="nav-item nav-link">Price</a>
-                    <a href="booking.html" class="nav-item nav-link">Booking</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                            <a href="single.html" class="dropdown-item">Blog Detail</a>
-                        </div>
-                    </div>
-                    <a href="contact.html" class="nav-item nav-link">Contact</a>
-                </div>
-                <a href="" class="btn btn-lg btn-primary px-3 d-none d-lg-block">Get Quote</a>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#soluciones">Soluciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#app">App Android</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#gps">GPS Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                </ul>
+                <a href="#" class="btn btn-primary-custom ms-lg-3">Cotizar ahora</a>
             </div>
-        </nav>
-    </div>
-     Navbar End -->
-
-
-    <!-- Carousel Start -->
-    <div class="container-fluid p-0">
-        <div id="header-carousel" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img class="w-100" src="img/c3.jpg" alt="Image">
-                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                        <div class="p-3" style="max-width: 900px;">
-                            <h3 class="text-white mb-3 d-none d-sm-block">Seguridad en cada dispositivo.</h3>
-                            <h1 class="display-3 text-white mb-3">Tu protección, nuestra misión.</h1>
-                            <h5 class="text-white mb-3 d-none d-sm-block">Confía en la seguridad, elige nuestros dispositivos.</h5>
-                            <!--<a href="" class="btn btn-lg btn-primary mt-3 mt-md-4 px-4">Book Now</a>
-                            <a href="" class="btn btn-lg btn-secondary mt-3 mt-md-4 px-4">Learn More</a>-->
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img class="w-100" src="img/c2.jpg" alt="Image">
-                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                        <div class="p-3" style="max-width: 900px;">
-                            <h3 class="text-white mb-3 d-none d-sm-block">En tus manos</h3>
-                            <h1 class="display-3 text-white mb-3">A la vanguardia de la seguridad.</h1>
-                            <h5 class="text-white mb-3 d-none d-sm-block">Protegiendo lo que más importa, con cada dispositivo.</h5>
-                            <!--<a href="" class="btn btn-lg btn-primary mt-3 mt-md-4 px-4">Book Now</a>
-                            <a href="" class="btn btn-lg btn-secondary mt-3 mt-md-4 px-4">Learn More</a>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
-                <div class="btn btn-primary rounded" style="width: 45px; height: 45px;">
-                    <span class="carousel-control-prev-icon mb-n2"></span>
-                </div>
-            </a>
-            <a class="carousel-control-next" href="#header-carousel" data-slide="next">
-                <div class="btn btn-primary rounded" style="width: 45px; height: 45px;">
-                    <span class="carousel-control-next-icon mb-n2"></span>
-                </div>
-            </a>
         </div>
-    </div>
-    <!-- Carousel End -->
+    </nav>
 
-
-    <!-- Booking Start -->
-    <!--
-    <div class="container-fluid bg-light">
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-5">
-                    <div class="bg-primary py-5 px-4 px-sm-5">
-                        <form class="py-5">
-                            <div class="form-group">
-                                <input type="text" class="form-control border-0 p-4" placeholder="Your Name" required="required" />
-                            </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control border-0 p-4" placeholder="Your Email" required="required" />
-                            </div>
-                            <div class="form-group">
-                                <div class="date" id="date" data-target-input="nearest">
-                                    <input type="text" class="form-control border-0 p-4 datetimepicker-input" placeholder="Reservation Date" data-target="#date" data-toggle="datetimepicker"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="time" id="time" data-target-input="nearest">
-                                    <input type="text" class="form-control border-0 p-4 datetimepicker-input" placeholder="Reservation Time" data-target="#time" data-toggle="datetimepicker"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <select class="custom-select border-0 px-4" style="height: 47px;">
-                                    <option selected>Select A Service</option>
-                                    <option value="1">Service 1</option>
-                                    <option value="2">Service 1</option>
-                                    <option value="3">Service 1</option>
-                                </select>
-                            </div>
-                            <div>
-                                <button class="btn btn-dark btn-block border-0 py-3" type="submit">Book Now</button>
-                            </div>
-                        </form>
+                <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
+                    <span class="badge-android mb-3 d-inline-block"><i class="fab fa-android me-1"></i> Exclusivo Android</span>
+                    <h1 class="mb-4">Seguridad que <span class="highlight">siempre te acompaña</span>, donde estés.</h1>
+                    <p class="lead mb-4 text-white-70">Monitoreo en tiempo real, alertas inteligentes y control total desde tu dispositivo Android. Oll-ON protege tu flota, familia o negocio con tecnología de rastreo de última generación.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{{asset('apk/oll-on_v1.0.0.apk')}}" class="btn btn-android btn-lg px-5" download>
+                            <i class="fab fa-android me-2"></i>Descargar APK v1.0.0
+                        </a>
+                        <a href="#soluciones" class="btn btn-outline-light-custom btn-lg"><i class="fas fa-map-marker-alt me-2"></i>Ver soluciones</a>
+                    </div>
+                    <div class="mt-5 d-flex gap-4">
+                        <div><i class="fas fa-chart-line" style="color:#00e0ff"></i> <span class="text-white">Tecnología en expansión</span></div>
+                        <div><i class="fas fa-rocket" style="color:#00e0ff"></i> <span class="text-white">Innovación constante</span></div>
+                        <div><i class="fas fa-clock" style="color:#00e0ff"></i> <span class="text-white">Soporte 24/7</span></div>
                     </div>
                 </div>
-                <div class="col-lg-7 py-5 py-lg-0 px-3 px-lg-5">
-                    <h4 class="text-secondary mb-3">Going for a vacation?</h4>
-                    <h1 class="display-4 mb-4">Book For <span class="text-primary">Your Pet</span></h1>
-                    <p>Labore vero lorem eos sed aliquy ipsum aliquy sed. Vero dolore dolore takima ipsum lorem rebum</p>
-                    <div class="row py-2">
-                        <div class="col-sm-6">
-                            <div class="d-flex flex-column">
-                                <div class="d-flex align-items-center mb-2">
-                                    <h1 class="flaticon-house font-weight-normal text-secondary m-0 mr-3"></h1>
-                                    <h5 class="text-truncate m-0">Pet Boarding</h5>
-                                </div>
-                                <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet</p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex flex-column">
-                                <div class="d-flex align-items-center mb-2">
-                                    <h1 class="flaticon-food font-weight-normal text-secondary m-0 mr-3"></h1>
-                                    <h5 class="text-truncate m-0">Pet Feeding</h5>
-                                </div>
-                                <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet</p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex flex-column">
-                                <div class="d-flex align-items-center mb-2">
-                                    <h1 class="flaticon-grooming font-weight-normal text-secondary m-0 mr-3"></h1>
-                                    <h5 class="text-truncate m-0">Pet Grooming</h5>
-                                </div>
-                                <p class="m-0">Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet</p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex flex-column">
-                                <div class="d-flex align-items-center mb-2">
-                                    <h1 class="flaticon-toy font-weight-normal text-secondary m-0 mr-3"></h1>
-                                    <h5 class="text-truncate m-0">Pet Tranning</h5>
-                                </div>
-                                <p class="m-0">Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-lg-6 text-center" data-aos="fade-left">
+                    <img src="{{asset('images/home/pexels-photo-699122.jpeg')}}" alt="App Android seguridad GPS" class="img-fluid rounded-4 shadow-lg" style="max-height: 450px; object-fit: cover; width: 100%;">
                 </div>
             </div>
         </div>
-    </div>
-    -->
-    <!-- Booking Start -->
+    </section>
 
-
-    <!-- About Start -->
-     <!--
-    <div class="container py-5">
-        <div class="row py-5">
-            <div class="col-lg-7 pb-5 pb-lg-0 px-3 px-lg-5">
-                <h4 class="text-secondary mb-3">About Us</h4>
-                <h1 class="display-4 mb-4"><span class="text-primary">Boarding</span> & <span class="text-secondary">Daycare</span></h1>
-                <h5 class="text-muted mb-3">Amet stet amet ut. Sit no vero vero no dolor. Sed erat ut sea. Just clita ut stet kasd at diam sit erat vero sit.</h5>
-                <p class="mb-4">Dolores lorem lorem ipsum sit et ipsum. Sadip sea amet diam dolore sed et. Sit rebum labore sit sit ut vero no sit. Et elitr stet dolor sed sit et sed ipsum et kasd ut. Erat duo eos et erat sed diam duo</p>
-                <ul class="list-inline">
-                    <li><h5><i class="fa fa-check-double text-secondary mr-3"></i>Best In Industry</h5></li>
-                    <li><h5><i class="fa fa-check-double text-secondary mr-3"></i>Emergency Services</h5></li>
-                    <li><h5><i class="fa fa-check-double text-secondary mr-3"></i>24/7 Customer Support</h5></li>
-                </ul>
-                <a href="" class="btn btn-lg btn-primary mt-3 px-4">Learn More</a>
-            </div>
-            <div class="col-lg-5">
-                <div class="row px-3">
-                    <div class="col-12 p-0">
-                        <img class="img-fluid w-100" src="img/about-1.jpg" alt="">
-                    </div>
-                    <div class="col-6 p-0">
-                        <img class="img-fluid w-100" src="img/about-2.jpg" alt="">
-                    </div>
-                    <div class="col-6 p-0">
-                        <img class="img-fluid w-100" src="img/about-3.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
-    <!-- About End -->
-
-
-    <!-- Services Start 
-    <div class="container-fluid bg-light pt-5">
+    <!-- Sección de servicios -->
+    <section id="soluciones" class="py-5 py-md-8">
         <div class="container py-5">
-            <div class="d-flex flex-column text-center mb-5">
-                <h4 class="text-secondary mb-3"></h4>
-                <h1 class="display-4 m-0"><span class="text-primary"></span> Nuestros Servicios</h1>
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold">Soluciones integrales de <span style="color:#00e0ff">seguridad conectada</span></h2>
+                <p class="lead text-muted">Integramos hardware GPS de última generación con nuestra app Android para que nunca pierdas el control.</p>
             </div>
-            <div class="row pb-3">
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="d-flex flex-column text-center bg-white mb-2 p-3 p-sm-5">
-                        <h3 class="flaticon-house display-3 font-weight-normal text-secondary mb-3"></h3>
-                        <h3 class="mb-3">Pet Boarding</h3>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est magna diam eos, rebum sit vero stet ipsum justo</p>
-                        <a class="text-uppercase font-weight-bold" href="">Read More</a>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" data-aos="zoom-in">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fab fa-android"></i></div>
+                        <h4>App Oll-ON para Android</h4>
+                        <p>Visualiza ubicación en tiempo real, historial de rutas, zonas de seguridad y alertas instantáneas en tu celular Android.</p>
+                        <a href="#" class="text-decoration-none fw-bold">Saber más →</a>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="d-flex flex-column text-center bg-white mb-2 p-3 p-sm-5">
-                        <h3 class="flaticon-food display-3 font-weight-normal text-secondary mb-3"></h3>
-                        <h3 class="mb-3">Pet Feeding</h3>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est magna diam eos, rebum sit vero stet ipsum justo</p>
-                        <a class="text-uppercase font-weight-bold" href="">Read More</a>
+                <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-satellite-dish"></i></div>
+                        <h4>Rastreo GPS 4G</h4>
+                        <p>Dispositivos de alta precisión, resistentes a interferencias, con batería de larga duración y geocercas.</p>
+                        <a href="#" class="text-decoration-none fw-bold">Saber más →</a>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="d-flex flex-column text-center bg-white mb-2 p-3 p-sm-5">
-                        <h3 class="flaticon-grooming display-3 font-weight-normal text-secondary mb-3"></h3>
-                        <h3 class="mb-3">Pet Grooming</h3>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est magna diam eos, rebum sit vero stet ipsum justo</p>
-                        <a class="text-uppercase font-weight-bold" href="">Read More</a>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="d-flex flex-column text-center bg-white mb-2 p-3 p-sm-5">
-                        <h3 class="flaticon-cat display-3 font-weight-normal text-secondary mb-3"></h3>
-                        <h3 class="mb-3">Per Training</h3>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est magna diam eos, rebum sit vero stet ipsum justo</p>
-                        <a class="text-uppercase font-weight-bold" href="">Read More</a>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="d-flex flex-column text-center bg-white mb-2 p-3 p-sm-5">
-                        <h3 class="flaticon-dog display-3 font-weight-normal text-secondary mb-3"></h3>
-                        <h3 class="mb-3">Pet Exercise</h3>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est magna diam eos, rebum sit vero stet ipsum justo</p>
-                        <a class="text-uppercase font-weight-bold" href="">Read More</a>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="d-flex flex-column text-center bg-white mb-2 p-3 p-sm-5">
-                        <h3 class="flaticon-vaccine display-3 font-weight-normal text-secondary mb-3"></h3>
-                        <h3 class="mb-3">Pet Treatment</h3>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est magna diam eos, rebum sit vero stet ipsum justo</p>
-                        <a class="text-uppercase font-weight-bold" href="">Read More</a>
+                <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+                        <h4>Panel de control</h4>
+                        <p>Dashboard para empresas: flotas, reportes de conducción, alertas de velocidad y mantenimiento predictivo.</p>
+                        <a href="#" class="text-decoration-none fw-bold">Saber más →</a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>-->
-    <!-- Services End -->
+    </section>
 
-
-    <!-- Features Start 
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-5">
-                <img class="img-fluid w-100" src="img/feature.jpg" alt="">
-            </div>
-            <div class="col-lg-7 py-5 py-lg-0 px-3 px-lg-5">
-                <h4 class="text-secondary mb-3">Why Choose Us?</h4>
-                <h1 class="display-4 mb-4"><span class="text-primary">Special Care</span> On Pets</h1>
-                <p class="mb-4">Dolor lorem lorem ipsum sit et ipsum. Sadip sea amet diam sed ut vero no sit. Et elitr stet sed sit sed kasd. Erat duo eos et erat sed diam duo</p>
-                <div class="row py-2">
-                    <div class="col-6">
-                        <div class="d-flex align-items-center mb-4">
-                            <h1 class="flaticon-cat font-weight-normal text-secondary m-0 mr-3"></h1>
-                            <h5 class="text-truncate m-0">Best In Industry</h5>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-center mb-4">
-                            <h1 class="flaticon-doctor font-weight-normal text-secondary m-0 mr-3"></h1>
-                            <h5 class="text-truncate m-0">Emergency Services</h5>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-center">
-                            <h1 class="flaticon-care font-weight-normal text-secondary m-0 mr-3"></h1>
-                            <h5 class="text-truncate m-0">Special Care</h5>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-center">
-                            <h1 class="flaticon-dog font-weight-normal text-secondary m-0 mr-3"></h1>
-                            <h5 class="text-truncate m-0">Customer Support</h5>
-                        </div>
+    <!-- Sección App Android destacada -->
+    <section id="app" class="app-section py-5">
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2" data-aos="fade-left">
+                    <img src="{{asset('images/home/pexels-pixabay-267350.jpg')}}" alt="App Android monitoreo" class="img-fluid rounded-4 shadow" style="max-height: 500px; width: 100%; object-fit: cover;">
+                </div>
+                <div class="col-lg-6 order-lg-1" data-aos="fade-right">
+                    <span class="badge-android mb-3 d-inline-block"><i class="fab fa-android me-1"></i> Solo para Android</span>
+                    <h2 class="fw-bold">Controla todo desde <span style="color:#00e0ff">tu dispositivo Android</span></h2>
+                    <p class="mt-3 fs-5">Con la app Oll-ON para Android recibes notificaciones al instante si tu vehículo o ser querido sale de un área segura, activas el modo pánico y compartes ubicación en vivo.</p>
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Localización precisa en tiempo real</li>
+                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Historial de rutas de hasta 6 meses</li>
+                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Compatible con dispositivos GPS Oll-ON</li>
+                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Descarga directa APK</li>
+                    </ul>
+                    <div class="mt-4">
+                        <a href="{{asset('apk/oll-on_v1.0.0.apk')}}" class="btn btn-android btn-lg px-5" download>
+                            <i class="fab fa-android me-2"></i>Descargar APK v1.0.0
+                        </a>
+                        <p class="text-muted mt-2 small"><i class="fas fa-download"></i> Versión 1.0 | Requiere Android 8.0+</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>-->
-    <!-- Features End -->
+    </section>
 
-
-    <!-- Pricing Plan Start -->
-     <!--
-    <div class="container-fluid bg-light pt-5 pb-4">
-        <div class="container py-5">
-            <div class="d-flex flex-column text-center mb-5">
-                <h4 class="text-secondary mb-3">Pricing Plan</h4>
-                <h1 class="display-4 m-0">Choose the <span class="text-primary">Best Price</span></h1>
+    <!-- Sección GPS -->
+    <section id="gps" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h2 class="fw-bold">Tecnología GPS de nivel <span class="border-bottom border-3" style="border-color:#00e0ff">profesional</span></h2>
+                    <p class="mt-3 lead">Nuestros rastreadores se instalan en minutos y funcionan con redes 4G, ideales para autos, motos, camiones y activos logísticos. Compatibilidad total con nuestra app Android.</p>
+                    <div class="row mt-4">
+                        <div class="col-6 mb-3">
+                            <div class="bg-light p-3 rounded-3">
+                                <h3 class="fw-bold" style="color:#00e0ff">±3m</h3>
+                                <p class="mb-0">Precisión satelital</p>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="bg-light p-3 rounded-3">
+                                <h3 class="fw-bold" style="color:#00e0ff">24/7</h3>
+                                <p class="mb-0">Monitoreo continuo</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-outline-dark rounded-pill px-4 mt-2"><i class="fas fa-microchip me-2"></i> Ver dispositivos GPS</a>
+                </div>
+                <div class="col-lg-6 text-center" data-aos="fade-left">
+                    <img src="{{asset('images/home/pexels-leeloothefirst-5428830.jpg')}}" alt="dispositivo GPS" class="img-fluid rounded-4 shadow-lg" style="max-height: 380px;">
+                </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Sección de valores / confianza -->
+    <section class="bg-dark text-white py-5">
+        <div class="container py-4 text-center">
+            <div data-aos="fade-up">
+                <i class="fas fa-shield-alt fa-3x mb-3 opacity-50" style="color:#00e0ff"></i>
+                <p class="fs-3 fw-light mx-auto" style="max-width: 800px;">"Tecnología confiable, soporte inmediato y un compromiso real con tu seguridad. Oll-ON nace para revolucionar el monitoreo GPS."</p>
+                <h5 class="mt-3">— Equipo Oll-ON</h5>
+                <div class="mt-4">
+                    <i class="fab fa-android fa-2x me-2" style="color:#3DDC84"></i>
+                    <span class="text-white-50">Disponible exclusivamente para Android</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer pt-5 pb-4">
+        <div class="container">
             <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <div class="card border-0">
-                        <div class="card-header position-relative border-0 p-0 mb-4">
-                            <img class="card-img-top" src="img/price-1.jpg" alt="">
-                            <div class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100" style="top: 0; left: 0; z-index: 1; background: rgba(0, 0, 0, .5);">
-                                <h3 class="text-primary mb-3">Basic</h3>
-                                <h1 class="display-4 text-white mb-0">
-                                    <small class="align-top" style="font-size: 22px; line-height: 45px;">$</small>49<small class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Mo</small>
-                                </h1>
-                            </div>
-                        </div>
-                        <div class="card-body text-center p-0">
-                            <ul class="list-group list-group-flush mb-4">
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Feeding</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Boarding</li>
-                                <li class="list-group-item p-2"><i class="fa fa-times text-danger mr-2"></i>Spa & Grooming</li>
-                                <li class="list-group-item p-2"><i class="fa fa-times text-danger mr-2"></i>Veterinary Medicine</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer border-0 p-0">
-                            <a href="" class="btn btn-primary btn-block p-3" style="border-radius: 0;">Signup Now</a>
-                        </div>
+                <div class="col-md-4 mb-4">
+                    <div class="logo-ollon mb-3">
+                        <h1>Oll-ON</h1>
+                    </div>
+                    <p>Seguridad conectada mediante GPS y app Android. Protección real para lo que más valoras.</p>
+                    <div class="mt-3">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card border-0">
-                        <div class="card-header position-relative border-0 p-0 mb-4">
-                            <img class="card-img-top" src="img/price-2.jpg" alt="">
-                            <div class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100" style="top: 0; left: 0; z-index: 1; background: rgba(0, 0, 0, .5);">
-                                <h3 class="text-secondary mb-3">Standard</h3>
-                                <h1 class="display-4 text-white mb-0">
-                                    <small class="align-top" style="font-size: 22px; line-height: 45px;">$</small>99<small class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Mo</small>
-                                </h1>
-                            </div>
-                        </div>
-                        <div class="card-body text-center p-0">
-                            <ul class="list-group list-group-flush mb-4">
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Feeding</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Boarding</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Spa & Grooming</li>
-                                <li class="list-group-item p-2"><i class="fa fa-times text-danger mr-2"></i>Veterinary Medicine</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer border-0 p-0">
-                            <a href="" class="btn btn-secondary btn-block p-3" style="border-radius: 0;">Signup Now</a>
-                        </div>
-                    </div>
+                <div class="col-md-2 mb-4">
+                    <h5 class="text-white">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none">Inicio</a></li>
+                        <li><a href="#soluciones" class="text-white-50 text-decoration-none">Soluciones</a></li>
+                        <li><a href="#app" class="text-white-50 text-decoration-none">App Android</a></li>
+                        <li><a href="#gps" class="text-white-50 text-decoration-none">GPS Tracking</a></li>
+                    </ul>
                 </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card border-0">
-                        <div class="card-header position-relative border-0 p-0 mb-4">
-                            <img class="card-img-top" src="img/price-3.jpg" alt="">
-                            <div class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100" style="top: 0; left: 0; z-index: 1; background: rgba(0, 0, 0, .5);">
-                                <h3 class="text-primary mb-3">Premium</h3>
-                                <h1 class="display-4 text-white mb-0">
-                                    <small class="align-top" style="font-size: 22px; line-height: 45px;">$</small>149<small class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Mo</small>
-                                </h1>
-                            </div>
-                        </div>
-                        <div class="card-body text-center p-0">
-                            <ul class="list-group list-group-flush mb-4">
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Feeding</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Boarding</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Spa & Grooming</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Veterinary Medicine</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer border-0 p-0">
-                            <a href="" class="btn btn-primary btn-block p-3" style="border-radius: 0;">Signup Now</a>
-                        </div>
-                    </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="text-white">Soporte</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none">Contacto técnico</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Centro de ayuda</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Política de privacidad</a></li>
+                    </ul>
                 </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="text-white">Contacto directo</h5>
+                    <p><i class="fas fa-phone-alt me-2"></i> +52 1 56 1990 3970</p>
+                    <p><i class="fas fa-envelope me-2"></i> ventas@oll-on.com</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i> Ciudad de México, México</p>
+                </div>
+            </div>
+            <hr class="bg-secondary">
+            <div class="text-center pt-3">
+                <p class="mb-0">&copy; 2026 Oll-ON - Seguridad con tecnología GPS y App Android. Todos los derechos reservados.</p>
             </div>
         </div>
-    </div>
--->
-    <!-- Pricing Plan End -->
+    </footer>
 
+    <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
 
-    <!-- Team Start -->
-     <!--
-    <div class="container mt-5 pt-5 pb-3">
-        <div class="d-flex flex-column text-center mb-5">
-            <h4 class="text-secondary mb-3">Team Member</h4>
-            <h1 class="display-4 m-0">Meet Our <span class="text-primary">Team Member</span></h1>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <div class="team card position-relative overflow-hidden border-0 mb-4">
-                    <img class="card-img-top" src="img/team-1.jpg" alt="">
-                    <div class="card-body text-center p-0">
-                        <div class="team-text d-flex flex-column justify-content-center bg-light">
-                            <h5>Mollie Ross</h5>
-                            <i>Founder & CEO</i>
-                        </div>
-                        <div class="team-social d-flex align-items-center justify-content-center bg-dark">
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="team card position-relative overflow-hidden border-0 mb-4">
-                    <img class="card-img-top" src="img/team-2.jpg" alt="">
-                    <div class="card-body text-center p-0">
-                        <div class="team-text d-flex flex-column justify-content-center bg-light">
-                            <h5>Jennifer Page</h5>
-                            <i>Chef Executive</i>
-                        </div>
-                        <div class="team-social d-flex align-items-center justify-content-center bg-dark">
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="team card position-relative overflow-hidden border-0 mb-4">
-                    <img class="card-img-top" src="img/team-3.jpg" alt="">
-                    <div class="card-body text-center p-0">
-                        <div class="team-text d-flex flex-column justify-content-center bg-light">
-                            <h5>Kate Glover</h5>
-                            <i>Doctor</i>
-                        </div>
-                        <div class="team-social d-flex align-items-center justify-content-center bg-dark">
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="team card position-relative overflow-hidden border-0 mb-4">
-                    <img class="card-img-top" src="img/team-4.jpg" alt="">
-                    <div class="card-body text-center p-0">
-                        <div class="team-text d-flex flex-column justify-content-center bg-light">
-                            <h5>Lilly Fry</h5>
-                            <i>Trainer</i>
-                        </div>
-                        <div class="team-social d-flex align-items-center justify-content-center bg-dark">
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-primary rounded-circle text-center px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
--->
-    <!-- Team End -->
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
 
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
 
-    <!-- Testimonial Start -->
-     <!--
-    <div class="container-fluid bg-light my-5 p-0 py-5">
-        <div class="container p-0 py-5">
-            <div class="d-flex flex-column text-center mb-5">
-                <h4 class="text-secondary mb-3">Testimonial</h4>
-                <h1 class="display-4 m-0">Our Client <span class="text-primary">Says</span></h1>
-            </div>
-            <div class="owl-carousel testimonial-carousel">
-                <div class="bg-white mx-3 p-4">
-                    <div class="d-flex align-items-end mb-3 mt-n4 ml-n4">
-                        <img class="img-fluid" src="img/testimonial-1.jpg" style="width: 80px; height: 80px;" alt="">
-                        <div class="ml-3">
-                            <h5>Client Name</h5>
-                            <i>Profession</i>
-                        </div>
-                    </div>
-                    <p class="m-0">Sed ea amet kasd elitr stet, stet rebum et ipsum est duo elitr eirmod clita lorem. Dolor tempor ipsum sanct clita</p>
-                </div>
-                <div class="bg-white mx-3 p-4">
-                    <div class="d-flex align-items-end mb-3 mt-n4 ml-n4">
-                        <img class="img-fluid" src="img/testimonial-2.jpg" style="width: 80px; height: 80px;" alt="">
-                        <div class="ml-3">
-                            <h5>Client Name</h5>
-                            <i>Profession</i>
-                        </div>
-                    </div>
-                    <p class="m-0">Sed ea amet kasd elitr stet, stet rebum et ipsum est duo elitr eirmod clita lorem. Dolor tempor ipsum sanct clita</p>
-                </div>
-                <div class="bg-white mx-3 p-4">
-                    <div class="d-flex align-items-end mb-3 mt-n4 ml-n4">
-                        <img class="img-fluid" src="img/testimonial-3.jpg" style="width: 80px; height: 80px;" alt="">
-                        <div class="ml-3">
-                            <h5>Client Name</h5>
-                            <i>Profession</i>
-                        </div>
-                    </div>
-                    <p class="m-0">Sed ea amet kasd elitr stet, stet rebum et ipsum est duo elitr eirmod clita lorem. Dolor tempor ipsum sanct clita</p>
-                </div>
-                <div class="bg-white mx-3 p-4">
-                    <div class="d-flex align-items-end mb-3 mt-n4 ml-n4">
-                        <img class="img-fluid" src="img/testimonial-4.jpg" style="width: 80px; height: 80px;" alt="">
-                        <div class="ml-3">
-                            <h5>Client Name</h5>
-                            <i>Profession</i>
-                        </div>
-                    </div>
-                    <p class="m-0">Sed ea amet kasd elitr stet, stet rebum et ipsum est duo elitr eirmod clita lorem. Dolor tempor ipsum sanct clita</p>
-                </div>
-            </div>
-        </div>
-    </div>
--->
-    <!-- Testimonial End -->
-
-
-    <!-- Blog Start -->
-     <!--
-    <div class="container pt-5">
-        <div class="d-flex flex-column text-center mb-5">
-            <h4 class="text-secondary mb-3">Pet Blog</h4>
-            <h1 class="display-4 m-0"><span class="text-primary">Updates</span> From Blog</h1>
-        </div>
-        <div class="row pb-3">
-            <div class="col-lg-4 mb-4">
-                <div class="card border-0 mb-2">
-                    <img class="card-img-top" src="img/blog-1.jpg" alt="">
-                    <div class="card-body bg-light p-4">
-                        <h4 class="card-title text-truncate">Diam amet eos at no eos</h4>
-                        <div class="d-flex mb-3">
-                            <small class="mr-2"><i class="fa fa-user text-muted"></i> Admin</small>
-                            <small class="mr-2"><i class="fa fa-folder text-muted"></i> Web Design</small>
-                            <small class="mr-2"><i class="fa fa-comments text-muted"></i> 15</small>
-                        </div>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est diam eos, rebum sit vero stet justo</p>
-                        <a class="font-weight-bold" href="">Read More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 mb-4">
-                <div class="card border-0 mb-2">
-                    <img class="card-img-top" src="img/blog-2.jpg" alt="">
-                    <div class="card-body bg-light p-4">
-                        <h4 class="card-title text-truncate">Diam amet eos at no eos</h4>
-                        <div class="d-flex mb-3">
-                            <small class="mr-2"><i class="fa fa-user text-muted"></i> Admin</small>
-                            <small class="mr-2"><i class="fa fa-folder text-muted"></i> Web Design</small>
-                            <small class="mr-2"><i class="fa fa-comments text-muted"></i> 15</small>
-                        </div>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est diam eos, rebum sit vero stet justo</p>
-                        <a class="font-weight-bold" href="">Read More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 mb-4">
-                <div class="card border-0 mb-2">
-                    <img class="card-img-top" src="img/blog-3.jpg" alt="">
-                    <div class="card-body bg-light p-4">
-                        <h4 class="card-title text-truncate">Diam amet eos at no eos</h4>
-                        <div class="d-flex mb-3">
-                            <small class="mr-2"><i class="fa fa-user text-muted"></i> Admin</small>
-                            <small class="mr-2"><i class="fa fa-folder text-muted"></i> Web Design</small>
-                            <small class="mr-2"><i class="fa fa-comments text-muted"></i> 15</small>
-                        </div>
-                        <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet, diam sea est diam eos, rebum sit vero stet justo</p>
-                        <a class="font-weight-bold" href="">Read More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
--->
-    <!-- Blog End -->
-
-
-    <!-- Footer Start
-    <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
-        <div class="row pt-5">
-            <div class="col-lg-4 col-md-12 mb-5">
-                <h1 class="mb-3 display-5 text-capitalize text-white"><span class="text-primary">Pet</span>Lover</h1>
-                <p class="m-0">Ipsum amet sed vero et lorem stet eos ut, labore sed sed stet sea est ipsum ut. Volup amet ea sanct ipsum, dolore vero lorem no duo eirmod. Eirmod amet ipsum no ipsum lorem clita ut. Ut sed sit lorem ea lorem sed, amet stet sit sea ea diam tempor kasd kasd. Diam nonumy etsit tempor ut sed diam sed et ea</p>
-            </div>
-            <div class="col-lg-8 col-md-12">
-                <div class="row">
-                    <div class="col-md-4 mb-5">
-                        <h5 class="text-primary mb-4">Get In Touch</h5>
-                        <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                        <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
-                        <div class="d-flex justify-content-start mt-4">
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-5">
-                        <h5 class="text-primary mb-4">Popular Links</h5>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About Us</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Services</a>
-                            <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Team</a>
-                            <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-5">
-                        <h5 class="text-primary mb-4">Newsletter</h5>
-                        <form action="">
-                            <div class="form-group">
-                                <input type="text" class="form-control border-0" placeholder="Your Name" required="required" />
-                            </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control border-0" placeholder="Your Email" required="required" />
-                            </div>
-                            <div>
-                                <button class="btn btn-lg btn-primary btn-block border-0" type="submit">Submit Now</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid text-white py-4 px-sm-3 px-md-5" style="background: #111111;">
-        <div class="row">
-            <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white">
-                    &copy; <a class="text-white font-weight-bold" href="#">Your Site Name</a>. All Rights Reserved. Designed by
-                    <a class="text-white font-weight-bold" href="https://htmlcodex.com">HTML Codex</a>
-                </p>
-            </div>
-            <div class="col-md-6 text-center text-md-right">
-                <ul class="nav d-inline-flex">
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Privacy</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Terms</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">FAQs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white py-0" href="#">Help</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div> -->
-    <!-- Footer End -->
-
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="{{asset('lib/easing/easing.min.js')}}"></script>
-    <script src="{{asset('lib/owlcarousel/owl.carousel.min.js')}}"></script>
-    <script src="{{asset('lib/tempusdominus/js/moment.min.js')}}"></script>
-    <script src="{{asset('lib/tempusdominus/js/moment-timezone.min.js')}}"></script>
-    <script src="{{asset('lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js')}}"></script>
-
-    <!-- Contact Javascript File -->
-    <script src="{{asset('mail/jqBootstrapValidation.min.js')}}"></script>
-    <script src="{{asset('mail/contact.js')}}"></script>
-
-    <!-- Template Javascript -->
-    <script src="{{asset('js/main.js')}}"></script>
+        // Back to top
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 300) $('.back-to-top').fadeIn();
+            else $('.back-to-top').fadeOut();
+        });
+        $('.back-to-top').click(function() {
+            $('html, body').animate({scrollTop: 0}, 500);
+            return false;
+        });
+    </script>
 </body>
 
 </html>
