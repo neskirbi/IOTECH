@@ -9,7 +9,7 @@ function EscalaRojos(){
 
 function Url(){
     if(window.location.origin.includes('localhost') || window.location.origin.includes('192.168')){
-        return window.location.origin+'/auto/public/';
+        return window.location.origin+'/IOTECH/public/';
     }else{
        return window.location.origin+'/';
     }
@@ -40,7 +40,7 @@ function GenerarPass(id) {
     }
     
     // URL CORREGIDA - usar ruta absoluta
-    var url = '/IOTECH/public/api/GenerarPass';
+    var url = Url()+'api/GenerarPass';
     // O mejor, definir la base URL globalmente:
     // var url = baseUrl + '/api/GenerarPass';
     
