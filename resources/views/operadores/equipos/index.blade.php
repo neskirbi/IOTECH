@@ -274,9 +274,7 @@
             Ya puedes ingresar a la aplicación Oll-ON con tus credenciales.
         </p>
         
-        <a href="{{url('login')}}" class="btn-login">
-            <i class="fas fa-sign-in-alt"></i> Ingresar a la App
-        </a>
+      
     </div>
 
     <!-- Panel informativo -->
