@@ -20,7 +20,7 @@ Route::get('/', function () {
     }  
 
     if(Auth::guard('administradores')->check()){
-        return redirect('operadores');
+        return redirect('geocercas');
     }   
 
     if(Auth::guard('operadores')->check()){

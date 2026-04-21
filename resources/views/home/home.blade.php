@@ -279,7 +279,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center" data-aos="fade-left">
-                    <img src="{{asset('images/home/pexels-photo-699122.jpeg')}}" alt="App Android seguridad GPS" class="img-fluid rounded-4 shadow-lg" style="max-height: 450px; object-fit: cover; width: 100%;">
+                    <img src="{{asset('images/home/pexels-lastly-699122.jpg')}}" alt="App Android seguridad GPS" class="img-fluid rounded-4 shadow-lg" style="max-height: 450px; object-fit: cover; width: 100%;">
                 </div>
             </div>
         </div>

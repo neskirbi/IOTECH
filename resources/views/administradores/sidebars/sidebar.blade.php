@@ -41,14 +41,14 @@
           <!--<li class="nav-header">Panel de Control</li>-->
           
 
-          <li class="nav-item">
+          <!--<li class="nav-item">
             <a href="{{url('equipos')}}" class="nav-link">
             <i class="nav-icon fa fa-tablet" aria-hidden="true"></i>
               <p>
                 Equipos
               </p>
             </a>
-          </li>
+          </li>-->
 
           <li class="nav-item">
             <a href="{{url('operadores')}}" class="nav-link">
@@ -69,14 +69,14 @@
           </li>
 
 
-          <li class="nav-item">
+          <!--<li class="nav-item">
             <a href="{{url('soporte')}}" class="nav-link">
             <i class="nav-icon fa fa-phone" aria-hidden="true"></i>
               <p>
                 Soporte
               </p>
             </a>
-          </li>
+          </li>-->
           
 
 
