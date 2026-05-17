@@ -14,7 +14,7 @@ class AdministradorController extends Controller
     
     
     public function __construct(){
-        $this->middleware('sulog');
+        //$this->middleware('sulog');
     }
 
 

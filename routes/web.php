@@ -44,14 +44,8 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
 
 
 
-/**
- * Rutas Super Usuarios
- */
 
-  Route::middleware(['auth:administradores'])->group(function () {
-
-        
-        Route::resource('empresas', 'App\Http\Controllers\SuperUsuario\EmpresaController');
+  Route::resource('empresas', 'App\Http\Controllers\SuperUsuario\EmpresaController');
         Route::get('BorrarEmpresa/{id}', 'App\Http\Controllers\SuperUsuario\EmpresaController@BorrarEmpresa');
 
         Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\AdministradorController');
@@ -60,6 +54,15 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
         Route::resource('operadoress', 'App\Http\Controllers\SuperUsuario\OperadorController');
 
         Route::resource('equiposs', 'App\Http\Controllers\SuperUsuario\EquipoController');
+
+/**
+ * Rutas Super Usuarios
+ */
+
+  Route::middleware(['auth:administradores'])->group(function () {
+
+        
+      
 
         Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
     });
