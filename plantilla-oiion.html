@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oll-ON | Cyber-Security Platform</title>
+  <!-- Fuente moderna Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Paleta Neón / Cyber-Security */
+      --bg-main: #0b0f19;
+      --bg-card: #161f30;
+      --bg-hover: #1e293b;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #1e293b;
+      --sidebar-width: 260px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Lateral */
+    aside {
+      width: var(--sidebar-width);
+      background-color: var(--bg-card);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Logo oficial Oll-ON (OI en HTML/CSS) */
+    .brand-logo-oi {
+      width: 44px;
+      height: 32px;
+      background: #0d0f12;
+      border-radius: 16px;
+      border: 1px solid #2a2e37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+    }
+
+    .logo-o {
+      width: 14px;
+      height: 14px;
+      border: 2.5px solid #e2e8f0;
+      border-radius: 50%;
+    }
+
+    .logo-i {
+      width: 3.5px;
+      height: 14px;
+      background-color: #e2e8f0;
+      border-radius: 1px;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 1px;
+    }
+
+    .menu {
+      list-style: none;
+      padding: 20px 0;
+    }
+
+    .menu li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .menu li a:hover, .menu li.active a {
+      color: var(--accent-cyan);
+      background-color: var(--bg-hover);
+      border-left: 4px solid var(--accent-cyan);
+    }
+
+    /* Contenido Principal */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      height: 70px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background-color: var(--bg-card);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #000;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+    }
+
+    .container {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Grid de Widgets Status */
+    .widget-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+
+    .card-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      width: fit-content;
+    }
+
+    .status-badge.online {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--accent-green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge.offline {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--accent-red);
+    }
+
+    /* Sección Tabla de Chapas */
+    .devices-section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      color: var(--accent-cyan);
+    }
+
+    .table-container {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .btn-action {
+      background-color: transparent;
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background-color: var(--accent-cyan);
+      color: #000;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Lateral -->
+  <aside>
+    <div class="brand">
+      <div class="brand-logo-oi">
+        <div class="logo-o"></div>
+        <div class="logo-i"></div>
+      </div>
+      <span class="brand-title">Oll-ON</span>
+    </div>
+    <ul class="menu">
+      <li class="active"><a href="#">📊 Dashboard</a></li>
+      <li><a href="#">🔒 Cajas & Chapas</a></li>
+      <li><a href="#">📍 Geolocalización</a></li>
+      <li><a href="#">📱 App Móvil & Server</a></li>
+      <li><a href="#">📋 Bitácora Logs</a></li>
+    </ul>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main>
+    <header>
+      <h3>Panel de Control Oll-ON</h3>
+      <div class="user-profile">
+        <div class="avatar">A</div>
+        <span>Administrador</span>
+      </div>
+    </header>
+
+    <div class="container">
+      
+      <!-- Widgets neón superiores -->
+      <div class="widget-grid">
+        <div class="card">
+          <span class="card-title">Chapas Conectadas</span>
+          <div class="card-value">14 / 16</div>
+          <span class="status-badge online">● Bluetooth Active</span>
+        </div>
+
+        <div class="card">
+          <span class="card-title">Aperturas Hoy</span>
+          <div class="card-value">128</div>
+          <span style="color: var(--accent-cyan); font-size: 0.85rem; font-weight: 500;">Token Decodificado OK</span>
+        </div>
+
+        <div class="card">
+          <span class="card-title">Conexión App Móvil</span>
+          <div class="card-value">99.8%</div>
+          <span class="status-badge online">● GPS Sincronizado</span>
+        </div>
+
+        <div class="card">
+          <span class="card-title">Alertas / Fallos</span>
+          <div class="card-value">0</div>
+          <span class="status-badge online">● Sistema Seguro</span>
+        </div>
+      </div>
+
+      <!-- Monitoreo de Cajas -->
+      <div class="devices-section">
+        <h2>Monitoreo en Tiempo Real</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Caja</th>
+                <th>Ubicación (GPS App)</th>
+                <th>Estado Chapa</th>
+                <th>Última Validación</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>BOX-001</strong></td>
+                <td>CDMX (19.4326, -99.1332)</td>
+                <td><span class="status-badge offline">CERRADA</span></td>
+                <td>Hace 2 min (Token Servidor)</td>
+                <td><button class="btn-action">Detalles</button></td>
+              </tr>
+              <tr>
+                <td><strong>BOX-002</strong></td>
+                <td>Guadalajara (20.6736, -103.3470)</td>
+                <td><span class="status-badge online">ABIERTA (Bluetooth)</span></td>
+                <td>Hace 10 seg</td>
+                <td><button class="btn-action">Detalles</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
