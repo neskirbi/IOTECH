@@ -1,84 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   @include('administradores.header')
-  <title>IOTECH | Geocercas</title>
+  <title>OIIon | Geocercas</title>
   <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry&callback=inicializarAplicacion" async defer></script>
+  
   <style>
     #map {
-      height: 500px;
+      height: 480px;
       width: 100%;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
     }
     .geocerca-card {
+      border: 1px solid var(--border-color);
       border-left: 4px solid #3B82F6;
+      background-color: var(--bg-card);
+      border-radius: 8px;
       margin-bottom: 15px;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
     }
-    .botones-columna {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+    .geocerca-card:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+    .map-controls-overlay {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      z-index: 5;
     }
   </style>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
 @include('toast.toasts')
 
-<!-- Modal de confirmación para eliminar -->
+<!-- Modal de Confirmación para Eliminar Geocerca -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="confirmDeleteModalLabel">
-          <i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación
+    <div class="modal-content" style="background-color: var(--bg-card); border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);">
+      
+      <div class="modal-header border-0" style="background-color: rgba(239, 68, 68, 0.08);">
+        <h5 class="modal-title text-white font-weight-bold" id="confirmDeleteModalLabel">
+          <i class="fas fa-exclamation-triangle mr-2" style="color: var(--accent-red);"></i> Confirmar Eliminación
         </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close text-white-50" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body text-center">
-        <div class="delete-icon">
-          <i class="fas fa-trash-alt"></i>
+
+      <div class="modal-body text-center text-light py-4">
+        <div class="mb-3">
+          <i class="fas fa-draw-polygon fa-3x" style="color: var(--accent-red);"></i>
         </div>
-        <h4>¿Estás seguro de eliminar esta geocerca?</h4>
-        <p class="text-muted" id="geocercaName"></p>
-        <p><small>Esta acción no se puede deshacer.</small></p>
+        <h4 class="text-white font-weight-bold mb-2">¿Deseas eliminar esta geocerca?</h4>
+        <p class="text-white-50 font-weight-bold" id="geocercaName"></p>
+        <p class="text-muted small mb-0">Esta acción no se puede deshacer de forma permanente.</p>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          <i class="fas fa-times"></i> Cancelar
+
+      <div class="modal-footer border-0" style="background-color: rgba(255, 255, 255, 0.02);">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">
+          <i class="fas fa-times mr-1"></i> Cancelar
         </button>
-        <form id="deleteForm" method="POST" action="">
+        <form id="deleteForm" method="POST" action="" class="d-inline">
           @csrf
           @method('DELETE')
-          <button type="submit" class="btn btn-danger">
-            <i class="fas fa-trash"></i> Sí, eliminar
+          <button type="submit" class="btn btn-sm" style="background-color: var(--accent-red); color: #fff; font-weight: 600;">
+            <i class="fas fa-trash-alt mr-1"></i> Sí, Eliminar
           </button>
         </form>
       </div>
+
     </div>
   </div>
 </div>
 
 <div class="wrapper">
-  @include('administradores.navigations.navigation')
-  @include('administradores.sidebars.sidebar')
+  <!-- Navbar y Sidebar Neón -->
+  @include('administradores.navbar')
+  @include('administradores.sidebar')
 
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="background-color: var(--bg-main);">
+    
     <div class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row mb-2 align-items-center">
           <div class="col-sm-6">
-            <h1 class="m-0"><i class="nav-icon fas fa-draw-polygon"></i> Geocercas</h1>
+            <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
+              <i class="fas fa-draw-polygon mr-2" style="color: var(--accent-cyan);"></i> Gestión de Geocercas
+            </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ url('operadores') }}">Inicio</a></li>
-              <li class="breadcrumb-item active">Geocercas</li>
+              <li class="breadcrumb-item"><a href="{{ url('operadores') }}" class="text-cyan">Inicio</a></li>
+              <li class="breadcrumb-item active text-muted">Geocercas</li>
             </ol>
           </div>
         </div>
@@ -88,26 +103,30 @@
     <section class="content">
       <div class="container-fluid">
         
-        <!-- Mapa -->
-        <div class="row">
+        <!-- Mapa de Geocercas -->
+        <div class="row mb-4">
           <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-map-marked-alt"></i> Mapa de Geocercas</h3>
-                <div class="card-tools">
-                  <a href="{{ route('geocercas.create') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Crear Geocerca
+            <div class="card card-oiion">
+              
+              <!-- HEADER CORREGIDO CON w-100 Y justify-content-between -->
+              <div class="card-header border-0 d-flex align-items-center justify-content-between w-100">
+                <h3 class="card-title text-white font-weight-bold m-0">
+                  <i class="fas fa-map-marked-alt mr-2" style="color: var(--accent-cyan);"></i> Mapa Interactivo
+                </h3>
+                <div class="card-tools ml-auto">
+                  <a href="{{ route('geocercas.create') }}" class="btn btn-action btn-sm">
+                    <i class="fas fa-plus mr-1"></i> Crear Geocerca
                   </a>
                 </div>
               </div>
-              <div class="card-body position-relative">
+
+              <div class="card-body position-relative p-3">
                 <div id="map"></div>
-                <div class="map-controls">
-                  <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn btn-info" onclick="centrarMapa()">
-                      <i class="fas fa-crosshairs"></i> Centrar
-                    </button>
-                  </div>
+                <!-- Control en mapa -->
+                <div class="map-controls-overlay">
+                  <button type="button" class="btn btn-sm btn-dark text-cyan border-secondary" onclick="centrarMapa()" style="box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                    <i class="fas fa-crosshairs mr-1"></i> Centrar Mapa
+                  </button>
                 </div>
               </div>
             </div>
@@ -117,73 +136,103 @@
         <!-- Lista de Geocercas -->
         <div class="row">
           <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-list"></i> Lista de Geocercas</h3>
+            <div class="card card-oiion">
+              <div class="card-header border-0">
+                <h3 class="card-title text-white font-weight-bold m-0">
+                  <i class="fas fa-list mr-2" style="color: var(--accent-green);"></i> Geocercas Registradas
+                </h3>
               </div>
               <div class="card-body">
                 @if($geocercas->count() > 0)
                   @foreach($geocercas as $geocerca)
-                  <div class="card geocerca-card" style="border-left-color: {{ $geocerca->color ?? '#3B82F6' }}">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-md-8">
-                          <h5 class="card-title">
-                            {{ $geocerca->nombre }}
-                            @if($geocerca->activa)
-                              <span class="badge badge-success">Activa</span>
-                            @else
-                              <span class="badge badge-danger">Inactiva</span>
-                            @endif
-                            <span class="badge badge-info">{{ $geocerca->tipo }}</span>
-                          </h5>
-                          <p class="card-text text-muted">
-                            {{ $geocerca->descripcion ?? 'Sin descripción' }}
+                  <div class="card geocerca-card" style="border-left-color: {{ $geocerca->color ?? '#3B82F6' }};">
+                    <div class="card-body py-3">
+                      <div class="row align-items-center">
+                        
+                        <!-- Datos Principales -->
+                        <div class="col-md-9 col-10">
+                          <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                            <h5 class="card-title text-white font-weight-bold m-0" style="font-size: 1.1rem;">
+                              {{ $geocerca->nombre }}
+                            </h5>
+                            
+                            <!-- Badge Estado Parpadeante -->
+                            <span class="status-badge {{ $geocerca->activa ? 'online' : 'offline' }} ml-2">
+                              <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                              <span class="badge-text">{{ $geocerca->activa ? 'Activa' : 'Inactiva' }}</span>
+                            </span>
+
+                            <span class="badge bg-dark border border-secondary text-cyan ml-1" style="font-size: 0.75rem;">
+                              <i class="{{ $geocerca->tipo == 'circular' ? 'fas fa-circle-notch' : 'fas fa-draw-polygon' }} mr-1"></i>
+                              {{ ucfirst($geocerca->tipo) }}
+                            </span>
+                          </div>
+
+                          <p class="card-text text-muted small mb-2">
+                            {{ $geocerca->descripcion ?? 'Sin descripción proporcionada.' }}
                           </p>
-                          <p class="card-text">
+
+                          <p class="card-text mb-0">
                             <small class="text-muted">
                               @if($geocerca->tipo == 'circular')
-                                <i class="fas fa-map-marker-alt"></i> Centro: {{ number_format($geocerca->latitud, 6) }}, {{ number_format($geocerca->longitud, 6) }}<br>
-                                <i class="fas fa-expand-arrows-alt"></i> Radio: {{ $geocerca->radio }} {{ $geocerca->unidad_distancia ?? 'metros' }}<br>
+                                <i class="fas fa-map-marker-alt mr-1 text-cyan"></i> Centro: {{ number_format($geocerca->latitud, 6) }}, {{ number_format($geocerca->longitud, 6) }} &bull;
+                                <i class="fas fa-expand-arrows-alt mx-1 text-cyan"></i> Radio: {{ $geocerca->radio }} {{ $geocerca->unidad_distancia ?? 'metros' }} &bull;
                               @else
-                                <i class="fas fa-draw-polygon"></i> Polígono con puntos<br>
+                                <i class="fas fa-draw-polygon mr-1 text-cyan"></i> Polígono delimitado por coordenadas &bull;
                               @endif
-                              <i class="far fa-clock"></i> Creada: {{ $geocerca->created_at->format('d/m/Y H:i') }}
+                              <i class="far fa-clock ml-1 mr-1"></i> Creada: {{ $geocerca->created_at->format('d/m/Y H:i') }}
                             </small>
                           </p>
                         </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2">
-                          <div class="botones-columna">
-                            <button type="button" class="btn btn-info btn-sm ver-geocerca" 
-                                    data-id="{{ $geocerca->id }}" 
-                                    data-tipo="{{ $geocerca->tipo }}">
-                              <i class="fas fa-eye"></i> Ver en Mapa
+
+                        <!-- Menú Desplegable de Tres Puntos a la Derecha -->
+                        <div class="col-md-3 col-2 text-right">
+                          <div class="btn-group dropleft">
+                            <button class="btn btn-sm text-white-50 border-0" type="button" id="menu_geocerca_{{$geocerca->id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: transparent;">
+                              <i class="fas fa-ellipsis-v text-white font-weight-bold" style="font-size: 1.2rem;"></i>
                             </button>
-                            <a href="{{ route('geocercas.edit', $geocerca->id) }}" class="btn btn-warning btn-sm">
-                              <i class="fas fa-edit"></i> Editar
-                            </a>
-                            <button type="button" class="btn btn-danger btn-sm btn-eliminar" 
-                                    data-id="{{ $geocerca->id }}" 
-                                    data-nombre="{{ $geocerca->nombre }}"
-                                    data-url="{{ route('geocercas.destroy', $geocerca->id) }}">
-                              <i class="fas fa-trash"></i> Eliminar
-                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                              
+                              <!-- Ver en Mapa -->
+                              <a class="dropdown-item text-light ver-geocerca" href="javascript:void(0)" 
+                                 data-id="{{ $geocerca->id }}" 
+                                 data-tipo="{{ $geocerca->tipo }}">
+                                <i class="fas fa-eye mr-2 text-info"></i> Ver en Mapa
+                              </a>
+
+                              <!-- Editar -->
+                              <a class="dropdown-item text-light" href="{{ route('geocercas.edit', $geocerca->id) }}">
+                                <i class="fas fa-edit mr-2 text-warning"></i> Editar Geocerca
+                              </a>
+
+                              <div class="dropdown-divider" style="border-color: var(--border-color);"></div>
+
+                              <!-- Eliminar Modal -->
+                              <a class="dropdown-item text-danger btn-eliminar" href="javascript:void(0)"
+                                 data-id="{{ $geocerca->id }}" 
+                                 data-nombre="{{ $geocerca->nombre }}"
+                                 data-url="{{ route('geocercas.destroy', $geocerca->id) }}">
+                                <i class="fas fa-trash-alt mr-2"></i> Eliminar Geocerca
+                              </a>
+
+                            </div>
                           </div>
                         </div>
+
                       </div>
                     </div>
                   </div>
                   @endforeach
                 @else
-                  <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> No hay geocercas creadas. 
-                    <a href="{{ route('geocercas.create') }}" class="alert-link">Crea tu primera geocerca</a>
+                  <div class="alert text-cyan border-secondary" style="background-color: rgba(6, 182, 212, 0.05);">
+                    <i class="fas fa-info-circle mr-2"></i> No hay geocercas registradas. 
+                    <a href="{{ route('geocercas.create') }}" class="text-white text-underline font-weight-bold ml-1">Crea tu primera geocerca aquí</a>.
                   </div>
                 @endif
               </div>
+
               @if($geocercas->hasPages())
-              <div class="card-footer">
+              <div class="card-footer border-top-0" style="background-color: transparent;">
                 <div class="float-right">
                    {{ $geocercas->appends($_GET)->links('pagination::bootstrap-4') }}
                 </div>
@@ -197,7 +246,11 @@
     </section>
   </div>
   
-  <footer class="main-footer">
+  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
+    <div class="float-right d-none d-sm-inline">
+      OIIon Security Platform
+    </div>
+    <strong>Copyright &copy; OIIon.</strong> Todos los derechos reservados.
   </footer>
 </div>
 
@@ -291,7 +344,6 @@
             
             geocercasEnMapa.push(polygon);
             
-            // Extender bounds para incluir todos los puntos del polígono
             coordinates.forEach(function(point) {
               bounds.extend(point);
             });
@@ -345,7 +397,6 @@
   }
 </script>
 
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="dist/js/adminlte.js"></script>
+@include('administradores.footer')
 </body>
 </html>

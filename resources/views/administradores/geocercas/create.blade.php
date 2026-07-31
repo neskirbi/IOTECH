@@ -1,50 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   @include('administradores.header')
-  <title>IOTECH | Crear Geocerca</title>
-  <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-  <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <title>OIIon | Crear Geocerca</title>
   
   <style>
     #map {
-      height: 500px;
+      height: 520px;
       width: 100%;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      margin-bottom: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
     }
-    .map-controls {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-      background: white;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .color-picker-wrapper input[type="color"] {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      height: 38px;
+      width: 50px;
+      background: var(--bg-main);
+      cursor: pointer;
     }
   </style>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
 @include('toast.toasts')
 <div class="wrapper">
 
-  @include('administradores.navigations.navigation')
-  @include('administradores.sidebars.sidebar')
+  <!-- Navbar y Sidebar Neón -->
+  @include('administradores.navbar')
+  @include('administradores.sidebar')
 
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="background-color: var(--bg-main);">
+    
     <div class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row mb-2 align-items-center">
           <div class="col-sm-6">
-            <h1 class="m-0"><i class="nav-icon fas fa-draw-polygon"></i> Crear Geocerca</h1>
+            <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
+              <i class="fas fa-draw-polygon mr-2" style="color: var(--accent-cyan);"></i> Crear Nueva Geocerca
+            </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ url('operadores') }}">Inicio</a></li>
-              <li class="breadcrumb-item"><a href="{{ route('geocercas.index') }}">Geocercas</a></li>
-              <li class="breadcrumb-item active">Crear</li>
+              <li class="breadcrumb-item"><a href="{{ url('operadores') }}" class="text-cyan">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('geocercas.index') }}" class="text-cyan">Geocercas</a></li>
+              <li class="breadcrumb-item active text-muted">Crear</li>
             </ol>
           </div>
         </div>
@@ -54,126 +58,150 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-8">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-map-marked-alt"></i> Mapa</h3>
+          
+          <!-- Módulo Completo: Mapa (Full Width) + Formulario Integrado Abajo -->
+          <div class="col-12 mb-4">
+            <div class="card card-oiion">
+              
+              <!-- Header -->
+              <div class="card-header border-0 d-flex align-items-center justify-content-between w-100">
+                <h3 class="card-title text-white font-weight-bold m-0">
+                  <i class="fas fa-map-marked-alt mr-2" style="color: var(--accent-cyan);"></i> Trazo en Mapa y Configuración
+                </h3>
               </div>
-              <div class="card-body position-relative">
-                <div id="map"></div>
-                <div class="map-controls">
-                  <div class="form-group mb-2">
-                    <label class="small mb-1"><i class="fas fa-mouse-pointer"></i> Tipo de dibujo:</label>
-                    <select id="tipo-dibujo" class="form-control form-control-sm">
-                      <option value="">Seleccionar tipo</option>
-                      <option value="circular">Círculo</option>
-                      <option value="poligono">Polígono</option>
-                    </select>
-                  </div>
-                  
-                  <div id="circle-controls" style="display: none;">
-                    <small class="text-muted">Haz clic en el mapa para el centro</small>
-                    <div class="input-group input-group-sm mb-2">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">Radio (m)</span>
-                      </div>
-                      <input type="number" id="circle-radius" class="form-control" value="100" min="10">
-                    </div>
-                    <button class="btn btn-sm btn-info btn-block" onclick="dibujarCirculo()">
-                      <i class="fas fa-draw-circle"></i> Dibujar Círculo
-                    </button>
-                  </div>
-                  
-                  <div id="polygon-controls" style="display: none;">
-                    <small class="text-muted">Haz clic para crear puntos</small><br>
-                    <small class="text-muted">Doble clic para terminar</small>
-                    <button class="btn btn-sm btn-info btn-block mt-1" onclick="iniciarDibujoPoligono()">
-                      <i class="fas fa-draw-polygon"></i> Empezar a dibujar
-                    </button>
-                    <button class="btn btn-sm btn-secondary btn-block mt-1" onclick="limpiarDibujo()">
-                      <i class="fas fa-eraser"></i> Limpiar
-                    </button>
-                  </div>
+              
+              <div class="card-body p-3">
+                <!-- Mapa extendido al 100% (Sin elementos flotantes) -->
+                <div class="position-relative mb-4">
+                  <div id="map"></div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-info-circle"></i> Información de la Geocerca</h3>
-              </div>
-              <div class="card-body">
+                <!-- Formulario Integrado debajo del Mapa -->
                 <form action="{{ route('geocercas.store') }}" method="POST" id="geocerca-form">
                   @csrf
-                  
                   <input type="hidden" id="tipo" name="tipo" value="">
-                  
-                  <div class="form-group">
-                    <label for="nombre">Nombre *</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required 
-                           placeholder="Ej: Zona de trabajo, Área restringida">
-                  </div>
 
-                  <div class="form-group">
-                    <label for="descripcion">Descripción</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" 
-                              placeholder="Descripción de la geocerca"></textarea>
-                  </div>
-
-                  <div id="circle-fields" style="display: none;">
-                    <div class="form-row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="latitud">Latitud *</label>
-                          <input type="text" class="form-control" id="latitud" name="latitud" readonly>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="longitud">Longitud *</label>
-                          <input type="text" class="form-control" id="longitud" name="longitud" readonly>
-                        </div>
+                  <!-- Mensaje de aviso arriba a TODO LO ANCHO cuando no hay selección -->
+                  <div id="default-fields-msg" class="row mb-3">
+                    <div class="col-12">
+                      <div class="p-3 border rounded text-center text-cyan" style="background: rgba(6, 182, 212, 0.05); border-color: var(--border-color) !important;">
+                        <i class="fas fa-info-circle mr-2"></i> Selecciona un <strong>Tipo de Geocerca</strong> en el formulario para habilitar el trazo en el mapa.
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label for="radio">Radio (metros) *</label>
-                      <input type="number" class="form-control" id="radio" name="radio" min="10" step="1">
+                  </div>
+
+                  <div class="row align-items-start">
+                    
+                    <!-- Columna 1: Tipo de Geocerca + Datos Generales -->
+                    <div class="col-md-5 mb-3">
+                      <div class="form-group mb-3">
+                        <label for="tipo-dibujo" class="text-white font-weight-bold">
+                          <i class="fas fa-shapes mr-1 text-cyan"></i> Tipo de Geocerca *
+                        </label>
+                        <select id="tipo-dibujo" class="form-control form-control-oiion">
+                          <option value="">-- Seleccionar Forma --</option>
+                          <option value="circular">Círculo (Punto y Radio)</option>
+                          <option value="poligono">Polígono (Puntos Libres)</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label for="nombre" class="text-white font-weight-bold">Nombre de la Geocerca *</label>
+                        <input type="text" class="form-control form-control-oiion" id="nombre" name="nombre" required 
+                               placeholder="Ej: Zona Norte, Patio de carga">
+                      </div>
+
+                      <div class="form-group mb-0">
+                        <label for="descripcion" class="text-white font-weight-bold">Descripción</label>
+                        <textarea class="form-control form-control-oiion" id="descripcion" name="descripcion" rows="2" 
+                                  placeholder="Breve descripción del propósito de esta zona"></textarea>
+                      </div>
                     </div>
-                  </div>
 
-                  <div id="polygon-fields" style="display: none;">
-                    <div class="form-group">
-                      <label>Coordenadas del Polígono</label>
-                      <input type="hidden" id="coordenadas" name="coordenadas">
-                      <small class="text-muted">Puntos: <span id="point-count">0</span></small>
+                    <!-- Columna 2: Parámetros e Instrucciones del Trazo (Dinámicos) -->
+                    <div class="col-md-4 mb-3">
+                      
+                      <!-- Campos y Guía Círculo -->
+                      <div id="circle-fields" style="display: none;">
+                        <small class="text-cyan d-block mb-2"><i class="fas fa-mouse-pointer mr-1"></i> Haz clic en el mapa para fijar el centro.</small>
+                        <div class="form-group mb-3">
+                          <label for="circle-radius" class="text-white font-weight-bold">Radio (metros) *</label>
+                          <input type="number" id="circle-radius" name="radio" class="form-control form-control-oiion" value="100" min="10" step="1">
+                        </div>
+                        <div class="form-row">
+                          <div class="col-6">
+                            <div class="form-group mb-0">
+                              <label for="latitud" class="text-white font-weight-bold small">Latitud</label>
+                              <input type="text" class="form-control form-control-oiion" id="latitud" name="latitud" readonly placeholder="Clic en mapa">
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="form-group mb-0">
+                              <label for="longitud" class="text-white font-weight-bold small">Longitud</label>
+                              <input type="text" class="form-control form-control-oiion" id="longitud" name="longitud" readonly placeholder="Clic en mapa">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Campos, Guía y Limpiar Polígono -->
+                      <div id="polygon-fields" style="display: none;">
+                        <small class="text-cyan d-block mb-1"><i class="fas fa-mouse-pointer mr-1"></i> Clic en el mapa para agregar vértices.</small>
+                        <small class="text-muted d-block mb-3"><i class="fas fa-check mr-1"></i> Doble clic para finalizar el trazo.</small>
+                        
+                        <input type="hidden" id="coordenadas" name="coordenadas">
+                        
+                        <div class="p-3 border rounded text-center mb-2" style="background: var(--bg-main); border-color: var(--border-color) !important;">
+                          <i class="fas fa-draw-polygon text-cyan fa-2x mb-2"></i>
+                          <div class="text-muted small">Vértices capturados: <span id="point-count" class="text-cyan font-weight-bold" style="font-size: 1.1rem;">0</span></div>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-secondary btn-sm btn-block" onclick="limpiarDibujo()">
+                          <i class="fas fa-eraser mr-1"></i> Limpiar Trazo
+                        </button>
+                      </div>
+
                     </div>
-                  </div>
 
-                  <div class="form-group">
-                    <label for="color">Color</label>
-                    <input type="color" class="form-control" id="color" name="color" value="#3B82F6">
-                  </div>
+                    <!-- Columna 3: Color y Guardar -->
+                    <div class="col-md-3 mb-3">
+                      
+                      <div class="form-group mb-4">
+                        <label for="color" class="text-white font-weight-bold d-block">Color del Área</label>
+                        <div class="color-picker-wrapper">
+                          <input type="color" id="color" name="color" value="#3B82F6">
+                          <span class="small text-muted">Personalizar trazo</span>
+                        </div>
+                      </div>
 
-                  <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block" id="submit-btn" disabled>
-                      <i class="fas fa-save"></i> Guardar Geocerca
-                    </button>
-                    <a href="{{ route('geocercas.index') }}" class="btn btn-default btn-block">
-                      <i class="fas fa-times"></i> Cancelar
-                    </a>
+                      <div class="form-group mb-0 pt-2">
+                        <button type="submit" class="btn btn-action btn-block font-weight-bold py-2 mb-2" id="submit-btn" disabled>
+                          <i class="fas fa-save mr-1"></i> Guardar Geocerca
+                        </button>
+                        <a href="{{ route('geocercas.index') }}" class="btn btn-outline-secondary btn-block">
+                          <i class="fas fa-times mr-1"></i> Cancelar
+                        </a>
+                      </div>
+
+                    </div>
+
                   </div>
                 </form>
+
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
   </div>
   
-  <footer class="main-footer">
+  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
+    <div class="float-right d-none d-sm-inline">
+      OIIon Security Platform
+    </div>
+    <strong>Copyright &copy; OIIon.</strong> Todos los derechos reservados.
   </footer>
 </div>
 
@@ -222,22 +250,19 @@
       $('#tipo').val(tipo);
       
       if (tipo === 'circular') {
+        $('#default-fields-msg').hide();
         $('#circle-fields').show();
         $('#polygon-fields').hide();
-        $('#circle-controls').show();
-        $('#polygon-controls').hide();
         limpiarDibujo();
       } else if (tipo === 'poligono') {
+        $('#default-fields-msg').hide();
         $('#circle-fields').hide();
         $('#polygon-fields').show();
-        $('#circle-controls').hide();
-        $('#polygon-controls').show();
-        limpiarDibujo();
+        iniciarDibujoPoligono();
       } else {
+        $('#default-fields-msg').show();
         $('#circle-fields').hide();
         $('#polygon-fields').hide();
-        $('#circle-controls').hide();
-        $('#polygon-controls').hide();
         limpiarDibujo();
       }
       
@@ -249,7 +274,9 @@
         circleCenter = event.latLng;
         $('#latitud').val(circleCenter.lat().toFixed(8));
         $('#longitud').val(circleCenter.lng().toFixed(8));
-        actualizarEstadoBoton();
+        dibujarCirculo();
+      } else if (drawingMode === 'poligono') {
+        agregarPuntoPoligono(event.latLng);
       }
     });
 
@@ -259,14 +286,17 @@
       if (polygon) polygon.setOptions({ fillColor: color, strokeColor: color });
     });
 
-    $('#nombre, #latitud, #longitud, #radio').on('input', actualizarEstadoBoton);
+    $('#circle-radius').on('input', function() {
+      if (circle && circleCenter) {
+        dibujarCirculo();
+      }
+    });
+
+    $('#nombre, #latitud, #longitud, #circle-radius').on('input', actualizarEstadoBoton);
   }
 
   function dibujarCirculo() {
-    if (!circleCenter) {
-      alert('Haz clic en el mapa para definir el centro primero.');
-      return;
-    }
+    if (!circleCenter) return;
     
     var radius = parseInt($('#circle-radius').val()) || 100;
     
@@ -285,16 +315,14 @@
       draggable: true
     });
     
-    $('#radio').val(radius);
-    
     google.maps.event.addListener(circle, 'radius_changed', function() {
       var newRadius = Math.round(circle.getRadius());
-      $('#radio').val(newRadius);
       $('#circle-radius').val(newRadius);
     });
     
     google.maps.event.addListener(circle, 'center_changed', function() {
       var center = circle.getCenter();
+      circleCenter = center;
       $('#latitud').val(center.lat().toFixed(8));
       $('#longitud').val(center.lng().toFixed(8));
     });
@@ -304,11 +332,6 @@
 
   function iniciarDibujoPoligono() {
     limpiarDibujo();
-    polygonPath = [];
-    
-    polygonClickListener = google.maps.event.addListener(map, 'click', function(event) {
-      agregarPuntoPoligono(event.latLng);
-    });
   }
 
   function agregarPuntoPoligono(latLng) {
@@ -326,13 +349,26 @@
         draggable: true
       });
       
-      google.maps.event.addListener(polygon.getPath(), 'set_at', actualizarCoordenadasPoligono);
-      google.maps.event.addListener(polygon.getPath(), 'insert_at', actualizarCoordenadasPoligono);
-      google.maps.event.addListener(polygon.getPath(), 'remove_at', actualizarCoordenadasPoligono);
+      var path = polygon.getPath();
+      google.maps.event.addListener(path, 'set_at', actualizarCoordenadasDesdePath);
+      google.maps.event.addListener(path, 'insert_at', actualizarCoordenadasDesdePath);
+      google.maps.event.addListener(path, 'remove_at', actualizarCoordenadasDesdePath);
     } else {
       polygon.setPath(polygonPath);
     }
     
+    actualizarCoordenadasPoligono();
+  }
+
+  // Actualiza los datos leyendo la ruta actual del polígono (evita recursión infinita)
+  function actualizarCoordenadasDesdePath() {
+    if (!polygon) return;
+    var path = polygon.getPath();
+    polygonPath = [];
+    
+    for (var i = 0; i < path.getLength(); i++) {
+      polygonPath.push(path.getAt(i));
+    }
     actualizarCoordenadasPoligono();
   }
 
@@ -372,8 +408,6 @@
     
     $('#latitud').val('');
     $('#longitud').val('');
-    $('#radio').val('');
-    $('#circle-radius').val('100');
     $('#coordenadas').val('');
     $('#point-count').text('0');
     
@@ -388,7 +422,7 @@
     if (tipo === 'circular') {
       var lat = $('#latitud').val();
       var lng = $('#longitud').val();
-      var radio = $('#radio').val();
+      var radio = $('#circle-radius').val();
       habilitar = nombre && lat && lng && radio && circle;
     } else if (tipo === 'poligono') {
       var pointCount = parseInt($('#point-count').text()) || 0;
@@ -400,19 +434,9 @@
 
   $(document).ready(function() {
     cargarGoogleMaps();
-    
-    $('#map').on('dblclick', function() {
-      if (drawingMode === 'poligono' && polygonPath.length >= 3) {
-        if (polygonClickListener) {
-          google.maps.event.removeListener(polygonClickListener);
-          polygonClickListener = null;
-        }
-        alert('Polígono completado con ' + polygonPath.length + ' puntos.');
-      }
-    });
   });
 </script>
 
-<script src="{{ asset('dist/js/adminlte.js') }}"></script>
+@include('administradores.footer')
 </body>
 </html>

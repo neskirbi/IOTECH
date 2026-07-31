@@ -29,51 +29,45 @@ function GenerarPass(id) {
     console.log("Generando pass para ID:", id);
     
     // Si es nuevo, generar localmente
-    if(id === 'nuevo') {
+    if (id === 'nuevo') {
         var temp = generarPasswordLocal();
         $('#temp_nuevo').val(temp);
         
-        if(typeof toastr !== 'undefined') {
-            toastr.success('Contraseña generada: ' + temp);
-        }
+        // Muestra Toast de éxito centrada abajo
+        showOiionToast('Contraseña generada: ' + temp, 'success');
         return;
     }
     
-    // URL CORREGIDA - usar ruta absoluta
-    var url = Url()+'api/GenerarPass';
-    // O mejor, definir la base URL globalmente:
-    // var url = baseUrl + '/api/GenerarPass';
+    // URL usando la función global Url() o ruta base
+    var url = Url() + 'api/GenerarPass';
     
     $.ajax({
-        url: url, // URL absoluta
+        url: url,
         method: 'POST',
         data: {
-            _token: $('meta[name="csrf-token"]').attr('content'), // Obtener token de meta tag
+            _token: $('meta[name="csrf-token"]').attr('content'),
             id: id
         }
     }).done(function(response) {
         console.log("Respuesta:", response);
         
-        if(response.status == 1) {
-            // Actualizar campo correspondiente
+        if (response.status == 1) {
+            // Actualizar el campo de texto con la contraseña generada
             $('#temp_' + id).val(response.temp);
             
-            if(typeof toastr !== 'undefined') {
-                toastr.success('Contraseña generada para ' + (response.nombre || 'usuario') + ': ' + response.temp);
-            }
+            // Toast de éxito mostrando la contraseña obtenida
+            showOiionToast('Contraseña generada para ' + (response.nombre || 'usuario') + ': ' + response.temp, 'success');
         } else {
-            if(typeof toastr !== 'undefined') {
-                toastr.error(response.message || 'Error al generar contraseña');
-            }
+            // Toast de error devuelto por la API
+            showOiionToast(response.message || 'Error al generar contraseña', 'error');
         }
     }).fail(function(xhr, status, error) {
         console.error("Error AJAX:", error);
         console.error("Status:", status);
         console.error("Response:", xhr.responseText);
         
-        if(typeof toastr !== 'undefined') {
-            toastr.error('Error de conexión: ' + error);
-        }
+        // Toast de falla de conexión
+        showOiionToast('Error de conexión al servidor: ' + error, 'error');
     });
 }
 
@@ -153,4 +147,57 @@ function GenerarCodigo(_this){
     }).fail(function() {
         
     });
+}
+
+
+function ToggleOperadorStatus(id, btnElement) {
+    var url = Url() + 'api/ToggleOperadorStatus';
+
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            id: id
+        }
+    }).done(function(response) {
+        if (response.status === 1) {
+            showOiionToast(response.message, response.activo == 1 ? 'success' : 'warning');
+            
+            var $card = $('#card_operador_' + id);
+            var $badge = $('#badge_estado_' + id);
+            
+            if (response.activo == 1) {
+                // Estado ACTIVO (Verde con parpadeo)
+                $card.removeClass('opacity-50');
+                $badge.removeClass('offline').addClass('online');
+                $badge.find('.badge-text').text('Activo');
+                $(btnElement).html('<i class="fas fa-user-slash mr-2 text-warning"></i> Desactivar Operador');
+            } else {
+                // Estado INACTIVO (Rojo con parpadeo)
+                $card.addClass('opacity-50');
+                $badge.removeClass('online').addClass('offline');
+                $badge.find('.badge-text').text('Inactivo');
+                $(btnElement).html('<i class="fas fa-user-check mr-2 text-success"></i> Activar Operador');
+            }
+        } else {
+            showOiionToast(response.message || 'Error al cambiar estado.', 'error');
+        }
+    }).fail(function(xhr, status, error) {
+        console.error("Error AJAX:", error);
+        showOiionToast('Error de conexión con el servidor.', 'error');
+    });
+}
+
+
+function ConfirmarEliminarOperador(id, nombreCompleto) {
+    // Definir la ruta de eliminación en el formulario del modal
+    var actionUrl = Url() + 'operadores/' + id;
+    $('#formEliminarOperador').attr('action', actionUrl);
+    
+    // Asignar el nombre del operador para confirmación visual
+    $('#nombre_operador_eliminar').text(nombreCompleto);
+    
+    // Abrir el modal de Bootstrap
+    $('#modalConfirmarEliminar').modal('show');
 }

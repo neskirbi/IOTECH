@@ -1,40 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   @include('administradores.header')
-  <title>IOTECH | Editar Geocerca</title>
-  <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-  <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <title>OIIon | Editar Geocerca</title>
   
   <style>
     #map {
-      height: 500px;
+      height: 520px;
       width: 100%;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      margin-bottom: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .color-picker-wrapper input[type="color"] {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      height: 38px;
+      width: 50px;
+      background: var(--bg-main);
+      cursor: pointer;
     }
   </style>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
 @include('toast.toasts')
 <div class="wrapper">
 
-  @include('administradores.navigations.navigation')
-  @include('administradores.sidebars.sidebar')
+  <!-- Navbar y Sidebar -->
+  @include('administradores.navbar')
+  @include('administradores.sidebar')
 
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="background-color: var(--bg-main);">
+    
     <div class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row mb-2 align-items-center">
           <div class="col-sm-6">
-            <h1 class="m-0"><i class="nav-icon fas fa-draw-polygon"></i> Editar Geocerca</h1>
+            <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
+              <i class="fas fa-edit mr-2" style="color: var(--accent-cyan);"></i> Editar Geocerca
+            </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ url('operadores') }}">Inicio</a></li>
-              <li class="breadcrumb-item"><a href="{{ route('geocercas.index') }}">Geocercas</a></li>
-              <li class="breadcrumb-item active">Editar</li>
+              <li class="breadcrumb-item"><a href="{{ url('operadores') }}" class="text-cyan">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('geocercas.index') }}" class="text-cyan">Geocercas</a></li>
+              <li class="breadcrumb-item active text-muted">Editar</li>
             </ol>
           </div>
         </div>
@@ -44,98 +58,123 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-8">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-map-marked-alt"></i> Mapa</h3>
+          
+          <div class="col-12 mb-4">
+            <div class="card card-oiion">
+              
+              <div class="card-header border-0 d-flex align-items-center justify-content-between w-100">
+                <h3 class="card-title text-white font-weight-bold m-0">
+                  <i class="fas fa-map-marked-alt mr-2" style="color: var(--accent-cyan);"></i> Ubicación y Configuración
+                </h3>
               </div>
-              <div class="card-body">
-                <div id="map"></div>
-              </div>
-            </div>
-          </div>
+              
+              <div class="card-body p-3">
+                
+                <!-- Mapa -->
+                <div class="position-relative mb-4">
+                  <div id="map"></div>
+                </div>
 
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-info-circle"></i> Información de la Geocerca</h3>
-              </div>
-              <div class="card-body">
-                <form action="{{ route('geocercas.update', $geocerca->id) }}" method="POST">
+                <!-- Formulario -->
+                <form action="{{ route('geocercas.update', $geocerca->id) }}" method="POST" id="geocerca-form">
                   @csrf
                   @method('PUT')
                   
                   <input type="hidden" name="tipo" value="{{ $geocerca->tipo }}">
-                  
-                  <div class="form-group">
-                    <label for="nombre">Nombre *</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required value="{{ $geocerca->nombre }}">
-                  </div>
 
-                  <div class="form-group">
-                    <label for="descripcion">Descripción</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3">{{ $geocerca->descripcion }}</textarea>
-                  </div>
+                  <div class="row align-items-start">
+                    
+                    <!-- Columna 1: Datos Generales -->
+                    <div class="col-md-5 mb-3">
+                      <div class="form-group mb-3">
+                        <label for="nombre" class="text-white font-weight-bold">Nombre de la Geocerca *</label>
+                        <input type="text" class="form-control form-control-oiion" id="nombre" name="nombre" required value="{{ $geocerca->nombre }}">
+                      </div>
 
-                  @if($geocerca->tipo == 'circular')
-                  <div class="form-row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="latitud">Latitud *</label>
-                        <input type="text" class="form-control" id="latitud" name="latitud" required value="{{ $geocerca->latitud }}">
+                      <div class="form-group mb-3">
+                        <label for="descripcion" class="text-white font-weight-bold">Descripción</label>
+                        <textarea class="form-control form-control-oiion" id="descripcion" name="descripcion" rows="2">{{ $geocerca->descripcion }}</textarea>
+                      </div>
+
+                      <div class="form-group mb-0">
+                        <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="activa" name="activa" value="1" {{ $geocerca->activa ? 'checked' : '' }}>
+                          <label class="custom-control-label text-white font-weight-bold" for="activa">Geocerca activa</label>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="longitud">Longitud *</label>
-                        <input type="text" class="form-control" id="longitud" name="longitud" required value="{{ $geocerca->longitud }}">
+
+                    <!-- Columna 2: Parámetros del Trazo -->
+                    <div class="col-md-4 mb-3">
+                      @if($geocerca->tipo == 'circular')
+                        <small class="text-cyan d-block mb-2"><i class="fas fa-mouse-pointer mr-1"></i> Clic en el mapa para reposicionar el centro.</small>
+                        <div class="form-group mb-3">
+                          <label for="radio" class="text-white font-weight-bold">Radio (metros) *</label>
+                          <input type="number" class="form-control form-control-oiion" id="radio" name="radio" min="10" step="1" required value="{{ $geocerca->radio }}">
+                        </div>
+                        <div class="form-row">
+                          <div class="col-6">
+                            <div class="form-group mb-0">
+                              <label for="latitud" class="text-white font-weight-bold small">Latitud *</label>
+                              <input type="text" class="form-control form-control-oiion" id="latitud" name="latitud" required value="{{ $geocerca->latitud }}">
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="form-group mb-0">
+                              <label for="longitud" class="text-white font-weight-bold small">Longitud *</label>
+                              <input type="text" class="form-control form-control-oiion" id="longitud" name="longitud" required value="{{ $geocerca->longitud }}">
+                            </div>
+                          </div>
+                        </div>
+                        <input type="hidden" id="coordenadas" name="coordenadas" value="">
+                      @else
+                        <small class="text-cyan d-block mb-2"><i class="fas fa-hand-pointer mr-1"></i> Arrastra los vértices en el mapa para editarlos.</small>
+                        <input type="hidden" id="coordenadas" name="coordenadas" value="{{ $geocerca->coordenadas }}">
+                        <input type="hidden" id="latitud" name="latitud" value="">
+                        <input type="hidden" id="longitud" name="longitud" value="">
+                        <input type="hidden" id="radio" name="radio" value="">
+                        
+                        <div class="p-3 border rounded text-center" style="background: var(--bg-main); border-color: var(--border-color) !important;">
+                          <i class="fas fa-draw-polygon text-cyan fa-2x mb-2"></i>
+                          <div class="text-muted small">Modo Polígono Activo</div>
+                        </div>
+                      @endif
+                    </div>
+
+                    <!-- Columna 3: Color y Botones -->
+                    <div class="col-md-3 mb-3">
+                      <div class="form-group mb-4">
+                        <label for="color" class="text-white font-weight-bold d-block">Color del Área</label>
+                        <div class="color-picker-wrapper">
+                          <input type="color" id="color" name="color" value="{{ $geocerca->color ?? '#3B82F6' }}">
+                          <span class="small text-muted">Personalizar trazo</span>
+                        </div>
+                      </div>
+
+                      <div class="form-group mb-0 pt-2">
+                        <button type="submit" class="btn btn-action btn-block font-weight-bold py-2 mb-2">
+                          <i class="fas fa-save mr-1"></i> Guardar Cambios
+                        </button>
+                        <a href="{{ route('geocercas.index') }}" class="btn btn-outline-secondary btn-block">
+                          <i class="fas fa-times mr-1"></i> Cancelar
+                        </a>
                       </div>
                     </div>
-                  </div>
 
-                  <div class="form-group">
-                    <label for="radio">Radio (metros) *</label>
-                    <input type="number" class="form-control" id="radio" name="radio" min="10" step="1" required value="{{ $geocerca->radio }}">
-                  </div>
-                  
-                  <input type="hidden" id="coordenadas" name="coordenadas" value="">
-                  @else
-                  <input type="hidden" id="coordenadas" name="coordenadas" value="{{ $geocerca->coordenadas }}">
-                  <input type="hidden" id="latitud" name="latitud" value="">
-                  <input type="hidden" id="longitud" name="longitud" value="">
-                  <input type="hidden" id="radio" name="radio" value="">
-                  @endif
-
-                  <div class="form-group">
-                    <label for="color">Color</label>
-                    <input type="color" class="form-control" id="color" name="color" value="{{ $geocerca->color ?? '#3B82F6' }}">
-                  </div>
-
-                  <div class="form-group">
-                    <div class="custom-control custom-switch">
-                      <input type="checkbox" class="custom-control-input" id="activa" name="activa" value="1" {{ $geocerca->activa ? 'checked' : '' }}>
-                      <label class="custom-control-label" for="activa">Geocerca activa</label>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">
-                      <i class="fas fa-save"></i> Guardar Cambios
-                    </button>
-                    <a href="{{ route('geocercas.index') }}" class="btn btn-default btn-block">
-                      <i class="fas fa-times"></i> Cancelar
-                    </a>
                   </div>
                 </form>
+
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
   </div>
   
-  <footer class="main-footer">
+  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
+    @include('administradores.footer')
   </footer>
 </div>
 
@@ -217,11 +256,16 @@
       $('#latitud').val(center.lat().toFixed(8));
       $('#longitud').val(center.lng().toFixed(8));
     });
+
+    google.maps.event.addListener(map, 'click', function(e) {
+      circle.setCenter(e.latLng);
+      $('#latitud').val(e.latLng.lat().toFixed(8));
+      $('#longitud').val(e.latLng.lng().toFixed(8));
+    });
   }
 
   function dibujarPoligonoExistente() {
     @php
-      // Decodificar las coordenadas del string JSON
       $coordsArray = json_decode($geocerca->coordenadas, true) ?: [];
     @endphp
     
@@ -243,11 +287,15 @@
         editable: true,
         draggable: true
       });
+
+      var path = polygon.getPath();
+      google.maps.event.addListener(path, 'set_at', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(path, 'insert_at', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(path, 'remove_at', actualizarCoordenadasPoligono);
       
-      google.maps.event.addListener(polygon.getPath(), 'set_at', actualizarCoordenadasPoligono);
-      google.maps.event.addListener(polygon.getPath(), 'insert_at', actualizarCoordenadasPoligono);
-      google.maps.event.addListener(polygon.getPath(), 'remove_at', actualizarCoordenadasPoligono);
-      google.maps.event.addListener(polygon, 'dragend', actualizarCoordenadasPoligono);
+      google.maps.event.addListener(polygon, 'dragend', function() {
+        actualizarCoordenadasPoligono();
+      });
       
       var bounds = new google.maps.LatLngBounds();
       for (var i = 0; i < coordinates.length; i++) {
@@ -265,7 +313,10 @@
     
     for (var i = 0; i < path.getLength(); i++) {
       var point = path.getAt(i);
-      coordinates.push([point.lat(), point.lng()]);
+      coordinates.push([
+        parseFloat(point.lat().toFixed(8)), 
+        parseFloat(point.lng().toFixed(8))
+      ]);
     }
     
     $('#coordenadas').val(JSON.stringify(coordinates));
@@ -280,13 +331,30 @@
       if (polygon) polygon.setOptions({ fillColor: color, strokeColor: color });
       @endif
     });
+
+    @if($geocerca->tipo == 'circular')
+      $('#latitud, #longitud, #radio').on('input', function() {
+        if (!circle) return;
+        var lat = parseFloat($('#latitud').val());
+        var lng = parseFloat($('#longitud').val());
+        var radio = parseFloat($('#radio').val());
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+          var newCenter = new google.maps.LatLng(lat, lng);
+          circle.setCenter(newCenter);
+          map.panTo(newCenter);
+        }
+        
+        if (!isNaN(radio) && radio > 0) {
+          circle.setRadius(radio);
+        }
+      });
+    @endif
   }
 
   $(document).ready(function() {
     cargarGoogleMaps();
   });
 </script>
-
-<script src="{{ asset('dist/js/adminlte.js') }}"></script>
 </body>
 </html>
