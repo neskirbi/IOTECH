@@ -45,41 +45,40 @@ Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
 
 
 
-  Route::resource('empresas', 'App\Http\Controllers\SuperUsuario\EmpresaController');
-        Route::get('BorrarEmpresa/{id}', 'App\Http\Controllers\SuperUsuario\EmpresaController@BorrarEmpresa');
+Route::resource('empresas', 'App\Http\Controllers\SuperUsuario\EmpresaController');
+Route::get('BorrarEmpresa/{id}', 'App\Http\Controllers\SuperUsuario\EmpresaController@BorrarEmpresa');
 
-        Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\AdministradorController');
-        Route::get('BorrarAdmin/{id}', 'App\Http\Controllers\SuperUsuario\AdministradorController@BorrarAdmin');
+Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\AdministradorController');
+Route::get('BorrarAdmin/{id}', 'App\Http\Controllers\SuperUsuario\AdministradorController@BorrarAdmin');
 
-        Route::resource('operadoress', 'App\Http\Controllers\SuperUsuario\OperadorController');
+Route::resource('operadoress', 'App\Http\Controllers\SuperUsuario\OperadorController');
 
-        Route::resource('equiposs', 'App\Http\Controllers\SuperUsuario\EquipoController');
+Route::resource('equiposs', 'App\Http\Controllers\SuperUsuario\EquipoController');
 
 /**
  * Rutas Super Usuarios
  */
 
-  Route::middleware(['auth:administradores'])->group(function () {
+Route::middleware(['auth:administradores'])->group(function () {        
+    
+    Route::resource('dashboard', 'App\Http\Controllers\Administrador\DashboardController');
 
-        
-      
+    Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
+    
+    Route::resource('equipos', 'App\Http\Controllers\Administrador\EquipoController');
+    Route::get('BorrarEquipo/{id}', 'App\Http\Controllers\Administrador\EquipoController@BorrarEquipo');
 
-        Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
-    });
+
+    Route::resource('operadores', 'App\Http\Controllers\Administrador\OperadorController');
+    Route::get('BorrarOperador/{id}', 'App\Http\Controllers\Administrador\OperadorController@BorrarOperador');
+
+    Route::resource('soporte', 'App\Http\Controllers\Administrador\SoporteController');
+});
  /**
   * Rutas Administradores 
   */
 
 
-  Route::resource('equipos', 'App\Http\Controllers\Administrador\EquipoController');
-  Route::get('BorrarEquipo/{id}', 'App\Http\Controllers\Administrador\EquipoController@BorrarEquipo');
-
-
-  Route::resource('operadores', 'App\Http\Controllers\Administrador\OperadorController');
-  Route::get('BorrarOperador/{id}', 'App\Http\Controllers\Administrador\OperadorController@BorrarOperador');
-
-  Route::resource('soporte', 'App\Http\Controllers\Administrador\SoporteController');
-  
 
   //Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
 

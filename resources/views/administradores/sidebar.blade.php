@@ -30,6 +30,13 @@
           <li class="nav-header text-muted font-weight-bold" style="letter-spacing: 1px; font-size: 0.75rem; padding: 0.5rem 1rem;">ASOCIACIÓN</li>
 
           <li class="nav-item">
+            <a href="{{url('dashboard')}}" class="nav-link {{ request()->is('dashboard*') ? 'active-oiion' : '' }}">
+              <i class="nav-icon fa fa-tachometer" style="color: var(--accent-cyan);" aria-hidden="true"></i>
+              <p class="text-light">Dashboard</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
             <a href="{{url('equipos')}}" class="nav-link {{ request()->is('equipos*') ? 'active-oiion' : '' }}">
               <i class="nav-icon fa fa-tablet" style="color: var(--accent-cyan);" aria-hidden="true"></i>
               <p class="text-light">Equipos</p>

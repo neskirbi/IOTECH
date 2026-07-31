@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <!-- Script personalizado para Toasts -->
-<script src="{{ asset('js/oiion-toast.js') }}"></script>
+<script src="{{ asset('js/oiion-toast.js') }}?version={{Version()}}"></script>
 
 
  <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>

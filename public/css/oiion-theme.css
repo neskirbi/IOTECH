@@ -274,3 +274,77 @@ html, body {
     opacity: 0.4;
   }
 }
+
+.card-radio-input {
+    display: none;
+  }
+  .card-radio-btn {
+    background: rgba(10, 15, 29, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .card-radio-btn:hover {
+    border-color: rgba(0, 242, 254, 0.4);
+    color: #fff;
+  }
+  .card-radio-input:checked + .card-radio-btn {
+    background: rgba(0, 242, 254, 0.15);
+    border-color: #00f2fe;
+    color: #00f2fe;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    font-weight: bold;
+  }
+
+
+  .equipment-avatar-container {
+      width: 85px;
+      height: 85px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.1) 0%, rgba(10, 15, 29, 0.7) 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .equipment-icon {
+      font-size: 2.2rem;
+    }
+
+    .equip-status-dot {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Estilos Radios Modal */
+    .card-radio-input {
+      display: none;
+    }
+    .card-radio-btn {
+      background: rgba(10, 15, 29, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .card-radio-btn:hover {
+      border-color: rgba(0, 242, 254, 0.4);
+      color: #fff;
+    }
+    .card-radio-input:checked + .card-radio-btn {
+      background: rgba(0, 242, 254, 0.15);
+      border-color: #00f2fe;
+      color: #00f2fe;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+      font-weight: bold;
+    }
