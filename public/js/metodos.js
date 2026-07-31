@@ -201,3 +201,40 @@ function ConfirmarEliminarOperador(id, nombreCompleto) {
     // Abrir el modal de Bootstrap
     $('#modalConfirmarEliminar').modal('show');
 }
+
+function ToggleEquipoStatus(id, element) {
+  var url = Url() + 'api/ToggleEquipoStatus';
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: {
+      _token: "{{ csrf_token() }}",
+      id: id
+    },
+    success: function(response) {
+      if(response.success) {
+        var badge = $('#badge_estado_' + id);
+        
+        if(response.activo == 1) {
+          badge.removeClass('offline').addClass('online');
+          badge.find('.badge-text').text('Activo');
+          $(element).html('<i class="fas fa-power-off mr-2 text-warning"></i> Desactivar Equipo');
+        } else {
+          badge.removeClass('online').addClass('offline');
+          badge.find('.badge-text').text('Inactivo');
+          $(element).html('<i class="fas fa-check-circle mr-2 text-success"></i> Activar Equipo');
+        }
+
+        // Muestra el toast de éxito con el mensaje del servidor (o texto por defecto)
+        var msg = response.message || 'Estado del equipo actualizado correctamente.';
+        showOiionToast(msg, 'success');
+      } else {
+        // En caso de que el servidor responda 200 pero success sea false
+        showOiionToast(response.message || 'No se pudo cambiar el estado del equipo.', 'error');
+      }
+    },
+    error: function() {
+      showOiionToast('Ocurrió un error al cambiar el estado del equipo.', 'error');
+    }
+  });
+}

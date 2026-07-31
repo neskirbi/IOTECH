@@ -43,3 +43,4 @@ Route::post('GenerarCodigo','App\Http\Controllers\Api\ApiController@GenerarCodig
 Route::post('geofence/nearby','App\Http\Controllers\Api\ApiController@Geocercas');
 
 Route::post('ToggleOperadorStatus', 'App\Http\Controllers\Api\ApiFuncionesController@ToggleOperadorStatus');
+Route::post('ToggleEquipoStatus', 'App\Http\Controllers\Api\ApiFuncionesController@ToggleEquipoStatus');

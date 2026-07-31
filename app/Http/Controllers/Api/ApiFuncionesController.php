@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Administrador;
 use App\Models\Operador;
 use App\Models\Registro;
+use App\Models\Equipo;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -41,6 +42,32 @@ class ApiFuncionesController extends Controller
             'status' => 1,
             'activo' => $nuevoEstado,
             'message' => $nuevoEstado == 1 ? 'Operador activado con éxito.' : 'Operador desactivado con éxito.'
+        ]);
+    }
+
+
+    public function ToggleEquipoStatus(Request $request)
+    {
+        $id = $request->input('id');
+        
+        // Buscar equipo o retornar error
+        $equipo = Equipo::find($id);
+
+        if (!$equipo) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Equipo no encontrado'
+            ], 404);
+        }
+
+        // Invertir estado (1 a 0 / 0 a 1)
+        $equipo->activo = ($equipo->activo == 1) ? 0 : 1;
+        $equipo->save();
+
+        return response()->json([
+            'success' => true,
+            'activo'   => $equipo->activo,
+            'message'  => 'Estado del equipo actualizado correctamente'
         ]);
     }
 }
