@@ -3,16 +3,16 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Oll-ON | Seguridad con GPS y App Android - Monitoreo en Tiempo Real</title>
+    <title>OII-ON | Arquitecturas Inteligentes y Seguridad con GPS</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta name="description" content="Oll-ON: Soluciones avanzadas de seguridad con GPS y aplicación Android. Protege tu flota, familia o negocio con rastreo en tiempo real.">
-    <meta name="keywords" content="seguridad, GPS, app Android, rastreo vehicular, monitoreo, Oll-ON">
+    <meta name="description" content="OII-ON: Soluciones avanzadas de seguridad con GPS, app Android y arquitectura tecnológica basada en divisiones especializadas: CORE, MOTION, VISION y NEXO.">
+    <meta name="keywords" content="OII-ON, CORE, MOTION, VISION, NEXO, seguridad, GPS, app Android, arquitectura tecnológica">
 
     <!-- Favicon -->
     <link href="{{asset('img/favicon.ico')}}" rel="icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -34,10 +34,11 @@
             font-family: 'Inter', sans-serif;
             color: #1e293b;
             overflow-x: hidden;
+            background-color: #f8fafc;
         }
 
-        /* Logo Oll-ON: fondo negro, letras blancas */
-        .logo-ollon {
+        /* Logo OII-ON: fondo negro, letras blancas */
+        .logo-oiion {
             background-color: #000000;
             padding: 8px 18px;
             border-radius: 40px;
@@ -46,7 +47,7 @@
             gap: 8px;
         }
 
-        .logo-ollon h1 {
+        .logo-oiion h1 {
             color: white;
             font-size: 1.8rem;
             font-weight: 800;
@@ -54,7 +55,7 @@
             margin: 0;
         }
 
-        .logo-ollon span {
+        .logo-oiion span {
             font-size: 1rem;
             font-weight: 400;
             color: #cccccc;
@@ -69,8 +70,9 @@
         .navbar-nav .nav-link {
             color: #e2e8f0 !important;
             font-weight: 500;
-            margin: 0 10px;
+            margin: 0 5px;
             transition: 0.2s;
+            font-size: 0.9rem;
         }
 
         .navbar-nav .nav-link:hover,
@@ -145,31 +147,86 @@
             border-bottom: 3px solid #00e0ff;
         }
 
-        /* Tarjetas de servicios */
-        .service-card {
+        /* Tarjetas de divisiones */
+        .division-card {
             background: white;
             border-radius: 28px;
-            padding: 2rem 1.5rem;
+            padding: 2.5rem 2rem;
             transition: all 0.3s ease;
             height: 100%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             border: 1px solid #eef2ff;
+            position: relative;
+            overflow: hidden;
         }
 
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 40px rgba(0,0,0,0.1);
+        .division-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: #00e0ff;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .division-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 40px rgba(0,0,0,0.08);
             border-color: #00e0ff;
         }
 
-        .service-icon {
-            font-size: 3rem;
-            color: #00e0ff;
-            margin-bottom: 1.5rem;
+        .division-card:hover::before {
+            opacity: 1;
         }
 
-        .app-section {
-            background: linear-gradient(120deg, #f0f9ff 0%, #e6f0fa 100%);
+        .division-icon {
+            font-size: 2.8rem;
+            color: #00e0ff;
+            margin-bottom: 1.2rem;
+        }
+
+        .principles-list {
+            padding-left: 1.2rem;
+            margin-top: 1.2rem;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .principles-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .architecture-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .about-section {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .principle-direction-card {
+            background: #f8fafc;
+            border-left: 4px solid #00e0ff;
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            height: 100%;
+            transition: transform 0.2s;
+        }
+
+        .principle-direction-card:hover {
+            transform: translateX(4px);
+            background: #f1f5f9;
         }
 
         .footer {
@@ -207,7 +264,7 @@
             .hero h1 {
                 font-size: 2.2rem;
             }
-            .logo-ollon h1 {
+            .logo-oiion h1 {
                 font-size: 1.4rem;
             }
         }
@@ -221,10 +278,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 text-end">
-                    <a href="{{url('login')}}" class="text-white-50 me-3">
+                    <a href="{{url('login')}}" class="text-white-50 me-3 text-decoration-none">
                         <i class="fa fa-user me-1"></i> Ingresar
                     </a>
-                    <a href="#" class="text-white-50">
+                    <a href="#" class="text-white-50 text-decoration-none">
                         <i class="fas fa-headset me-1"></i> Soporte 24/7
                     </a>
                 </div>
@@ -235,10 +292,10 @@
     <!-- Navbar principal -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <!-- Logo Oll-ON -->
+            <!-- Logo OII-ON -->
             <a class="navbar-brand" href="#">
-                <div class="logo-ollon">
-                    <h1>Oll-ON</h1>
+                <div class="logo-oiion">
+                    <h1>OII-ON</h1>
                     <span><i class="fas fa-shield-alt"></i> Secure</span>
                 </div>
             </a>
@@ -246,12 +303,15 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#soluciones">Soluciones</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#app">App Android</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#gps">GPS Tracking</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#core">CORE</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#motion">MOTION</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#vision">VISION</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#nexo">NEXO</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#proyectos">Proyectos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#configuracion">Configuración</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="#acerca" style="color: #00e0ff !important;">Acerca de OII-ON</a></li>
                 </ul>
                 <a href="#" class="btn btn-primary-custom ms-lg-3">Cotizar ahora</a>
             </div>
@@ -259,21 +319,21 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="dashboard">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
-                    <span class="badge-android mb-3 d-inline-block"><i class="fab fa-android me-1"></i> Exclusivo Android</span>
+                    <span class="badge-android mb-3 d-inline-block"><i class="fab fa-android me-1"></i> Exclusivo Android & Hardware</span>
                     <h1 class="mb-4">Seguridad que <span class="highlight">siempre te acompaña</span>, donde estés.</h1>
-                    <p class="lead mb-4 text-white-70">Monitoreo en tiempo real, alertas inteligentes y control total desde tu dispositivo Android. Oll-ON protege tu flota, familia o negocio con tecnología de rastreo de última generación.</p>
+                    <p class="lead mb-4 text-white-50">Monitoreo en tiempo real, alertas inteligentes y control total desde tu dispositivo Android. OII-ON protege tu flota, familia o negocio con tecnología de rastreo de última generación.</p>
                     <div class="d-flex flex-wrap gap-3">
                         <a href="{{asset('apk/oll-on_v1.0.0_20260112.apk')}}" class="btn btn-android btn-lg px-5" download>
                             <i class="fab fa-android me-2"></i>Descargar APK v1.0.0
                         </a>
-                        <a href="#soluciones" class="btn btn-outline-light-custom btn-lg"><i class="fas fa-map-marker-alt me-2"></i>Ver soluciones</a>
+                        <a href="#core" class="btn btn-outline-light-custom btn-lg"><i class="fas fa-cubes me-2"></i>Ver divisiones</a>
                     </div>
                     <div class="mt-5 d-flex gap-4">
-                        <div><i class="fas fa-chart-line" style="color:#00e0ff"></i> <span class="text-white">Tecnología en expansión</span></div>
+                        <div><i class="fas fa-chart-line" style="color:#00e0ff"></i> <span class="text-white">Tecnología robusta</span></div>
                         <div><i class="fas fa-rocket" style="color:#00e0ff"></i> <span class="text-white">Innovación constante</span></div>
                         <div><i class="fas fa-clock" style="color:#00e0ff"></i> <span class="text-white">Soporte 24/7</span></div>
                     </div>
@@ -285,110 +345,250 @@
         </div>
     </section>
 
-    <!-- Sección de servicios -->
-    <section id="soluciones" class="py-5 py-md-8">
+    <!-- Secciones de Divisiones: CORE, MOTION, VISION -->
+    <section class="py-5 py-md-8 bg-light">
         <div class="container py-5">
             <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="fw-bold">Soluciones integrales de <span style="color:#00e0ff">seguridad conectada</span></h2>
-                <p class="lead text-muted">Integramos hardware GPS de última generación con nuestra app Android para que nunca pierdas el control.</p>
+                <span class="text-uppercase fw-bold tracking-wider" style="color: #00e0ff; letter-spacing: 2px;">Nuestras Divisiones Tecnológicas</span>
+                <h2 class="fw-bold mt-2">Donde la arquitectura se convierte en <span style="color:#00e0ff">tecnología</span></h2>
+                <p class="lead text-muted">Especialización e integración de punta a punta.</p>
             </div>
+
             <div class="row g-4">
-                <div class="col-md-6 col-lg-4" data-aos="zoom-in">
-                    <div class="service-card">
-                        <div class="service-icon"><i class="fab fa-android"></i></div>
-                        <h4>App Oll-ON para Android</h4>
-                        <p>Visualiza ubicación en tiempo real, historial de rutas, zonas de seguridad y alertas instantáneas en tu celular Android.</p>
-                        <a href="#" class="text-decoration-none fw-bold">Saber más →</a>
+                <!-- CORE -->
+                <div class="col-lg-4" data-aos="zoom-in" id="core">
+                    <div class="division-card">
+                        <div class="division-icon"><i class="fas fa-microchip"></i></div>
+                        <h3 class="fw-bold h4">CORE</h3>
+                        <p class="text-muted fw-semibold small">Donde la arquitectura se convierte en tecnología.</p>
+                        <p class="text-muted mt-3">CORE es la división responsable de concebir, desarrollar y proteger el núcleo tecnológico de OII-ON. Aquí convergen la ingeniería electrónica, el firmware, el diseño mecánico, las comunicaciones y la arquitectura de hardware que hacen posible cada solución.</p>
+                        <p class="text-muted small">Su misión no es desarrollar dispositivos, sino construir plataformas tecnológicas robustas, modulares y preparadas para evolucionar.</p>
+                        <h6 class="fw-bold mt-4 mb-2 text-dark">Principios de CORE</h6>
+                        <ul class="principles-list">
+                            <li>Diseñamos con visión de largo plazo.</li>
+                            <li>La simplicidad es el resultado de una ingeniería profunda.</li>
+                            <li>Cada componente debe aportar valor a la arquitectura.</li>
+                            <li>La calidad no se inspecciona; se diseña.</li>
+                            <li>Protegemos el conocimiento que hace única a OII-ON.</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="service-card">
-                        <div class="service-icon"><i class="fas fa-satellite-dish"></i></div>
-                        <h4>Rastreo GPS 4G</h4>
-                        <p>Dispositivos de alta precisión, resistentes a interferencias, con batería de larga duración y geocercas.</p>
-                        <a href="#" class="text-decoration-none fw-bold">Saber más →</a>
+
+                <!-- MOTION -->
+                <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100" id="motion">
+                    <div class="division-card">
+                        <div class="division-icon"><i class="fas fa-route"></i></div>
+                        <h3 class="fw-bold h4">MOTION</h3>
+                        <p class="text-muted fw-semibold small">Donde la tecnología genera movimiento.</p>
+                        <p class="text-muted mt-3">MOTION conecta la innovación con la operación. Es la división encargada de transformar la tecnología en soluciones funcionales para nuestros clientes mediante la integración, implementación, soporte y evolución operativa.</p>
+                        <p class="text-muted small">Su propósito es asegurar que cada solución entregue valor desde el primer día y continúe evolucionando junto con las necesidades del negocio.</p>
+                        <h6 class="fw-bold mt-4 mb-2 text-dark">Principios de MOTION</h6>
+                        <ul class="principles-list">
+                            <li>La tecnología solo tiene sentido cuando genera resultados.</li>
+                            <li>Implementar también es innovar.</li>
+                            <li>Cada instalación fortalece el conocimiento de la plataforma.</li>
+                            <li>Escuchar al cliente es acelerar la evolución.</li>
+                            <li>El éxito de nuestros clientes es el éxito de OII-ON.</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="service-card">
-                        <div class="service-icon"><i class="fas fa-chart-line"></i></div>
-                        <h4>Panel de control</h4>
-                        <p>Dashboard para empresas: flotas, reportes de conducción, alertas de velocidad y mantenimiento predictivo.</p>
-                        <a href="#" class="text-decoration-none fw-bold">Saber más →</a>
+
+                <!-- VISION -->
+                <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200" id="vision">
+                    <div class="division-card">
+                        <div class="division-icon"><i class="fas fa-eye"></i></div>
+                        <h3 class="fw-bold h4">VISION</h3>
+                        <p class="text-muted fw-semibold small">Donde los datos se convierten en inteligencia.</p>
+                        <p class="text-muted mt-3">VISION desarrolla las plataformas digitales que permiten administrar, analizar y transformar la información generada por los dispositivos de OII-ON. Su propósito es convertir cada evento en conocimiento útil para la toma de decisiones.</p>
+                        <p class="text-muted small">No desarrolla únicamente software; construye inteligencia para la operación.</p>
+                        <h6 class="fw-bold mt-4 mb-2 text-dark">Principios de VISION</h6>
+                        <ul class="principles-list">
+                            <li>Los datos adquieren valor cuando impulsan mejores decisiones.</li>
+                            <li>Diseñamos información clara antes que interfaces complejas.</li>
+                            <li>La inteligencia debe ser accesible, confiable y escalable.</li>
+                            <li>Cada desarrollo debe responder a una necesidad real.</li>
+                            <li>Evolucionamos la plataforma con base en la experiencia del usuario.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Sección App Android destacada -->
-    <section id="app" class="app-section py-5">
+    <!-- Sección Resumen Arquitectura y NEXO -->
+    <section class="py-5 bg-white">
         <div class="container py-4">
-            <div class="row align-items-center">
-                <div class="col-lg-6 order-lg-2" data-aos="fade-left">
-                    <img src="{{asset('images/home/pexels-pixabay-267350.jpg')}}" alt="App Android monitoreo" class="img-fluid rounded-4 shadow" style="max-height: 500px; width: 100%; object-fit: cover;">
-                </div>
-                <div class="col-lg-6 order-lg-1" data-aos="fade-right">
-                    <span class="badge-android mb-3 d-inline-block"><i class="fab fa-android me-1"></i> Solo para Android</span>
-                    <h2 class="fw-bold">Controla todo desde <span style="color:#00e0ff">tu dispositivo Android</span></h2>
-                    <p class="mt-3 fs-5">Con la app Oll-ON para Android recibes notificaciones al instante si tu vehículo o ser querido sale de un área segura, activas el modo pánico y compartes ubicación en vivo.</p>
-                    <ul class="list-unstyled mt-4">
-                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Localización precisa en tiempo real</li>
-                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Historial de rutas de hasta 6 meses</li>
-                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Compatible con dispositivos GPS Oll-ON</li>
-                        <li class="mb-2"><i class="fas fa-check-circle me-2" style="color:#00e0ff"></i> Descarga directa APK</li>
-                    </ul>
-                    <div class="mt-4">
-                        <a href="{{asset('apk/oll-on_v1.0.0_20260112.apk')}}" class="btn btn-android btn-lg px-5" download>
-                            <i class="fab fa-android me-2"></i>Descargar APK v1.0.0
-                        </a>
-                        <p class="text-muted mt-2 small"><i class="fas fa-download"></i> Versión 1.0 | Requiere Android 8.0+</p>
+            <div class="architecture-banner text-center text-lg-start mb-5" data-aos="fade-up">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 mb-4 mb-lg-0">
+                        <span class="badge bg-info text-dark mb-3 px-3 py-2 fw-bold rounded-pill">Ecosistema OII-ON</span>
+                        <h2 class="fw-bold display-6 mb-3">Cuatro divisiones. Una sola arquitectura.</h2>
+                        <ul class="list-unstyled text-white-50 fs-5 mb-4">
+                            <li class="mb-2"><strong class="text-white">CORE</strong> imagina y construye la tecnología.</li>
+                            <li class="mb-2"><strong class="text-white">MOTION</strong> la integra y la convierte en operación.</li>
+                            <li><strong class="text-white">VISION</strong> transforma la información en inteligencia.</li>
+                        </ul>
+                        <p class="text-white-50 mb-0">Cada división representa una disciplina especializada; juntas conforman una arquitectura capaz de evolucionar, adaptarse y resolver desafíos complejos mediante una filosofía de colaboración, innovación y excelencia.</p>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="p-4 rounded-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                            <i class="fas fa-network-wired fa-3x mb-3 text-info"></i>
+                            <h4 class="fw-bold text-white">Sinergia Total</h4>
+                            <p class="small text-white-50 mb-0">Hardware, firmware, conectividad y software trabajando en perfecta sincronía.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Sección GPS -->
-    <section id="gps" class="py-5 bg-white">
-        <div class="container py-4">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6" data-aos="fade-right">
-                    <h2 class="fw-bold">Tecnología GPS de nivel <span class="border-bottom border-3" style="border-color:#00e0ff">profesional</span></h2>
-                    <p class="mt-3 lead">Nuestros rastreadores se instalan en minutos y funcionan con redes 4G, ideales para autos, motos, camiones y activos logísticos. Compatibilidad total con nuestra app Android.</p>
-                    <div class="row mt-4">
-                        <div class="col-6 mb-3">
-                            <div class="bg-light p-3 rounded-3">
-                                <h3 class="fw-bold" style="color:#00e0ff">±3m</h3>
-                                <p class="mb-0">Precisión satelital</p>
+            <!-- NEXO -->
+            <div class="row justify-content-center" data-aos="fade-up" id="nexo">
+                <div class="col-lg-10">
+                    <div class="division-card border-2" style="border-color: #00e0ff !important;">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center mb-3 mb-md-0">
+                                <div class="division-icon mb-0"><i class="fas fa-handshake"></i></div>
+                            </div>
+                            <div class="col-md-10">
+                                <h3 class="fw-bold h4">NEXO</h3>
+                                <p class="text-muted fw-semibold small">Donde la tecnología crea confianza.</p>
+                                <p class="text-muted mt-2 mb-0">Conecta la innovación con las personas mediante la implementación, la capacitación y el acompañamiento operativo, asegurando que cada solución de OII-ON genere el impacto para el que fue diseñada.</p>
                             </div>
                         </div>
-                        <div class="col-6 mb-3">
-                            <div class="bg-light p-3 rounded-3">
-                                <h3 class="fw-bold" style="color:#00e0ff">24/7</h3>
-                                <p class="mb-0">Monitoreo continuo</p>
-                            </div>
-                        </div>
                     </div>
-                    <a href="#" class="btn btn-outline-dark rounded-pill px-4 mt-2"><i class="fas fa-microchip me-2"></i> Ver dispositivos GPS</a>
-                </div>
-                <div class="col-lg-6 text-center" data-aos="fade-left">
-                    <img src="{{asset('images/home/pexels-leeloothefirst-5428830.jpg')}}" alt="dispositivo GPS" class="img-fluid rounded-4 shadow-lg" style="max-height: 380px;">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Sección de valores / confianza -->
-    <section class="bg-dark text-white py-5">
-        <div class="container py-4 text-center">
-            <div data-aos="fade-up">
-                <i class="fas fa-shield-alt fa-3x mb-3 opacity-50" style="color:#00e0ff"></i>
-                <p class="fs-3 fw-light mx-auto" style="max-width: 800px;">"Tecnología confiable, soporte inmediato y un compromiso real con tu seguridad. Oll-ON nace para revolucionar el monitoreo GPS."</p>
-                <h5 class="mt-3">— Equipo Oll-ON</h5>
-                <div class="mt-4">
-                    <i class="fab fa-android fa-2x me-2" style="color:#3DDC84"></i>
-                    <span class="text-white-50">Disponible exclusivamente para Android</span>
+    <!-- Módulos Adicionales (Proyectos y Configuración) -->
+    <section class="py-5 bg-light" id="proyectos">
+        <div class="container py-3">
+            <div class="row g-4">
+                <div class="col-md-6" data-aos="fade-right">
+                    <div class="p-4 bg-white rounded-4 shadow-sm border h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary text-white p-3 rounded-3 me-3"><i class="fas fa-project-diagram fa-lg"></i></div>
+                            <div>
+                                <h4 class="fw-bold mb-0">Proyectos</h4>
+                                <span class="badge bg-secondary text-light">Contenido pendiente</span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">Espacio reservado para la gestión y seguimiento de implementaciones tecnológicas en desarrollo y despliegue a gran escala.</p>
+                    </div>
+                </div>
+                <div class="col-md-6" data-aos="fade-left" id="configuracion">
+                    <div class="p-4 bg-white rounded-4 shadow-sm border h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-dark text-white p-3 rounded-3 me-3"><i class="fas fa-cogs fa-lg"></i></div>
+                            <div>
+                                <h4 class="fw-bold mb-0">Configuración</h4>
+                                <span class="badge bg-secondary text-light">Contenido pendiente</span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0">Panel de parámetros del sistema, ajustes de red, credenciales de dispositivos y control de accesos operativos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Institucional: Acerca de OII-ON -->
+    <section class="py-5 py-md-8 bg-white" id="acerca">
+        <div class="container py-5">
+            <div class="about-section" data-aos="fade-up">
+                <div class="text-center mb-5">
+                    <span class="badge bg-dark text-white px-3 py-2 rounded-pill mb-2"><i class="fas fa-info-circle me-1"></i> Identidad Corporativa</span>
+                    <h2 class="fw-bold display-5">Acerca de OII-ON</h2>
+                    <p class="text-muted lead">Nuestra filosofía, propósito y principios fundamentales.</p>
+                </div>
+
+                <!-- Filosofía OII-ON -->
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-10">
+                        <div class="p-4 rounded-4" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                            <h3 class="fw-bold h4 mb-3" style="color: #0f172a;"><i class="fas fa-lightbulb me-2 text-info"></i>Filosofía OII-ON</h3>
+                            <p class="text-muted mb-0 fs-5" style="line-height: 1.7;">Creemos que la verdadera innovación no consiste en hacerlo todo, sino en integrar con inteligencia las fortalezas de quienes mejor saben hacerlo. La tecnología debe unir disciplinas, potenciar a las personas y crear soluciones capaces de evolucionar con el tiempo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Misión y Visión -->
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-6" data-aos="fade-right">
+                        <div class="p-4 h-100 rounded-4" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                            <h3 class="fw-bold h4 mb-3 text-dark"><i class="fas fa-bullseye me-2 text-info"></i>Misión</h3>
+                            <p class="text-muted" style="line-height: 1.7;">Diseñar arquitecturas tecnológicas que transformen la seguridad física en sistemas inteligentes, integrando hardware, software y datos mediante la especialización de nuestras divisiones y la colaboración estratégica con los mejores aliados de cada industria.</p>
+                            <p class="text-muted fw-medium small mb-0">En OII-ON no competimos por hacerlo todo; competimos por integrar mejor que nadie aquello que genera verdadero valor para nuestros clientes.</p>
+                            <hr class="my-3 text-muted opacity-25">
+                            <p class="text-secondary small italic mb-0">Observa que la primera parte responde al qué hacemos, mientras que la segunda explica cómo pensamos.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" data-aos="fade-left">
+                        <div class="p-4 h-100 rounded-4" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                            <h3 class="fw-bold h4 mb-3 text-dark"><i class="fas fa-eye me-2 text-info"></i>Visión</h3>
+                            <p class="text-muted" style="line-height: 1.7;">Ser la empresa referente en arquitecturas inteligentes para la protección y administración de activos físicos, construyendo un ecosistema de innovación donde la especialización, las alianzas estratégicas y la evolución tecnológica permitan crear soluciones que trasciendan a las personas, a los productos y al tiempo.</p>
+                            <div class="mt-4 p-3 rounded-3" style="background: #e2e8f0; color: #1e293b;">
+                                <h6 class="fw-bold mb-1"><i class="fas fa-shield-alt me-1"></i> Nuestra Convicción</h6>
+                                <p class="small mb-0">La fortaleza de una empresa no se mide por la cantidad de procesos que controla, sino por la inteligencia con la que integra las capacidades de los mejores especialistas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Principios de Dirección -->
+                <div class="mb-5">
+                    <h3 class="fw-bold text-center mb-4">Principios de Dirección</h3>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+                            <div class="principle-direction-card">
+                                <h5 class="fw-bold text-dark">1. Protegemos nuestro núcleo tecnológico</h5>
+                                <p class="text-muted small mb-0 mt-2">La arquitectura, el conocimiento y la evolución de OII-ON constituyen nuestro activo más valioso.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="principle-direction-card">
+                                <h5 class="fw-bold text-dark">2. La especialización genera excelencia</h5>
+                                <p class="text-muted small mb-0 mt-2">Cada división desarrolla aquello en lo que puede convertirse en referente.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="principle-direction-card">
+                                <h5 class="fw-bold text-dark">3. Las alianzas multiplican capacidades</h5>
+                                <p class="text-muted small mb-0 mt-2">Nos asociamos con empresas que dominan disciplinas complementarias para construir soluciones superiores.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                            <div class="principle-direction-card">
+                                <h5 class="fw-bold text-dark">4. Integramos, no improvisamos</h5>
+                                <p class="text-muted small mb-0 mt-2">Cada componente, cada línea de código y cada proceso forman parte de una arquitectura diseñada para evolucionar.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                            <div class="principle-direction-card">
+                                <h5 class="fw-bold text-dark">5. Diseñamos sistemas, no dependencias</h5>
+                                <p class="text-muted small mb-0 mt-2">El conocimiento pertenece a OII-ON y debe permanecer documentado para garantizar la continuidad de la organización.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                            <div class="principle-direction-card">
+                                <h5 class="fw-bold text-dark">6. La innovación solo tiene valor cuando resuelve problemas reales</h5>
+                                <p class="text-muted small mb-0 mt-2">Cada desarrollo debe responder a una necesidad concreta del mercado y generar beneficios medibles para nuestros clientes.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-6 mx-auto" data-aos="fade-up" data-aos-delay="600">
+                            <div class="principle-direction-card">
+                                <h5 class="fw-bold text-dark">7. Evolucionamos antes de que el mercado nos obligue</h5>
+                                <p class="text-muted small mb-0 mt-2">La mejora continua forma parte de nuestra identidad y no de una reacción ante la competencia.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cita Final -->
+                <div class="text-center p-4 rounded-4" style="background: #0f172a; color: white;" data-aos="zoom-in">
+                    <i class="fas fa-quote-left fa-2x text-info mb-3 opacity-50"></i>
+                    <p class="fs-5 fst-italic mb-0" style="max-width: 800px; margin: 0 auto;">“La innovación no consiste en crear más tecnología, sino en integrar el conocimiento adecuado para resolver problemas que antes parecían imposibles.”</p>
+                    <span class="d-block mt-3 text-info fw-bold">— OII-ON Architecture</span>
                 </div>
             </div>
         </div>
@@ -399,10 +599,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <div class="logo-ollon mb-3">
-                        <h1>Oll-ON</h1>
+                    <div class="logo-oiion mb-3">
+                        <h1>OII-ON</h1>
                     </div>
-                    <p>Seguridad conectada mediante GPS y app Android. Protección real para lo que más valoras.</p>
+                    <p class="text-white-50">Seguridad conectada mediante arquitecturas inteligentes, GPS y app Android. Protección real para lo que más valoras.</p>
                     <div class="mt-3">
                         <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-white me-3"><i class="fab fa-linkedin-in"></i></a>
@@ -410,32 +610,32 @@
                     </div>
                 </div>
                 <div class="col-md-2 mb-4">
-                    <h5 class="text-white">Enlaces</h5>
+                    <h5 class="text-white">Divisiones</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50 text-decoration-none">Inicio</a></li>
-                        <li><a href="#soluciones" class="text-white-50 text-decoration-none">Soluciones</a></li>
-                        <li><a href="#app" class="text-white-50 text-decoration-none">App Android</a></li>
-                        <li><a href="#gps" class="text-white-50 text-decoration-none">GPS Tracking</a></li>
+                        <li><a href="#core" class="text-white-50 text-decoration-none">CORE</a></li>
+                        <li><a href="#motion" class="text-white-50 text-decoration-none">MOTION</a></li>
+                        <li><a href="#vision" class="text-white-50 text-decoration-none">VISION</a></li>
+                        <li><a href="#nexo" class="text-white-50 text-decoration-none">NEXO</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3 mb-4">
-                    <h5 class="text-white">Soporte</h5>
+                    <h5 class="text-white">Institucional</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50 text-decoration-none">Contacto técnico</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">Centro de ayuda</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">Política de privacidad</a></li>
+                        <li><a href="#acerca" class="text-white-50 text-decoration-none">Acerca de OII-ON</a></li>
+                        <li><a href="#proyectos" class="text-white-50 text-decoration-none">Proyectos</a></li>
+                        <li><a href="#configuracion" class="text-white-50 text-decoration-none">Configuración</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3 mb-4">
                     <h5 class="text-white">Contacto directo</h5>
-                    <p><i class="fas fa-phone-alt me-2"></i> +52 1 56 1990 3970</p>
-                    <p><i class="fas fa-envelope me-2"></i> ventas@oll-on.com</p>
-                    <p><i class="fas fa-map-marker-alt me-2"></i> Ciudad de México, México</p>
+                    <p class="text-white-50 mb-1"><i class="fas fa-phone-alt me-2"></i> +52 1 56 1990 3970</p>
+                    <p class="text-white-50 mb-1"><i class="fas fa-envelope me-2"></i> ventas@oiion.com</p>
+                    <p class="text-white-50 mb-0"><i class="fas fa-map-marker-alt me-2"></i> Ciudad de México, México</p>
                 </div>
             </div>
-            <hr class="bg-secondary">
+            <hr class="bg-secondary opacity-25">
             <div class="text-center pt-3">
-                <p class="mb-0">&copy; 2026 Oll-ON - Seguridad con tecnología GPS y App Android. Todos los derechos reservados.</p>
+                <p class="mb-0 text-white-50">&copy; 2026 OII-ON - Arquitecturas Inteligentes. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
@@ -452,7 +652,7 @@
             once: true
         });
 
-        // Smooth scroll
+        // Smooth scroll para anclajes del menú
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
