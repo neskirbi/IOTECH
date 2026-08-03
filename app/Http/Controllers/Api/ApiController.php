@@ -332,4 +332,48 @@ class ApiController extends Controller
         // Para polígonos, usamos la distancia al centroide como aproximación
         return $currentDistance;
     }
+
+
+    public function EstadoEquipo(Request $request)
+    {
+        // Validar que el request sea un arreglo y que cada elemento cumpla las reglas
+        $request->validate([
+            '*.mac' => 'required|string',
+            '*.cerrado' => 'required|integer|in:0,1',
+            '*.latitud' => 'nullable|numeric',
+            '*.longitud' => 'nullable|numeric',
+            '*.datetime' => 'nullable|string',
+        ]);
+
+        $registrosParaInsertar = [];
+        $ahora = now();
+
+        // Recorrer cada elemento del arreglo recibido
+        foreach ($request->all() as $item) {
+            $datetimeFormateado = !empty($item['datetime']) 
+                ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
+                : $ahora;
+
+            $registrosParaInsertar[] = [
+                'mac' => strtolower($item['mac']),
+                'cerrado' => $item['cerrado'],
+                'latitud' => $item['latitud'] ?? null,
+                'longitud' => $item['longitud'] ?? null,
+                'datetime' => $datetimeFormateado,
+                'created_at' => $ahora,
+                'updated_at' => $ahora,
+            ];
+        }
+
+        // Inserción masiva en la base de datos (una sola consulta SQL para todos)
+        if (!empty($registrosParaInsertar)) {
+            DB::table('equipo_estados')->insert($registrosParaInsertar);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Historial de estados registrado correctamente',
+            'total_registros' => count($registrosParaInsertar)
+        ], 200);
+    }
 }
