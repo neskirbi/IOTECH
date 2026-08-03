@@ -83,17 +83,19 @@
             </div>
           </div>
 
-          <!-- Card Eventos Recientes -->
+          <!-- Card Cajas Abiertas -->
           <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card card-oiion h-100" style="background-color: rgba(21, 28, 47, 0.6); border: 1px solid var(--border-color);">
               <div class="card-body p-3 d-flex align-items-center justify-content-between">
                 <div>
-                  <span class="text-muted small font-weight-bold text-uppercase d-block">Eventos (Últimos)</span>
-                  <h3 class="text-white font-weight-bold my-1">{{ $ultimosRegistros->count() }}</h3>
-                  <small class="text-warning"><i class="fas fa-history mr-1"></i> Generados</small>
+                  <span class="text-muted small font-weight-bold text-uppercase d-block">Cajas Abiertas</span>
+                  <h3 class="text-white font-weight-bold my-1" style="color: #ef4444;">{{ $totalCajasAbiertas }}</h3>
+                  <span class="badge badge-pill" style="background-color: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">
+                    <i class="fas fa-lock-open mr-1"></i> Atención
+                  </span>
                 </div>
-                <div class="equipment-avatar-container m-0" style="border-color: #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);">
-                  <i class="fas fa-key equipment-icon" style="color: #f59e0b; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));"></i>
+                <div class="equipment-avatar-container m-0" style="border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);">
+                  <i class="fas fa-exclamation-triangle equipment-icon" style="color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));"></i>
                 </div>
               </div>
             </div>
@@ -149,6 +151,7 @@
                     <thead style="background-color: rgba(10, 15, 29, 0.8); border-bottom: 1px solid var(--border-color);">
                       <tr class="text-muted small text-uppercase">
                         <th class="py-3 px-4">N° Económico</th>
+                        <th class="py-3">MAC</th>
                         <th class="py-3">Operador</th>
                         <th class="py-3">Acción Ejecutada</th>
                         <th class="py-3 px-4 text-right">Fecha / Hora</th>
@@ -161,15 +164,29 @@
                             <i class="fas fa-hashtag text-muted mr-1"></i>{{ $registro->numeconomico ?: 'N/A' }}
                           </td>
                           <td class="py-3 align-middle">
-                            @if($registro->operador_nombre)
-                              {{ $registro->operador_nombre }} {{ $registro->operador_apellido }}
-                            @else
-                              <span class="text-muted font-italic">Sistema / Desconocido</span>
-                            @endif
+                            <span class="text-muted small">{{ $registro->mac ?: 'N/A' }}</span>
                           </td>
                           <td class="py-3 align-middle">
+                            @php
+                              $nombreOperador = $registro->operador_nombre ?? '';
+                              if (empty($nombreOperador) || $nombreOperador == 'Kiosco / Desconocido') {
+                                  $nombreOperador = 'Kiosco';
+                              }
+                            @endphp
+                            {{ $nombreOperador }}
+                          </td>
+                          <td class="py-3 align-middle">
+                            @php
+                              $opcionesAccion = [
+                                  1 => 'Motor',
+                                  2 => 'Estatus',
+                                  3 => 'Configuración',
+                                  4 => 'Abrir Chapa'
+                              ];
+                              $nombreAccion = $opcionesAccion[$registro->opcion] ?? 'Opción #'.$registro->opcion;
+                            @endphp
                             <span class="badge badge-pill px-3 py-2" style="background-color: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.3);">
-                              Opción #{{ $registro->opcion }}
+                              {{ $nombreAccion }}
                             </span>
                           </td>
                           <td class="py-3 px-4 align-middle text-right text-muted small">
@@ -178,7 +195,7 @@
                         </tr>
                       @empty
                         <tr>
-                          <td colspan="4" class="text-center text-muted py-4">No se han registrado eventos recientes.</td>
+                          <td colspan="5" class="text-center text-muted py-4">No se han registrado eventos recientes.</td>
                         </tr>
                       @endforelse
                     </tbody>
@@ -207,7 +224,7 @@
 <!-- Librería de Gráficas Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  $(document).ready(function() {
     // Configuración estética Neón para Chart.js
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.08)';
@@ -243,7 +260,15 @@
     });
 
     // 2. Gráfica de Opciones Ejecutadas
-    const labelsOpciones = {!! json_encode($registrosPorOpcion->pluck('opcion')->map(fn($op) => "Opción ".$op)) !!};
+    const labelsOpciones = {!! json_encode($registrosPorOpcion->pluck('opcion')->map(function($op) {
+        $mapa = [
+            1 => 'Motor',
+            2 => 'Estatus',
+            3 => 'Configuración',
+            4 => 'Abrir Chapa'
+        ];
+        return $mapa[$op] ?? 'Opción '.$op;
+    })) !!};
     const dataOpciones = {!! json_encode($registrosPorOpcion->pluck('total')) !!};
 
     new Chart(document.getElementById('chartOpciones'), {
