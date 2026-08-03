@@ -13,11 +13,12 @@ class CreateRegistros extends Migration
      */
     public function up()
     {
-        Schema::create('registros', function (Blueprint $table) {
-            $table->string('id',32)->unique();
-            $table->string('id_operador',32);
-            $table->string('numeconomico',20);
-            $table->string('opcion',2);
+       Schema::create('registros', function (Blueprint $table) {
+            $table->string('id', 32)->unique();
+            $table->string('id_operador', 32);
+            $table->string('numeconomico', 20);
+            $table->string('mac', 50)->nullable(); // <-- AGREGAR MAC
+            $table->string('opcion', 2);
             $table->timestamps();
         });
     }

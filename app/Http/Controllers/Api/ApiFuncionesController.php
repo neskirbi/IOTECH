@@ -9,6 +9,7 @@ use App\Models\Administrador;
 use App\Models\Operador;
 use App\Models\Registro;
 use App\Models\Equipo;
+use App\Models\EquipoEstado;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -69,5 +70,27 @@ class ApiFuncionesController extends Controller
             'activo'   => $equipo->activo,
             'message'  => 'Estado del equipo actualizado correctamente'
         ]);
+    }
+
+
+    public function ObtenerUltimoEstadoEquipo($mac)
+    {
+        // Obtiene el reporte más reciente basado en la fecha o el ID autoincremental
+        $estado = EquipoEstado::where('mac', $mac)
+                    ->latest('datetime') // o ->latest('id')
+                    ->first();
+
+        if (!$estado) {
+            // Retorna valores por defecto si el equipo aún no tiene registros de estado
+            return response()->json([
+                'mac' => $mac,
+                'cerrado' => 1, // Por defecto cerrado (verde)
+                'latitud' => 0.00000000,
+                'longitud' => 0.00000000,
+                'datetime' => null
+            ]);
+        }
+
+        return response()->json($estado);
     }
 }

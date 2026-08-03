@@ -44,6 +44,7 @@ Route::post('geofence/nearby','App\Http\Controllers\Api\ApiController@Geocercas'
 
 Route::post('ToggleOperadorStatus', 'App\Http\Controllers\Api\ApiFuncionesController@ToggleOperadorStatus');
 Route::post('ToggleEquipoStatus', 'App\Http\Controllers\Api\ApiFuncionesController@ToggleEquipoStatus');
+Route::get('ObtenerUltimoEstadoEquipo/{mac}', 'App\Http\Controllers\Api\ApiFuncionesController@ObtenerUltimoEstadoEquipo');
 
 // Nueva ruta para el estado del equipo
 Route::post('equipos/estado', 'App\Http\Controllers\Api\ApiController@EstadoEquipo');

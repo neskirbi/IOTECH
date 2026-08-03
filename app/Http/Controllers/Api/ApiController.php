@@ -57,49 +57,72 @@ class ApiController extends Controller
 }
 
     function GenerarCodigo(Request $request){
-        //return $request;
-        $registro = new Registro();
+    //return $request;
+    $registro = new Registro();
 
-        $registro->id = GetUuid();
-        $registro->id_operador = isset($request->user_id) ? $request->user_id : '';
-        $registro->numeconomico = isset($request->numeconomico) ? $request->numeconomico : '';
-        $registro->opcion = $request->opcion;
-        $registro->save();
+    $registro->id = GetUuid();
+    $registro->id_operador = isset($request->user_id) ? $request->user_id : '';
+    $registro->numeconomico = isset($request->numeconomico) ? $request->numeconomico : '';
+    $registro->opcion = $request->opcion;
+    $registro->mac = isset($request->mac) ? $request->mac : ''; // <-- AGREGAR MAC
+    $registro->save();
 
-        $codigo='';
-        $rango=0;
-        switch(($request->opcion*1)){
-            case 1:
-                $rango = 15;
+    $codigo='';
+    $rango=0;
+    switch(($request->opcion*1)){
+        case 1:
+            $rango = 15;
             break;
 
-            
-            case 2:
-                $rango = 20;
+        case 2:
+            $rango = 20;
             break;
 
-            
-            case 3:
-                $rango = 25;
+        case 3:
+            $rango = 25;
             break;
 
-
-            
-            case 4:
-                $rango = 2;
+        case 4:
+            $rango = 2;
             break;
-        }
-
-        //haseando
-        $codigo = hash('sha256', $request->codent);
-        //Extrayendo del 20 al 24 servicio y del 15 al 19 para el motor
-        $codigo = substr($codigo,$rango,4);
-        //String to e=hexadecimal
-        $codigo = hex2bin(bin2hex($codigo));
-        //Exadecimal to decimal
-        $codigo = hexdec($codigo);
-        return array('status'=>1,'codigo'=>$codigo);
     }
+
+    // ============================================
+    // SI ES OPCIÓN 1 (Activar Motor) -> GUARDAR EN equipo_estados COMO ABIERTO
+    // ============================================
+    if (($request->opcion * 1) == 1) {
+        // Verificar que la MAC llegue en el request
+        if (isset($request->mac) && !empty($request->mac)) {
+            // Buscar el equipo por MAC
+            $equipo = DB::table('equipos')
+                ->where('mac', $request->mac)
+                ->first();
+
+            if ($equipo) {
+                // Insertar en equipo_estados como abierto (cerrado = 0)
+                DB::table('equipo_estados')->insert([
+                    'mac' => strtolower($equipo->mac),
+                    'cerrado' => 0, // 0 = Abierto
+                    'latitud' => isset($request->latitud) ? $request->latitud : 0,
+                    'longitud' => isset($request->longitud) ? $request->longitud : 0,
+                    'datetime' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+    }
+
+    //haseando
+    $codigo = hash('sha256', $request->codent);
+    //Extrayendo del 20 al 24 servicio y del 15 al 19 para el motor
+    $codigo = substr($codigo, $rango, 4);
+    //String to e=hexadecimal
+    $codigo = hex2bin(bin2hex($codigo));
+    //Exadecimal to decimal
+    $codigo = hexdec($codigo);
+    return array('status' => 1, 'codigo' => $codigo);
+}
 
 
     public function Geocercas(Request $request)

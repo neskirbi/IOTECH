@@ -104,11 +104,12 @@ function ValidarPassRegistro(){
 }
 
 
-function PreCodigo(id,numeconomico){
+function PreCodigo(id, numeconomico, macEquipo){
     $('#codent').val('');    
     $('#codsal').html('-----');  
     $('.bgenerar').attr("data-id", id);
     $('.bgenerar').attr("data-numeconomico", numeconomico);
+    $('#btn_generar_codigo').attr('data-mac', macEquipo);
     
 }
 
@@ -118,10 +119,9 @@ function GenerarCodigo(_this){
     var id = $(_this).data('id');
     var numeconomico = $(_this).data('numeconomico');
     var id_operador = $(_this).data('id_operador');
+    var mac = $(_this).data('mac');
     var codent = $('#codent').val();
     var opcion=$('input[name="opcion"]:checked').val();
-    
-    
     if($('#codent').val().length==0){
         $('#codent').removeClass('is-valid');
         $('#codent').addClass('is-invalid');
@@ -136,7 +136,7 @@ function GenerarCodigo(_this){
         async:true,
         method:'post',
         url:  Url()+"api/GenerarCodigo",
-        data:{id:id,codent:codent,opcion:opcion,numeconomico:numeconomico,id_operador:id_operador}
+        data:{id:id,codent:codent,opcion:opcion,numeconomico:numeconomico,user_id:id_operador,mac:mac}
     }).done(function(data) {
         
         if(data.status==1){

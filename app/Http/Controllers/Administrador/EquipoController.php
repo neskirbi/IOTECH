@@ -19,10 +19,16 @@ class EquipoController extends Controller
      */
     public function index()
     {
-        $equipos = Equipo::where('id_administrador',GetId())->get();
-        return view('administradores.equipos.index',['equipos'=>$equipos]);
+        $equipos = Equipo::where('id_administrador', GetId())
+            ->leftJoin('equipo_estados', function($join) {
+                $join->on('equipos.mac', '=', 'equipo_estados.mac')
+                    ->whereRaw('equipo_estados.datetime = (SELECT MAX(datetime) FROM equipo_estados WHERE mac = equipos.mac)');
+            })
+            ->select('equipos.*', 'equipo_estados.cerrado', 'equipo_estados.latitud', 'equipo_estados.longitud', 'equipo_estados.datetime')
+            ->get();
+        
+        return view('administradores.equipos.index', ['equipos' => $equipos]);
     }
-
     /**
      * Show the form for creating a new resource.
      *

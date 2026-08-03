@@ -57,12 +57,12 @@
             </a>
           </li>
 
-          <li class="nav-item">
+          <!--<li class="nav-item">
             <a href="{{url('soporte')}}" class="nav-link {{ request()->is('soporte*') ? 'active-oiion' : '' }}">
               <i class="nav-icon fa fa-phone" style="color: var(--accent-cyan);" aria-hidden="true"></i>
               <p class="text-light">Soporte</p>
             </a>
-          </li>
+          </li>-->
 
           <li class="nav-item mt-3" style="border-top: 1px solid var(--border-color);">
             <a href="{{url('logout')}}" class="nav-link text-danger mt-2">
