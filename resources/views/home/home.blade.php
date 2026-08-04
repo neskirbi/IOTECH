@@ -411,6 +411,25 @@
                         </ul>
                     </div>
                 </div>
+
+                <!-- NEXO -->
+                <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="300" id="nexo">
+                    <div class="division-card">
+                        <div class="division-icon"><i class="fas fa-handshake"></i></div>
+                        <h3 class="fw-bold h4">NEXO</h3>
+                        <p class="text-muted fw-semibold small">Donde la tecnología crea confianza.</p>
+                        <p class="text-muted mt-3">NEXO conecta la innovación con las personas mediante la implementación, la capacitación y el acompañamiento operativo, asegurando que cada solución de OII-ON genere el impacto para el que fue diseñada.</p>
+                        <p class="text-muted small">Su propósito es transformar la tecnología en relaciones de confianza duraderas, donde cada cliente se sienta acompañado y respaldado en cada etapa del proceso.</p>
+                        <h6 class="fw-bold mt-4 mb-2 text-dark">Principios de NEXO</h6>
+                        <ul class="principles-list">
+                            <li>La confianza se construye con transparencia y cumplimiento.</li>
+                            <li>La capacitación es el puente entre la tecnología y su uso efectivo.</li>
+                            <li>Cada interacción debe fortalecer la relación con el cliente.</li>
+                            <li>El acompañamiento operativo es parte esencial de la solución.</li>
+                            <li>El éxito de nuestros clientes es la base de nuestra reputación.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -426,7 +445,8 @@
                         <ul class="list-unstyled text-white-50 fs-5 mb-4">
                             <li class="mb-2"><strong class="text-white">CORE</strong> imagina y construye la tecnología.</li>
                             <li class="mb-2"><strong class="text-white">MOTION</strong> la integra y la convierte en operación.</li>
-                            <li><strong class="text-white">VISION</strong> transforma la información en inteligencia.</li>
+                            <li class="mb-2"><strong class="text-white">VISION</strong> transforma la información en inteligencia.</li>
+                            <li class="mb-2"><strong class="text-white">NEXO</strong> donde la tecnología crea confianza.</li>
                         </ul>
                         <p class="text-white-50 mb-0">Cada división representa una disciplina especializada; juntas conforman una arquitectura capaz de evolucionar, adaptarse y resolver desafíos complejos mediante una filosofía de colaboración, innovación y excelencia.</p>
                     </div>
@@ -440,23 +460,7 @@
                 </div>
             </div>
 
-            <!-- NEXO -->
-            <div class="row justify-content-center" data-aos="fade-up" id="nexo">
-                <div class="col-lg-10">
-                    <div class="division-card border-2" style="border-color: #00e0ff !important;">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 text-center mb-3 mb-md-0">
-                                <div class="division-icon mb-0"><i class="fas fa-handshake"></i></div>
-                            </div>
-                            <div class="col-md-10">
-                                <h3 class="fw-bold h4">NEXO</h3>
-                                <p class="text-muted fw-semibold small">Donde la tecnología crea confianza.</p>
-                                <p class="text-muted mt-2 mb-0">Conecta la innovación con las personas mediante la implementación, la capacitación y el acompañamiento operativo, asegurando que cada solución de OII-ON genere el impacto para el que fue diseñada.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           
         </div>
     </section>
 
@@ -520,7 +524,7 @@
                             <p class="text-muted" style="line-height: 1.7;">Diseñar arquitecturas tecnológicas que transformen la seguridad física en sistemas inteligentes, integrando hardware, software y datos mediante la especialización de nuestras divisiones y la colaboración estratégica con los mejores aliados de cada industria.</p>
                             <p class="text-muted fw-medium small mb-0">En OII-ON no competimos por hacerlo todo; competimos por integrar mejor que nadie aquello que genera verdadero valor para nuestros clientes.</p>
                             <hr class="my-3 text-muted opacity-25">
-                            <p class="text-secondary small italic mb-0">Observa que la primera parte responde al qué hacemos, mientras que la segunda explica cómo pensamos.</p>
+                            
                         </div>
                     </div>
                     <div class="col-lg-6" data-aos="fade-left">
