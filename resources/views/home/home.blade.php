@@ -327,8 +327,8 @@
                     <h1 class="mb-4">Seguridad que <span class="highlight">siempre te acompaña</span>, donde estés.</h1>
                     <p class="lead mb-4 text-white-50">Monitoreo en tiempo real, alertas inteligentes y control total desde tu dispositivo Android. OII-ON protege tu flota, familia o negocio con tecnología de rastreo de última generación.</p>
                     <div class="d-flex flex-wrap gap-3">
-                        <a href="{{asset('apk/oll-on_v1.0.0_20260112.apk')}}" class="btn btn-android btn-lg px-5" download>
-                            <i class="fab fa-android me-2"></i>Descargar APK v1.0.0
+                        <a href="{{asset('apk/oii-on_v2.0.0_20260805.apk')}}" class="btn btn-android btn-lg px-5" download>
+                            <i class="fab fa-android me-2"></i>Descargar APK v2.0.0
                         </a>
                         <a href="#core" class="btn btn-outline-light-custom btn-lg"><i class="fas fa-cubes me-2"></i>Ver divisiones</a>
                     </div>
