@@ -55,7 +55,6 @@ class DashboardController extends Controller
             ->where('equipos.id_administrador', '=', $adminId)
             ->select(
                 'registros.id',
-                'registros.numeconomico',
                 'registros.mac',
                 'registros.opcion',
                 'registros.created_at',

@@ -160,12 +160,6 @@
                     <tbody>
                       @forelse ($ultimosRegistros as $registro)
                         <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                          <td class="py-3 px-4 align-middle font-weight-bold text-cyan">
-                            <i class="fas fa-hashtag text-muted mr-1"></i>{{ $registro->numeconomico ?: 'N/A' }}
-                          </td>
-                          <td class="py-3 align-middle">
-                            <span class="text-muted small">{{ $registro->mac ?: 'N/A' }}</span>
-                          </td>
                           <td class="py-3 align-middle">
                             @php
                               $nombreOperador = $registro->operador_nombre ?? '';
@@ -175,6 +169,10 @@
                             @endphp
                             {{ $nombreOperador }}
                           </td>
+                          <td class="py-3 align-middle">
+                            <span class="text-muted small">{{ $registro->mac ?: 'N/A' }}</span>
+                          </td>
+                          
                           <td class="py-3 align-middle">
                             @php
                               $opcionesAccion = [
