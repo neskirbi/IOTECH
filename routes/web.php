@@ -87,5 +87,12 @@ Route::middleware(['auth:administradores'])->group(function () {
    */
 
    Route::resource('equiposop', 'App\Http\Controllers\Operadores\EquipoController');
+   
+   Route::get('cambiopass',function (){
+        
+       
+        return view('operadores.equipos.index');
+   });
+
 
    

@@ -127,9 +127,9 @@ class LoginController extends Controller
             $opr->save();
          
             
-            //Auth::guard('operadores')->login($opr);
+           
 
-            return redirect('equiposop');
+            return redirect('cambiopass');
             //return redirect('/');
         }
 
