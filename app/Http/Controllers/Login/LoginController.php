@@ -68,7 +68,7 @@ class LoginController extends Controller
             if(!password_verify($request->pass,$opr->pass)){
                 return redirect('login')->with('error', '¡Error de contraseña!');
             }
-            Auth::guard('operadores')->login($opr);
+            //Auth::guard('operadores')->login($opr);
             return redirect('/');
         }
 
@@ -127,9 +127,10 @@ class LoginController extends Controller
             $opr->save();
          
             
-            Auth::guard('operadores')->login($opr);
+            //Auth::guard('operadores')->login($opr);
 
-            return redirect('/');
+            return redirect('equiposop');
+            //return redirect('/');
         }
 
         return redirect('login')->with('error', '¡No se pudo iniciar sesión!');

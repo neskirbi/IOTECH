@@ -24,7 +24,7 @@ Route::get('/', function () {
     }   
 
     if(Auth::guard('operadores')->check()){
-        return redirect('equiposop');
+        //return redirect('equiposop');
     }  
 
 
