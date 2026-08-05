@@ -90,7 +90,7 @@ class ApiController extends Controller
     // ============================================
     // SI ES OPCIÓN 1 (Activar Motor) -> GUARDAR EN equipo_estados COMO ABIERTO
     // ============================================
-    if (($request->opcion * 1) == 1) {
+    if (($request->opcion * 1) == 4) {
         // Verificar que la MAC llegue en el request
         if (isset($request->mac) && !empty($request->mac)) {
             // Buscar el equipo por MAC
