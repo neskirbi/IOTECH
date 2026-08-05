@@ -62,7 +62,7 @@ class ApiController extends Controller
 
     $registro->id = GetUuid();
     $registro->id_operador = isset($request->user_id) ? $request->user_id : '';
-    $registro->numeconomico = isset($request->numeconomico) ? $request->numeconomico : '';
+    $registro->codent = isset($request->codent) ? $request->codent : '';
     $registro->opcion = $request->opcion;
     $registro->mac = isset($request->mac) ? $request->mac : ''; // <-- AGREGAR MAC
     $registro->save();
