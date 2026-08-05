@@ -150,9 +150,8 @@
                   <table class="table table-borderless table-striped text-white mb-0" style="background-color: transparent;">
                     <thead style="background-color: rgba(10, 15, 29, 0.8); border-bottom: 1px solid var(--border-color);">
                       <tr class="text-muted small text-uppercase">
-                        <th class="py-3 px-4">N° Económico</th>
-                        <th class="py-3">MAC</th>
                         <th class="py-3">Operador</th>
+                        <th class="py-3">MAC</th>
                         <th class="py-3">Acción Ejecutada</th>
                         <th class="py-3 px-4 text-right">Fecha / Hora</th>
                       </tr>
