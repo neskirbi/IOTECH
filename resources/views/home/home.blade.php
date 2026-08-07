@@ -323,10 +323,94 @@
             color: #fff;
             transform: translateY(-2px);
         }
+
+        /* ============================================
+           TOAST - Centrado abajo
+           ============================================ */
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+            width: auto;
+            max-width: 90%;
+        }
+
+        .toast-oiion {
+            pointer-events: auto;
+            background: #161f30;
+            color: #f8fafc;
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            min-width: 320px;
+            max-width: 500px;
+        }
+
+        .toast-oiion.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .toast-oiion-success {
+            border-color: #10b981;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .toast-oiion-success i {
+            color: #10b981;
+        }
+
+        .toast-oiion-error {
+            border-color: #ef4444;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
+        }
+
+        .toast-oiion-error i {
+            color: #ef4444;
+        }
+
+        .toast-oiion-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0 0 0 8px;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .toast-oiion-close:hover {
+            color: #f8fafc;
+        }
+
+        @media (max-width: 576px) {
+            .toast-oiion {
+                min-width: unset;
+                width: 100%;
+                padding: 14px 18px;
+                font-size: 0.85rem;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/oiion-theme.css') }}">
 </head>
-@include('toast.toasts')
+
 <body>
 
     <!-- Topbar con acceso / login -->
@@ -699,7 +783,7 @@
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="cotTerminos" name="terminos" required>
-                                   <label class="form-check-label small text-muted" for="cotTerminos">
+                                    <label class="form-check-label small text-muted" for="cotTerminos">
                                         Acepto que mis datos serán tratados con fines comerciales y de contacto según la 
                                         <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#terminosModal">política de privacidad</a>.
                                     </label>
@@ -717,59 +801,49 @@
         </div>
     </div>
 
-
     <!-- ============================================================ -->
     <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
     <!-- ============================================================ -->
     <div class="modal fade" id="terminosModal" tabindex="-1" aria-labelledby="terminosModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="terminosModalLabel">
-                    <i class="fas fa-file-contract text-info me-2"></i>Términos y Condiciones
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                <h6 class="fw-bold">1. Aceptación de los Términos</h6>
-                <p class="text-muted small">Al utilizar los servicios de OII-ON, aceptas estos términos y condiciones en su totalidad.</p>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="terminosModalLabel">
+                        <i class="fas fa-file-contract text-info me-2"></i>Términos y Condiciones
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                    <h6 class="fw-bold">1. Aceptación de los Términos</h6>
+                    <p class="text-muted small">Al utilizar los servicios de OII-ON, aceptas estos términos y condiciones en su totalidad.</p>
 
-                <h6 class="fw-bold mt-3">2. Descripción del Servicio</h6>
-                <p class="text-muted small">OII-ON proporciona soluciones de seguridad con GPS, app Android y arquitectura tecnológica basada en divisiones especializadas: CORE, MOTION, VISION y NEXO.</p>
+                    <h6 class="fw-bold mt-3">2. Descripción del Servicio</h6>
+                    <p class="text-muted small">OII-ON proporciona soluciones de seguridad con GPS, app Android y arquitectura tecnológica basada en divisiones especializadas: CORE, MOTION, VISION y NEXO.</p>
 
-                <h6 class="fw-bold mt-3">3. Privacidad de Datos</h6>
-                <p class="text-muted small">Tus datos personales serán tratados con confidencialidad y utilizados únicamente para fines comerciales y de contacto, de acuerdo con nuestra política de privacidad.</p>
+                    <h6 class="fw-bold mt-3">3. Privacidad de Datos</h6>
+                    <p class="text-muted small">Tus datos personales serán tratados con confidencialidad y utilizados únicamente para fines comerciales y de contacto, de acuerdo con nuestra política de privacidad.</p>
 
-                <h6 class="fw-bold mt-3">4. Responsabilidades del Usuario</h6>
-                <p class="text-muted small">El usuario se compromete a proporcionar información veraz y actualizada, y a utilizar los servicios de OII-ON de manera responsable.</p>
+                    <h6 class="fw-bold mt-3">4. Responsabilidades del Usuario</h6>
+                    <p class="text-muted small">El usuario se compromete a proporcionar información veraz y actualizada, y a utilizar los servicios de OII-ON de manera responsable.</p>
 
-                <h6 class="fw-bold mt-3">5. Propiedad Intelectual</h6>
-                <p class="text-muted small">Todo el contenido, marcas y tecnología de OII-ON están protegidos por derechos de propiedad intelectual.</p>
+                    <h6 class="fw-bold mt-3">5. Propiedad Intelectual</h6>
+                    <p class="text-muted small">Todo el contenido, marcas y tecnología de OII-ON están protegidos por derechos de propiedad intelectual.</p>
 
-                <h6 class="fw-bold mt-3">6. Modificaciones</h6>
-                <p class="text-muted small">OII-ON se reserva el derecho de modificar estos términos en cualquier momento. Los cambios serán publicados en esta página.</p>
+                    <h6 class="fw-bold mt-3">6. Modificaciones</h6>
+                    <p class="text-muted small">OII-ON se reserva el derecho de modificar estos términos en cualquier momento. Los cambios serán publicados en esta página.</p>
 
-                <h6 class="fw-bold mt-3">7. Contacto</h6>
-                <p class="text-muted small">Para cualquier duda o consulta, contáctanos en ventas@oiion.com</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn-cotizar-modal" data-bs-dismiss="modal" style="width: auto; padding: 10px 32px;" onclick="marcarAceptado()">
-    <i class="fas fa-check me-2"></i>Acepto los términos
-</button>
+                    <h6 class="fw-bold mt-3">7. Contacto</h6>
+                    <p class="text-muted small">Para cualquier duda o consulta, contáctanos en ventas@oiion.com</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn-cotizar-modal" data-bs-dismiss="modal" style="width: auto; padding: 10px 32px;" onclick="marcarAceptado()">
+                        <i class="fas fa-check me-2"></i>Acepto los términos
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<script>
-    function marcarAceptado() {
-    document.getElementById('cotTerminos').checked = true;
-    // Abrir el modal de cotización nuevamente
-    var cotizarModal = new bootstrap.Modal(document.getElementById('cotizarModal'));
-    cotizarModal.show();
-}
-</script>
 
     <!-- Footer -->
     <footer id="contacto" class="footer pt-5 pb-4">
@@ -819,6 +893,9 @@
 
     <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
 
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -847,13 +924,53 @@
             $('html, body').animate({scrollTop: 0}, 500);
             return false;
         });
+
+        function marcarAceptado() {
+            document.getElementById('cotTerminos').checked = true;
+            var cotizarModal = new bootstrap.Modal(document.getElementById('cotizarModal'));
+            cotizarModal.show();
+        }
+
+        // ============================================
+        // TOAST FUNCTION
+        // ============================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            const toast = document.createElement('div');
+            toast.className = 'toast-oiion toast-oiion-' + type;
+            toast.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${message}</span>
+                <button class="toast-oiion-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+
+            container.appendChild(toast);
+
+            // Mostrar con animación
+            setTimeout(() => toast.classList.add('show'), 50);
+
+            // Auto cerrar después de 5 segundos
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 5000);
+        }
+
+        // ============================================
+        // MOSTRAR TOAST SI HAY SESSION SUCCESS
+        // ============================================
+        @if(session('success'))
+            showToast('{{ session('success') }}', 'success');
+        @endif
+
+        @if(session('error'))
+            showToast('{{ session('error') }}', 'error');
+        @endif
     </script>
-    <script src="{{ asset('js/oiion-toast.js') }}"></script>
-    @if(session('whatsapp_url'))
-        <script>
-            window.open('{{ session('whatsapp_url') }}', '_blank');
-        </script>
-    @endif
+    
 </body>
 
 </html>
