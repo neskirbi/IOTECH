@@ -268,9 +268,65 @@
                 font-size: 1.4rem;
             }
         }
-    </style>
-</head>
 
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* === MODAL COTIZACIÓN === */
+        .modal-cotizacion .modal-content {
+            border-radius: 24px;
+            border: none;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+        .modal-cotizacion .modal-header {
+            border-bottom: none;
+            padding: 2rem 2rem 0 2rem;
+        }
+        .modal-cotizacion .modal-body {
+            padding: 1.5rem 2rem 2rem 2rem;
+        }
+        .modal-cotizacion .modal-footer {
+            border-top: none;
+            padding: 0 2rem 2rem 2rem;
+        }
+        .modal-cotizacion .form-control {
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+        }
+        .modal-cotizacion .form-control:focus {
+            border-color: #00e0ff;
+            box-shadow: 0 0 0 3px rgba(0,224,255,0.15);
+        }
+        .modal-cotizacion .form-label {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .btn-cotizar-modal {
+            background-color: #00e0ff;
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 40px;
+            transition: 0.2s;
+            width: 100%;
+        }
+        .btn-cotizar-modal:hover {
+            background-color: #000;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('css/oiion-theme.css') }}">
+</head>
+@include('toast.toasts')
 <body>
 
     <!-- Topbar con acceso / login -->
@@ -305,15 +361,14 @@
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                     <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#core">CORE</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#motion">MOTION</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#vision">VISION</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#nexo">NEXO</a></li>
                     <li class="nav-item"><a class="nav-link" href="#proyectos">Proyectos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#configuracion">Configuración</a></li>
                     <li class="nav-item"><a class="nav-link fw-semibold" href="#acerca" style="color: #00e0ff !important;">Acerca de OII-ON</a></li>
                 </ul>
-                <a href="#" class="btn btn-primary-custom ms-lg-3">Cotizar ahora</a>
+                <!-- Botón Cotizar ahora - ABRE EL MODAL -->
+                <button type="button" class="btn btn-primary-custom ms-lg-3" data-bs-toggle="modal" data-bs-target="#cotizarModal">
+                    Cotizar ahora
+                </button>
             </div>
         </div>
     </nav>
@@ -345,7 +400,7 @@
         </div>
     </section>
 
-    <!-- Secciones de Divisiones: CORE, MOTION, VISION -->
+    <!-- Secciones de Divisiones -->
     <section class="py-5 py-md-8 bg-light">
         <div class="container py-5">
             <div class="text-center mb-5" data-aos="fade-up">
@@ -434,7 +489,7 @@
         </div>
     </section>
 
-    <!-- Sección Resumen Arquitectura y NEXO -->
+    <!-- Sección Resumen Arquitectura -->
     <section class="py-5 bg-white">
         <div class="container py-4">
             <div class="architecture-banner text-center text-lg-start mb-5" data-aos="fade-up">
@@ -459,12 +514,10 @@
                     </div>
                 </div>
             </div>
-
-           
         </div>
     </section>
 
-    <!-- Módulos Adicionales (Proyectos y Configuración) -->
+    <!-- Módulos Adicionales -->
     <section class="py-5 bg-light" id="proyectos">
         <div class="container py-3">
             <div class="row g-4">
@@ -524,7 +577,6 @@
                             <p class="text-muted" style="line-height: 1.7;">Diseñar arquitecturas tecnológicas que transformen la seguridad física en sistemas inteligentes, integrando hardware, software y datos mediante la especialización de nuestras divisiones y la colaboración estratégica con los mejores aliados de cada industria.</p>
                             <p class="text-muted fw-medium small mb-0">En OII-ON no competimos por hacerlo todo; competimos por integrar mejor que nadie aquello que genera verdadero valor para nuestros clientes.</p>
                             <hr class="my-3 text-muted opacity-25">
-                            
                         </div>
                     </div>
                     <div class="col-lg-6" data-aos="fade-left">
@@ -591,12 +643,133 @@
                 <!-- Cita Final -->
                 <div class="text-center p-4 rounded-4" style="background: #0f172a; color: white;" data-aos="zoom-in">
                     <i class="fas fa-quote-left fa-2x text-info mb-3 opacity-50"></i>
-                    <p class="fs-5 fst-italic mb-0" style="max-width: 800px; margin: 0 auto;">“La innovación no consiste en crear más tecnología, sino en integrar el conocimiento adecuado para resolver problemas que antes parecían imposibles.”</p>
+                    <p class="fs-5 fst-italic mb-0" style="max-width: 800px; margin: 0 auto;">"La innovación no consiste en crear más tecnología, sino en integrar el conocimiento adecuado para resolver problemas que antes parecían imposibles."</p>
                     <span class="d-block mt-3 text-info fw-bold">— OII-ON Architecture</span>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- ============================================================ -->
+    <!-- MODAL DE COTIZACIÓN -->
+    <!-- ============================================================ -->
+    <div class="modal fade modal-cotizacion" id="cotizarModal" tabindex="-1" aria-labelledby="cotizarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h4 class="modal-title fw-bold" id="cotizarModalLabel">
+                            <i class="fas fa-file-invoice text-info me-2"></i>Solicitar Cotización
+                        </h4>
+                        <p class="text-muted small mb-0">Completa el formulario y te contactaremos en menos de 24 horas.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('cotizacion.enviar') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="cotNombre" class="form-label">Nombre completo *</label>
+                                <input type="text" class="form-control" id="cotNombre" name="nombre" placeholder="Ej: Juan Pérez" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cotEmail" class="form-label">Correo electrónico *</label>
+                                <input type="email" class="form-control" id="cotEmail" name="email" placeholder="ejemplo@correo.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cotTelefono" class="form-label">Teléfono de contacto</label>
+                                <input type="tel" class="form-control" id="cotTelefono" name="telefono" placeholder="+52 55 1234 5678">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cotSolucion" class="form-label">Tipo de solución</label>
+                                <select class="form-select" id="cotSolucion" name="tipo_solucion">
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="flota_vehicular">Rastreo de flota vehicular</option>
+                                    <option value="seguridad_personal">Seguridad personal / familiar</option>
+                                    <option value="seguridad_empresarial">Seguridad empresarial</option>
+                                    <option value="gps_industrial">GPS para maquinaria / activos</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="cotMensaje" class="form-label">Mensaje o requerimientos</label>
+                                <textarea class="form-control" id="cotMensaje" name="mensaje" rows="4" placeholder="Cuéntanos qué necesitas, cuántos dispositivos, plazos, etc."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cotTerminos" name="terminos" required>
+                                   <label class="form-check-label small text-muted" for="cotTerminos">
+                                        Acepto que mis datos serán tratados con fines comerciales y de contacto según la 
+                                        <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#terminosModal">política de privacidad</a>.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-cotizar-modal">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar cotización
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
+    <!-- ============================================================ -->
+    <div class="modal fade" id="terminosModal" tabindex="-1" aria-labelledby="terminosModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="terminosModalLabel">
+                    <i class="fas fa-file-contract text-info me-2"></i>Términos y Condiciones
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <h6 class="fw-bold">1. Aceptación de los Términos</h6>
+                <p class="text-muted small">Al utilizar los servicios de OII-ON, aceptas estos términos y condiciones en su totalidad.</p>
+
+                <h6 class="fw-bold mt-3">2. Descripción del Servicio</h6>
+                <p class="text-muted small">OII-ON proporciona soluciones de seguridad con GPS, app Android y arquitectura tecnológica basada en divisiones especializadas: CORE, MOTION, VISION y NEXO.</p>
+
+                <h6 class="fw-bold mt-3">3. Privacidad de Datos</h6>
+                <p class="text-muted small">Tus datos personales serán tratados con confidencialidad y utilizados únicamente para fines comerciales y de contacto, de acuerdo con nuestra política de privacidad.</p>
+
+                <h6 class="fw-bold mt-3">4. Responsabilidades del Usuario</h6>
+                <p class="text-muted small">El usuario se compromete a proporcionar información veraz y actualizada, y a utilizar los servicios de OII-ON de manera responsable.</p>
+
+                <h6 class="fw-bold mt-3">5. Propiedad Intelectual</h6>
+                <p class="text-muted small">Todo el contenido, marcas y tecnología de OII-ON están protegidos por derechos de propiedad intelectual.</p>
+
+                <h6 class="fw-bold mt-3">6. Modificaciones</h6>
+                <p class="text-muted small">OII-ON se reserva el derecho de modificar estos términos en cualquier momento. Los cambios serán publicados en esta página.</p>
+
+                <h6 class="fw-bold mt-3">7. Contacto</h6>
+                <p class="text-muted small">Para cualquier duda o consulta, contáctanos en ventas@oiion.com</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn-cotizar-modal" data-bs-dismiss="modal" style="width: auto; padding: 10px 32px;" onclick="marcarAceptado()">
+    <i class="fas fa-check me-2"></i>Acepto los términos
+</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function marcarAceptado() {
+    document.getElementById('cotTerminos').checked = true;
+    // Abrir el modal de cotización nuevamente
+    var cotizarModal = new bootstrap.Modal(document.getElementById('cotizarModal'));
+    cotizarModal.show();
+}
+</script>
 
     <!-- Footer -->
     <footer id="contacto" class="footer pt-5 pb-4">
@@ -675,6 +848,7 @@
             return false;
         });
     </script>
+    <script src="{{ asset('js/oiion-toast.js') }}"></script>
 </body>
 
 </html>

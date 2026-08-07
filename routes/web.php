@@ -27,24 +27,21 @@ Route::get('/', function () {
         //return redirect('equiposop');
     }  
 
-
-
-
     return view('home.home');
 });
 
-
+// ============================================
+// RUTAS DE LOGIN
+// ============================================
 Route::resource('login', 'App\Http\Controllers\Login\LoginController');
 Route::get('logout', 'App\Http\Controllers\Login\LoginController@Logout');
 Route::get('newpass/{id}', 'App\Http\Controllers\Login\LoginController@NewPass');
 Route::post('savepass/{id}', 'App\Http\Controllers\Login\LoginController@SavePass');
-
-
 Route::post('Ingresar', 'App\Http\Controllers\Login\LoginController@Ingresar');
 
-
-
-
+// ============================================
+// RUTAS DE SUPER USUARIO
+// ============================================
 Route::resource('empresas', 'App\Http\Controllers\SuperUsuario\EmpresaController');
 Route::get('BorrarEmpresa/{id}', 'App\Http\Controllers\SuperUsuario\EmpresaController@BorrarEmpresa');
 
@@ -52,47 +49,34 @@ Route::resource('administradores', 'App\Http\Controllers\SuperUsuario\Administra
 Route::get('BorrarAdmin/{id}', 'App\Http\Controllers\SuperUsuario\AdministradorController@BorrarAdmin');
 
 Route::resource('operadoress', 'App\Http\Controllers\SuperUsuario\OperadorController');
-
 Route::resource('equiposs', 'App\Http\Controllers\SuperUsuario\EquipoController');
 
-/**
- * Rutas Super Usuarios
- */
-
+// ============================================
+// RUTAS DE ADMINISTRADOR (con middleware)
+// ============================================
 Route::middleware(['auth:administradores'])->group(function () {        
-    
     Route::resource('dashboard', 'App\Http\Controllers\Administrador\DashboardController');
-
     Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
-    
     Route::resource('equipos', 'App\Http\Controllers\Administrador\EquipoController');
     Route::get('BorrarEquipo/{id}', 'App\Http\Controllers\Administrador\EquipoController@BorrarEquipo');
-
-
     Route::resource('operadores', 'App\Http\Controllers\Administrador\OperadorController');
     Route::get('BorrarOperador/{id}', 'App\Http\Controllers\Administrador\OperadorController@BorrarOperador');
-
     Route::resource('soporte', 'App\Http\Controllers\Administrador\SoporteController');
 });
- /**
-  * Rutas Administradores 
-  */
 
+// ============================================
+// RUTAS DE OPERADORES
+// ============================================
+Route::resource('equiposop', 'App\Http\Controllers\Operadores\EquipoController');
 
+// ============================================
+// RUTA PARA COTIZACIÓN (NUEVA)
+// ============================================
+Route::post('cotizacion/enviar', 'App\Http\Controllers\CotizacionController@enviar')->name('cotizacion.enviar');
 
-  //Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
-
-  /**
-   * Rutas Operadores
-   */
-
-   Route::resource('equiposop', 'App\Http\Controllers\Operadores\EquipoController');
-   
-   Route::get('cambiopass',function (){
-        
-       
-        return view('operadores.equipos.index');
-   });
-
-
-   
+// ============================================
+// RUTA PARA CAMBIO DE PASSWORD
+// ============================================
+Route::get('cambiopass', function (){
+    return view('operadores.equipos.index');
+});
