@@ -849,6 +849,11 @@
         });
     </script>
     <script src="{{ asset('js/oiion-toast.js') }}"></script>
+    @if(session('whatsapp_url'))
+        <script>
+            window.open('{{ session('whatsapp_url') }}', '_blank');
+        </script>
+    @endif
 </body>
 
 </html>
