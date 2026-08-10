@@ -66,24 +66,23 @@
                     // Variables para el badge de la chapa (izquierda)
                     $chapaClase = 'sin-estado';
                     $chapaTexto = 'Sin estado';
-                    $chapaColor = '#6c757d'; // Gris
                     $chapaIcono = 'fa-question-circle';
                     
                     if ($chapaAbierta) {
                         $chapaClase = 'abierto';
                         $chapaTexto = 'Abierto';
-                        $chapaColor = '#10b981'; // Verde
                         $chapaIcono = 'fa-lock-open';
                     } elseif ($chapaCerrada) {
                         $chapaClase = 'cerrado';
                         $chapaTexto = 'Cerrado';
-                        $chapaColor = '#ef4444'; // Rojo
                         $chapaIcono = 'fa-lock';
                     }
                   @endphp
                   
                   <div class="col-xl-4 col-lg-4 col-md-6 mb-4">           
-                    <div class="card card-oiion h-100" style="border: 1px solid {{ $estaActivo ? 'var(--border-color)' : 'rgba(239, 68, 68, 0.4)' }}; background-color: rgba(21, 28, 47, 0.6);">
+                    <div class="card card-oiion h-100" 
+                         data-equipo-id="{{ $equipo->id }}"
+                         style="border: 1px solid {{ $estaActivo ? 'var(--border-color)' : 'rgba(239, 68, 68, 0.4)' }}; background-color: rgba(21, 28, 47, 0.6);">
                       <div class="card-body d-flex flex-column justify-content-between p-3">
                         
                         <div>
@@ -125,10 +124,10 @@
                           <!-- BADGE IZQUIERDA: ESTADO DE LA CHAPA (Abierto/Cerrado) -->
                           <!-- ============================================ -->
                           <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="status-badge {{ $chapaClase }}" style="border-color: {{ $chapaColor }}40;">
-                              <i class="fas fa-circle" style="font-size: 0.5rem; color: {{ $chapaColor }};"></i>
-                              <i class="fas {{ $chapaIcono }} ml-1" style="font-size: 0.7rem; color: {{ $chapaColor }};"></i>
-                              <span class="badge-text" style="color: {{ $chapaColor }};">{{ $chapaTexto }}</span>
+                            <span class="status-badge {{ $chapaClase }}">
+                              <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                              <i class="fas {{ $chapaIcono }} ml-1" style="font-size: 0.7rem;"></i>
+                              <span class="badge-text">{{ $chapaTexto }}</span>
                             </span>
 
                             <!-- ============================================ -->
@@ -684,7 +683,114 @@
     // Aquí puedes inicializar cosas si es necesario
 }
 
+</script>
 
+<!-- ============================================ -->
+<!-- FIREBASE REALTIME - LECTURA EN TIEMPO REAL   -->
+<!-- ============================================ -->
+<script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-database.js"></script>
+
+<script>
+$(document).ready(function() {
+    console.log('🚀 Iniciando Firebase...');
+
+    // Configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDz7FUkBtpZt9PBYoLXrxyOizg7BDVOmr4",
+        authDomain: "oii-on.firebaseapp.com",
+        projectId: "oii-on",
+        storageBucket: "oii-on.firebasestorage.app",
+        messagingSenderId: "574205217743",
+        appId: "1:574205217743:web:259fe9d810e921d08760ba",
+        measurementId: "G-D2Y68ZNJ9D"
+    };
+
+    // Inicializar Firebase
+    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+        console.log('✅ Firebase inicializado correctamente');
+    } else {
+        console.warn('⚠️ Firebase ya estaba inicializado o no está disponible');
+    }
+
+    const database = firebase.database();
+
+    // IDs de equipos desde la vista
+    const equiposIds = [];
+    @foreach($equipos as $equipo)
+        equiposIds.push('{{ $equipo->id }}');
+    @endforeach
+
+    console.log(`📋 Escuchando ${equiposIds.length} equipos:`, equiposIds);
+
+    // Escuchar cambios por cada equipo
+    equiposIds.forEach(function(equipoId, index) {
+        const ref = database.ref('estados/' + equipoId);
+        
+        ref.on('value', function(snapshot) {
+            const data = snapshot.val();
+            
+            if (data) {
+                console.log(`🔔 CAMBIO RECIBIDO para equipo: ${equipoId}`);
+                console.log(`📦 Datos:`, data);
+                
+                // Actualizar la UI
+                actualizarEstadoEquipo(equipoId, data);
+            }
+        }, function(error) {
+            console.error(`❌ Error escuchando /estados/${equipoId}:`, error);
+        });
+    });
+
+    // ============================================
+    // FUNCIÓN PARA ACTUALIZAR SOLO EL ESTADO
+    // ============================================
+    function actualizarEstadoEquipo(equipoId, data) {
+        const $tarjeta = $(`[data-equipo-id="${equipoId}"]`);
+        if ($tarjeta.length === 0) {
+            console.warn(`⚠️ Tarjeta no encontrada para ${equipoId}`);
+            return;
+        }
+
+        // Badge de chapa (el primero)
+        const $badge = $tarjeta.find('.status-badge:first');
+        const $texto = $badge.find('.badge-text');
+        const $icono = $badge.find('.fa-lock, .fa-lock-open, .fa-question-circle');
+
+        // Quitar todas las clases de estado
+        $badge.removeClass('abierto cerrado sin-estado');
+
+        if (data.cerrado === 0) {
+            // Abierto - solo agrega la clase
+            $badge.addClass('abierto');
+            $texto.text('Abierto');
+            $icono.attr('class', 'fas fa-lock-open ml-1');
+            
+        } else if (data.cerrado === 1) {
+            // Cerrado - solo agrega la clase
+            $badge.addClass('cerrado');
+            $texto.text('Cerrado');
+            $icono.attr('class', 'fas fa-lock ml-1');
+        }
+
+        // Si el modal está abierto, actualizar también
+        if ($('#modalcodegen').hasClass('show')) {
+            const $estado = $('#cerradura_estado');
+            if (data.cerrado === 0) {
+                $estado.html('<i class="fas fa-lock-open"></i> Abierto')
+                    .css('color', '#10b981')
+                    .css('text-shadow', '0 0 20px rgba(16, 185, 129, 0.8), 0 0 40px rgba(16, 185, 129, 0.4)');
+            } else if (data.cerrado === 1) {
+                $estado.html('<i class="fas fa-lock"></i> Cerrado')
+                    .css('color', '#ef4444')
+                    .css('text-shadow', '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.4)');
+            }
+        }
+    }
+
+    console.log('✅ Firebase escuchando cambios en tiempo real');
+});
 </script>
 
 </body>

@@ -13,7 +13,7 @@ function Memoria(){
 }
 
 function Version(){
-    return 8;
+    return 9;
 }
 
 function GetUuid(){
@@ -60,6 +60,51 @@ function GetId(){
 
     if(Auth::guard('operadores')->check()){
         return Auth::guard('operadores')->user()->id;
+    }
+}
+
+
+function EnviarAfirebase($mac, $cerrado, $latitud = 0, $longitud = 0)
+{
+    try {
+        // Buscar el equipo por MAC
+        $equipo = DB::table('equipos')
+            ->where('mac', $mac)
+            ->first();
+
+        if (!$equipo) {
+            return ['success' => false, 'error' => 'Equipo no encontrado'];
+        }
+
+        // ============================================
+        // 🔥 INICIALIZAR FIREBASE CON LA URL
+        // ============================================
+        $factory = (new \Kreait\Firebase\Factory)
+            ->withServiceAccount(storage_path('app/public/firebase/oii-on-firebase.json'))
+            ->withDatabaseUri('https://oii-on-default-rtdb.firebaseio.com/');
+        
+        $database = $factory->createDatabase();
+
+        // Datos a enviar
+        $data = [
+            'mac' => strtolower($mac),
+            'cerrado' => (int) $cerrado,
+            'latitud' => (float) $latitud,
+            'longitud' => (float) $longitud,
+            'datetime' => now()->toISOString(),
+            'numeconomico' => $equipo->numeconomico,
+            'matricula' => $equipo->matricula,
+            'equipo_id' => $equipo->id
+        ];
+
+        // Guardar en Firebase: /estados/{equipo_id}
+        $database->getReference('estados/' . $equipo->id)->set($data);
+
+        return ['success' => true];
+
+    } catch (\Exception $e) {
+        \Log::error('Firebase Error: ' . $e->getMessage());
+        return ['success' => false, 'error' => $e->getMessage()];
     }
 }
 

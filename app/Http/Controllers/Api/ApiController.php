@@ -87,29 +87,32 @@ class ApiController extends Controller
             break;
     }
 
-    // ============================================
-    // SI ES OPCIÓN 1 (Activar Motor) -> GUARDAR EN equipo_estados COMO ABIERTO
+     // ============================================
+    // SI ES OPCIÓN 4 (Apertura Chapa)
     // ============================================
     if (($request->opcion * 1) == 4) {
-        // Verificar que la MAC llegue en el request
         if (isset($request->mac) && !empty($request->mac)) {
-            // Buscar el equipo por MAC
-            $equipo = DB::table('equipos')
-                ->where('mac', $request->mac)
-                ->first();
+            
+            // Guardar en BD local
+            DB::table('equipo_estados')->insert([
+                'mac' => strtolower($request->mac),
+                'cerrado' => 0,
+                'latitud' => isset($request->latitud) ? $request->latitud : 0,
+                'longitud' => isset($request->longitud) ? $request->longitud : 0,
+                'datetime' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-            if ($equipo) {
-                // Insertar en equipo_estados como abierto (cerrado = 0)
-                DB::table('equipo_estados')->insert([
-                    'mac' => strtolower($equipo->mac),
-                    'cerrado' => 0, // 0 = Abierto
-                    'latitud' => isset($request->latitud) ? $request->latitud : 0,
-                    'longitud' => isset($request->longitud) ? $request->longitud : 0,
-                    'datetime' => now(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
+            // ============================================
+            // 🔥 ENVIAR A FIREBASE (SOLO ESTO)
+            // ============================================
+            EnviarAfirebase(
+                $request->mac,
+                0, // Abierto
+                isset($request->latitud) ? $request->latitud : 0,
+                isset($request->longitud) ? $request->longitud : 0
+            );
         }
     }
 
@@ -358,45 +361,65 @@ class ApiController extends Controller
 
 
     public function EstadoEquipo(Request $request)
-    {
-        // Validar que el request sea un arreglo y que cada elemento cumpla las reglas
-        $request->validate([
-            '*.mac' => 'required|string',
-            '*.cerrado' => 'required|integer|in:0,1',
-            '*.latitud' => 'nullable|numeric',
-            '*.longitud' => 'nullable|numeric',
-            '*.datetime' => 'nullable|string',
-        ]);
+{
+    // Validar que el request sea un arreglo y que cada elemento cumpla las reglas
+    $request->validate([
+        '*.mac' => 'required|string',
+        '*.cerrado' => 'required|integer|in:0,1',
+        '*.latitud' => 'nullable|numeric',
+        '*.longitud' => 'nullable|numeric',
+        '*.datetime' => 'nullable|string',
+    ]);
 
-        $registrosParaInsertar = [];
-        $ahora = now();
+    $registrosParaInsertar = [];
+    $ahora = now();
+    $resultadosFirebase = [];
 
-        // Recorrer cada elemento del arreglo recibido
-        foreach ($request->all() as $item) {
-            $datetimeFormateado = !empty($item['datetime']) 
-                ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
-                : $ahora;
+    // Recorrer cada elemento del arreglo recibido
+    foreach ($request->all() as $item) {
+        $datetimeFormateado = !empty($item['datetime']) 
+            ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
+            : $ahora;
 
-            $registrosParaInsertar[] = [
-                'mac' => strtolower($item['mac']),
-                'cerrado' => $item['cerrado'],
-                'latitud' => $item['latitud'] ?? null,
-                'longitud' => $item['longitud'] ?? null,
-                'datetime' => $datetimeFormateado,
-                'created_at' => $ahora,
-                'updated_at' => $ahora,
-            ];
-        }
-
-        // Inserción masiva en la base de datos (una sola consulta SQL para todos)
-        if (!empty($registrosParaInsertar)) {
-            DB::table('equipo_estados')->insert($registrosParaInsertar);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Historial de estados registrado correctamente',
-            'total_registros' => count($registrosParaInsertar)
-        ], 200);
+        $registrosParaInsertar[] = [
+            'mac' => strtolower($item['mac']),
+            'cerrado' => $item['cerrado'],
+            'latitud' => $item['latitud'] ?? null,
+            'longitud' => $item['longitud'] ?? null,
+            'datetime' => $datetimeFormateado,
+            'created_at' => $ahora,
+            'updated_at' => $ahora,
+        ];
     }
+
+    // Inserción masiva en la base de datos (una sola consulta SQL para todos)
+    if (!empty($registrosParaInsertar)) {
+        DB::table('equipo_estados')->insert($registrosParaInsertar);
+    }
+
+    // ============================================
+    // 🔥 ENVIAR A FIREBASE USANDO LA FUNCIÓN DE metodos.php
+    // ============================================
+    foreach ($registrosParaInsertar as $registro) {
+        $resultado = EnviarAfirebase(
+            $registro['mac'],
+            $registro['cerrado'],
+            $registro['latitud'] ?? 0,
+            $registro['longitud'] ?? 0
+        );
+
+        $resultadosFirebase[] = [
+            'mac' => $registro['mac'],
+            'success' => $resultado['success'] ?? false,
+            'error' => $resultado['error'] ?? null
+        ];
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Historial de estados registrado correctamente',
+        'total_registros' => count($registrosParaInsertar),
+        'firebase' => $resultadosFirebase
+    ], 200);
+}
 }

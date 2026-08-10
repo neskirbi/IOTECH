@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administrador;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Equipo;
 
@@ -18,17 +19,43 @@ class EquipoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $equipos = Equipo::where('id_administrador', GetId())
-            ->leftJoin('equipo_estados', function($join) {
-                $join->on('equipos.mac', '=', 'equipo_estados.mac')
-                    ->whereRaw('equipo_estados.datetime = (SELECT MIN(datetime) FROM equipo_estados WHERE mac = equipos.mac)');
-            })
-            ->select('equipos.*', 'equipo_estados.cerrado', 'equipo_estados.latitud', 'equipo_estados.longitud', 'equipo_estados.datetime')
-            ->get();
-        
-        return view('administradores.equipos.index', ['equipos' => $equipos]);
-    }
+{
+    $equipos = Equipo::where('id_administrador', GetId())
+        ->select(
+            'equipos.*',
+            DB::raw('(
+                SELECT cerrado 
+                FROM equipo_estados 
+                WHERE mac = equipos.mac 
+                ORDER BY datetime DESC 
+                LIMIT 1
+            ) as cerrado'),
+            DB::raw('(
+                SELECT latitud 
+                FROM equipo_estados 
+                WHERE mac = equipos.mac 
+                ORDER BY datetime DESC 
+                LIMIT 1
+            ) as latitud'),
+            DB::raw('(
+                SELECT longitud 
+                FROM equipo_estados 
+                WHERE mac = equipos.mac 
+                ORDER BY datetime DESC 
+                LIMIT 1
+            ) as longitud'),
+            DB::raw('(
+                SELECT datetime 
+                FROM equipo_estados 
+                WHERE mac = equipos.mac 
+                ORDER BY datetime DESC 
+                LIMIT 1
+            ) as datetime')
+        )
+        ->get();
+    
+    return view('administradores.equipos.index', ['equipos' => $equipos]);
+}
     /**
      * Show the form for creating a new resource.
      *
