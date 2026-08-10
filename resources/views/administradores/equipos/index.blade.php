@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  @include('administradores.header')
+  @include('header')
   <title>OIIon | Gestión y Soporte de Equipos</title>
   
   <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing&callback=inicializarAplicacion" async defer></script>

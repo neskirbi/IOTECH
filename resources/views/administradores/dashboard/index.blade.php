@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  @include('administradores.header')
+  @include('header')
   <title>OIIon | Dashboard General</title>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">

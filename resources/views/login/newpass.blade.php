@@ -4,185 +4,237 @@
     <meta charset="UTF-8">
     <title>IOTECH | Nueva Contraseña</title>
     @include('header')
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* ============================================
+           NUEVA CONTRASEÑA - MISMO ESTILO QUE LOGIN
+           ============================================ */
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            background: linear-gradient(135deg, #e8f0fe 0%, #d4e4fc 100%);
-            font-family: 'Jost', sans-serif;
+        html, body {
+            width: 100%;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            background: #050a15 !important;
+            font-family: 'Inter', sans-serif !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 20px !important;
+            margin: 0 !important;
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
+            overflow-x: hidden !important;
         }
 
-        /* Contenedor principal - tarjeta blanca */
+        /* Contenedor principal */
         .main {
-            width: 420px;
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 380px;
+            max-width: 100%;
+            background: rgba(11, 15, 25, 0.95) !important;
+            border-radius: 24px !important;
+            box-shadow: 
+                0 0 30px rgba(6, 182, 212, 0.08),
+                0 20px 60px rgba(0,0,0,0.8) !important;
             overflow: hidden;
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            margin: 200px auto 0 auto !important;
+            position: relative !important;
+            top: 0 !important;
+        }
+
+        /* Logo + Nombre juntos */
+        .login-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 35px 0 15px 0;
+            background: transparent !important;
+        }
+
+        .login-header img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .login-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+
+        .login-header h1 span {
+            color: #06b6d4;
         }
 
         #chk {
             display: none;
         }
 
-        /* Formulario de nueva contraseña */
+        /* Formulario */
         .signup {
-            padding: 40px 35px;
+            padding: 10px 30px 30px;
+            background: transparent !important;
         }
 
         .signup label {
-            display: block;
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 35px;
-            letter-spacing: 1px;
-        }
-
-        .signup label i {
-            color: #00aaff;
-            margin-right: 8px;
+            display: none;
         }
 
         .signup input {
             width: 100%;
-            padding: 14px 18px;
-            margin-bottom: 18px;
-            background: #f5f7fa;
-            border: 1px solid #e0e4e8;
-            border-radius: 14px;
-            color: #1a1a2e;
-            font-size: 15px;
-            font-family: 'Jost', sans-serif;
-            transition: 0.2s;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            background: rgba(255,255,255,0.04) !important;
+            border: 1px solid rgba(255,255,255,0.06) !important;
+            border-radius: 12px !important;
+            color: #ffffff !important;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif !important;
+            transition: 0.3s;
         }
 
         .signup input:focus {
             outline: none;
-            border-color: #00aaff;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(0,170,255,0.1);
+            border-color: #06b6d4 !important;
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.06) !important;
+            background: rgba(255,255,255,0.07) !important;
         }
 
         .signup input::placeholder {
-            color: #999;
+            color: rgba(255,255,255,0.2);
         }
 
         .signup button {
             width: 100%;
-            padding: 14px;
-            background: #000000;
-            border: none;
-            border-radius: 14px;
-            color: white;
-            font-size: 16px;
+            padding: 13px;
+            background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+            border: none !important;
+            border-radius: 12px !important;
+            color: #000 !important;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
+            transition: 0.3s;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .signup button:hover {
-            background: #00aaff;
             transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.3) !important;
+            background: linear-gradient(135deg, #22d3ee, #06b6d4) !important;
+        }
+
+        .signup button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         /* Mensajes de validación */
         .validation-message {
             font-size: 12px;
-            margin-top: -12px;
-            margin-bottom: 12px;
+            margin-top: -10px;
+            margin-bottom: 10px;
             padding-left: 5px;
         }
 
         .error-message {
-            color: #e74c3c;
+            color: #ef4444 !important;
         }
 
         .success-message {
-            color: #27ae60;
+            color: #10b981 !important;
         }
 
         /* Panel secundario */
         .login {
-            background: #f8fafc;
-            padding: 35px 30px;
+            background: rgba(0,0,0,0.2) !important;
+            padding: 25px 25px;
             text-align: center;
-            border-top: 1px solid #eef2f6;
-        }
-
-        .login label {
-            display: inline-block;
-            font-size: 32px;
-            font-weight: 800;
-            color: white;
-            background: #000000;
-            padding: 10px 28px;
-            border-radius: 50px;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
+            border-top: 1px solid rgba(255,255,255,0.04) !important;
         }
 
         .login p {
-            color: #4a5568;
-            font-size: 14px;
-            margin: 12px 0;
+            color: rgba(255,255,255,0.4) !important;
+            font-size: 13px;
+            margin: 8px 0;
+            background: transparent !important;
+        }
+
+        .login p strong {
+            color: #ffffff !important;
         }
 
         .login a {
-            color: #00aaff;
+            color: #22d3ee !important;
             text-decoration: none;
             font-weight: 600;
+            transition: 0.3s;
+            font-size: 13px;
         }
 
         .login a:hover {
-            text-decoration: underline;
+            color: #ffffff !important;
+            text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
         }
 
         .tech-icons {
             display: flex;
             justify-content: center;
-            gap: 28px;
-            margin: 20px 0 15px;
-            color: #666;
-            font-size: 13px;
+            gap: 20px;
+            margin: 14px 0 10px;
+            color: rgba(255,255,255,0.2) !important;
+            font-size: 11px;
+            background: transparent !important;
         }
 
         .tech-icons i {
-            color: #00aaff;
-            margin-right: 6px;
-            font-size: 14px;
+            color: #06b6d4;
+            margin-right: 4px;
+            font-size: 12px;
         }
 
         hr {
             border: none;
             height: 1px;
-            background: #e2e8f0;
-            margin: 20px 0;
+            background: rgba(255,255,255,0.04) !important;
+            margin: 14px 0;
         }
 
         .corner-logo {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            font-size: 12px;
-            color: #aaa;
-            background: rgba(0,0,0,0.05);
-            padding: 6px 12px;
-            border-radius: 20px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.04);
+            letter-spacing: 2px;
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Resetear estilos de AdminLTE */
+        .wrapper,
+        .main-header,
+        .main-sidebar,
+        .content-wrapper,
+        .main-footer {
+            all: unset !important;
         }
     </style>
 </head>
@@ -191,6 +243,12 @@
 @include('toast.toasts')
 
 <div class="main">
+    <!-- Logo + Nombre -->
+    <div class="login-header">
+        <img src="{{ asset('images/oiin-logo.png') }}" alt="Oll-ON Logo">
+        <h1>Oll-<span>ON</span></h1>
+    </div>
+
     <input type="checkbox" id="chk" aria-hidden="true">
 
     <!-- Formulario de NUEVA CONTRASEÑA -->
@@ -211,7 +269,6 @@
 
     <!-- Panel informativo -->
     <div class="login">
-        <label>IOTECH</label>
         <p><strong>Seguridad y tecnología</strong><br>Protege tu cuenta con una contraseña segura</p>
         
         <div class="tech-icons">
@@ -228,7 +285,7 @@
 </div>
 
 <div class="corner-logo">
-    <i class="fas fa-microchip"></i> IOTECH Secure
+    OLL-ON SECURE
 </div>
 
 <!-- Font Awesome -->
@@ -247,11 +304,9 @@
         // Validar contraseña principal
         if (pass.length > 0 && pass.length < 6) {
             passError.innerHTML = '<span class="error-message"><i class="fas fa-exclamation-circle"></i> La contraseña debe tener al menos 6 caracteres</span>';
-            passError.className = 'validation-message error-message';
             isValid = false;
         } else if (pass.length >= 6) {
             passError.innerHTML = '<span class="success-message"><i class="fas fa-check-circle"></i> Contraseña válida</span>';
-            passError.className = 'validation-message success-message';
         } else {
             passError.innerHTML = '';
         }
@@ -259,14 +314,11 @@
         // Validar confirmación
         if (pass2.length > 0 && pass !== pass2) {
             pass2Error.innerHTML = '<span class="error-message"><i class="fas fa-exclamation-circle"></i> Las contraseñas no coinciden</span>';
-            pass2Error.className = 'validation-message error-message';
             isValid = false;
         } else if (pass2.length > 0 && pass === pass2 && pass.length >= 6) {
             pass2Error.innerHTML = '<span class="success-message"><i class="fas fa-check-circle"></i> Las contraseñas coinciden</span>';
-            pass2Error.className = 'validation-message success-message';
         } else if (pass2.length > 0 && pass === pass2 && pass.length < 6) {
             pass2Error.innerHTML = '<span class="error-message"><i class="fas fa-exclamation-circle"></i> La contraseña es demasiado corta</span>';
-            pass2Error.className = 'validation-message error-message';
             isValid = false;
         } else {
             pass2Error.innerHTML = '';
@@ -274,16 +326,8 @@
         
         // Habilitar/deshabilitar botón
         submitBtn.disabled = !isValid;
-        if (!isValid) {
-            submitBtn.style.opacity = '0.6';
-            submitBtn.style.cursor = 'not-allowed';
-        } else {
-            submitBtn.style.opacity = '1';
-            submitBtn.style.cursor = 'pointer';
-        }
     }
     
-    // Validar al cargar por si hay valores preexistentes
     document.addEventListener('DOMContentLoaded', function() {
         validarPassword();
     });

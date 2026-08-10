@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  @include('administradores.header')
+  @include('header')
   <title>OIIon | Crear Geocerca</title>
   
   <style>
