@@ -19,19 +19,22 @@ class DashboardController extends Controller
     $totalGeocercas = DB::table('geocercas')->where('activa', 1)->where('id_administrador', '=', $adminId)->count();
 
     // 2. Cajas Abiertas - Obtener solo los últimos estados de cada MAC y filtrar cerrado = 0
-    $totalCajasAbiertas = DB::table('equipos')
-        ->join('equipo_estados', function($join) {
-            $join->on('equipos.mac', '=', 'equipo_estados.mac')
-                 ->whereRaw('equipo_estados.datetime = (
-                     SELECT MAX(datetime) 
-                     FROM equipo_estados AS e2 
-                     WHERE e2.mac = equipos.mac
-                 )');
-        })
-        ->where('equipos.id_administrador', '=', $adminId)
-        ->where('equipos.activo', 1)
-        ->where('equipo_estados.cerrado', 0) // Solo los que su último estado es abierto
-        ->count();
+    // 2. Cajas Abiertas - Versión con WHERE EXISTS (más robusta)
+$totalCajasAbiertas = DB::table('equipos')
+    ->where('id_administrador', $adminId)
+    ->where('activo', 1)
+    ->whereExists(function($query) {
+        $query->select(DB::raw(1))
+              ->from('equipo_estados as e2')
+              ->whereRaw('e2.mac = equipos.mac')
+              ->where('e2.cerrado', 0)
+              ->whereRaw('e2.datetime = (
+                  SELECT MAX(datetime) 
+                  FROM equipo_estados as e3 
+                  WHERE e3.mac = equipos.mac
+              )');
+    })
+    ->count();
 
     // 3. Registros de los últimos 7 días (por MAC)
     $registrosPorDia = DB::table('equipos')
