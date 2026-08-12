@@ -374,7 +374,7 @@ class ApiController extends Controller
     $registrosParaInsertar = [];
     $ahora = now();
     $resultadosFirebase = [];
-
+ 
     // Recorrer cada elemento del arreglo recibido
     foreach ($request->all() as $item) {
         $datetimeFormateado = !empty($item['datetime']) 
