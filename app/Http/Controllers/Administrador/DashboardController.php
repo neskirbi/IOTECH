@@ -19,8 +19,15 @@ class DashboardController extends Controller
         $totalGeocercas = DB::table('geocercas')->where('activa', 1)->where('id_administrador', '=', $adminId)->count();
 
         // 2. Cajas Abiertas (solo contador)
-        $totalCajasAbiertas = DB::table('equipos')
-            ->join('equipo_estados', 'equipos.mac', '=', 'equipo_estados.mac')
+       $totalCajasAbiertas = DB::table('equipos')
+            ->join('equipo_estados', function($join) {
+                $join->on('equipos.mac', '=', 'equipo_estados.mac')
+                    ->whereRaw('equipo_estados.datetime = (
+                        SELECT MAX(datetime) 
+                        FROM equipo_estados AS e2 
+                        WHERE e2.mac = equipos.mac
+                    )');
+            })
             ->where('equipos.id_administrador', '=', $adminId)
             ->where('equipos.activo', 1)
             ->where('equipo_estados.cerrado', 0)
