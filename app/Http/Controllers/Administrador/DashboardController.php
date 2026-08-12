@@ -30,7 +30,7 @@ class DashboardController extends Controller
             })
             ->where('equipos.id_administrador', '=', $adminId)
             ->where('equipos.activo', 1)
-            ->where('equipo_estados.cerrado', 0)
+            ->where('equipo_estados.cerrado', 0)  // ← Ahora filtra sobre el último registro
             ->count();
 
         // 3. Registros de los últimos 7 días (por MAC)
