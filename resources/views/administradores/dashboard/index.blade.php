@@ -83,23 +83,24 @@
             </div>
           </div>
 
-          <!-- Card Cajas Abiertas -->
-          <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+         <!-- Card Cajas Abiertas -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card card-oiion h-100" style="background-color: rgba(21, 28, 47, 0.6); border: 1px solid var(--border-color);">
-              <div class="card-body p-3 d-flex align-items-center justify-content-between">
-                <div>
-                  <span class="text-muted small font-weight-bold text-uppercase d-block">Cajas Abiertas</span>
-                  <h3 class="text-white font-weight-bold my-1" style="color: #ef4444;">{{ $totalCajasAbiertas }}</h3>
-                  <span class="badge badge-pill" style="background-color: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">
-                    <i class="fas fa-lock-open mr-1"></i> Atención
-                  </span>
+                <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small font-weight-bold text-uppercase d-block">Cajas Abiertas</span>
+                        <h3 class="text-white font-weight-bold my-1" style="color: #ef4444;">{{ $totalCajasAbiertas }}</h3>
+                        <span class="badge badge-pill status-badge abierto">
+                            <i class="fas fa-lock-open mr-1"></i> 
+                            <span class="badge-text">Abiertas</span>
+                        </span>
+                    </div>
+                    <div class="equipment-avatar-container m-0" style="border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);">
+                        <i class="fas fa-exclamation-triangle equipment-icon" style="color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));"></i>
+                    </div>
                 </div>
-                <div class="equipment-avatar-container m-0" style="border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);">
-                  <i class="fas fa-exclamation-triangle equipment-icon" style="color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));"></i>
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
 
         </div>
 
