@@ -368,23 +368,52 @@ class ApiController extends Controller
     public function EstadoEquipo(Request $request)
 {
     try {
-        // Obtener datos y normalizar
+        // Obtener todos los datos
         $data = $request->all();
         
-        // Si es un objeto único con 'mac', lo convertimos a arreglo
+        // ============================================
+        // 1. NORMALIZAR DATOS (arreglo o objeto único)
+        // ============================================
+        
+        // Si es un objeto único con 'mac' y 'cerrado', lo convertimos a arreglo de un elemento
         if (isset($data['mac']) && isset($data['cerrado'])) {
             $data = [$data];
         }
         
-        // Validar que sea un arreglo
+        // Validar que sea un arreglo y no esté vacío
         if (!is_array($data) || empty($data)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Datos inválidos: se esperaba un arreglo de objetos'
+                'message' => 'Datos inválidos: se esperaba un arreglo de objetos o un objeto único',
+                'ejemplo' => [
+                    'formato_individual' => [
+                        'mac' => '84:1F:E8:31:F6:D0',
+                        'cerrado' => 1,
+                        'latitud' => 19.42648049,
+                        'longitud' => -99.04119199,
+                        'datetime' => '2026-08-12 10:00:00'
+                    ],
+                    'formato_multiple' => [
+                        [
+                            'mac' => '84:1F:E8:31:F6:D0',
+                            'cerrado' => 1,
+                            'latitud' => 19.42648049,
+                            'longitud' => -99.04119199
+                        ],
+                        [
+                            'mac' => '84:1F:E8:31:F6:D1',
+                            'cerrado' => 0,
+                            'latitud' => 19.42648050,
+                            'longitud' => -99.04119200
+                        ]
+                    ]
+                ]
             ], 400);
         }
         
-        // Validar cada elemento
+        // ============================================
+        // 2. VALIDAR CADA ELEMENTO
+        // ============================================
         $validator = Validator::make($data, [
             '*.mac' => 'required|string',
             '*.cerrado' => 'required|integer|in:0,1',
@@ -396,15 +425,77 @@ class ApiController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'message' => 'Error de validación en los datos',
+                'errores' => $validator->errors()
             ], 422);
         }
 
-        // Resto del código igual...
-        
+        // ============================================
+        // 3. PROCESAR REGISTROS
+        // ============================================
+        $registrosParaInsertar = [];
+        $ahora = now();
+        $resultadosFirebase = [];
+
+        foreach ($data as $item) {
+            $datetimeFormateado = !empty($item['datetime']) 
+                ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
+                : $ahora;
+
+            $registrosParaInsertar[] = [
+                'mac' => strtolower(trim($item['mac'])),
+                'cerrado' => $item['cerrado'],
+                'latitud' => $item['latitud'] ?? 0,
+                'longitud' => $item['longitud'] ?? 0,
+                'datetime' => $datetimeFormateado,
+                'created_at' => $ahora,
+                'updated_at' => $ahora,
+            ];
+        }
+
+        // ============================================
+        // 4. INSERCIÓN MASIVA EN BD
+        // ============================================
+        if (!empty($registrosParaInsertar)) {
+            DB::table('equipo_estados')->insert($registrosParaInsertar);
+        }
+
+        // ============================================
+        // 5. ENVIAR A FIREBASE
+        // ============================================
+        foreach ($registrosParaInsertar as $registro) {
+            $resultado = EnviarAfirebase(
+                $registro['mac'],
+                $registro['cerrado'],
+                $registro['latitud'] ?? 0,
+                $registro['longitud'] ?? 0
+            );
+
+            $resultadosFirebase[] = [
+                'mac' => $registro['mac'],
+                'success' => $resultado['success'] ?? false,
+                'error' => $resultado['error'] ?? null
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Historial de estados registrado correctamente',
+            'total_registros' => count($registrosParaInsertar),
+            'firebase' => $resultadosFirebase
+        ], 200);
+
     } catch (\Exception $e) {
-        // Manejo de errores...
+        // Registrar error en logs
+        Log::error('Error en EstadoEquipo: ' . $e->getMessage(), [
+            'request' => $request->all(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Error interno del servidor: ' . $e->getMessage()
+        ], 500);
     }
 }
 }
