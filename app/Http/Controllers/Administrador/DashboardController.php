@@ -20,18 +20,18 @@ class DashboardController extends Controller
 
         // 2. Cajas Abiertas (solo contador)
         $totalCajasAbiertas = DB::table('equipos')
-    ->join('equipo_estados', function($join) {
-        $join->on('equipos.mac', '=', 'equipo_estados.mac')
-             ->whereRaw('equipo_estados.datetime = (
-                 SELECT MAX(datetime) 
-                 FROM equipo_estados AS e2 
-                 WHERE e2.mac = equipos.mac
-             )');
-    })
-    ->where('equipos.id_administrador', '=', $adminId)
-    ->where('equipos.activo', 1)
-    ->where('equipo_estados.cerrado', 0)
-    ->count();
+            ->join('equipo_estados', function($join) {
+                $join->on('equipos.mac', '=', 'equipo_estados.mac')
+                    ->whereRaw('equipo_estados.datetime = (
+                        SELECT MAX(datetime) 
+                        FROM equipo_estados AS e2 
+                        WHERE e2.mac = equipos.mac
+                    )');
+            })
+            ->where('equipos.id_administrador', '=', $adminId)
+            ->where('equipos.activo', 1)
+            ->where('equipo_estados.cerrado', 0)
+            ->count();
 
         // 3. Registros de los últimos 7 días (por MAC)
         $registrosPorDia = DB::table('equipos')
