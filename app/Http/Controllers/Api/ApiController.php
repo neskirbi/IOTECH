@@ -129,137 +129,142 @@ class ApiController extends Controller
 
 
     public function Geocercas(Request $request)
-    {
-        try {
-            // Validar datos de entrada
-            $validator = Validator::make($request->all(), [
-                'userId' => 'required|string',
-                'latitude' => 'required|numeric|between:-90,90',
-                'longitude' => 'required|numeric|between:-180,180',
-                'maxDistance' => 'sometimes|numeric|min:0'
-            ]);
+{
+    try {
+        // Validar datos de entrada
+        $validator = Validator::make($request->all(), [
+            'userId' => 'required|string',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+            'maxDistance' => 'sometimes|numeric|min:0',
+            'limit' => 'sometimes|numeric|min:1|max:100' // Nuevo parámetro opcional
+        ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Datos inválidos: ' . $validator->errors()->first()
-                ], 400);
-            }
-
-            $userId = $request->userId;
-            $userLat = $request->latitude;
-            $userLng = $request->longitude;
-            $maxDistance = $request->maxDistance ?? 5000; // 5km por defecto
-
-            // 1. Primero buscar geocercas del usuario administrador
-            $geofences = DB::table('geocercas')
-                ->where('id_administrador', $userId)
-                ->where('activa', true)
-                ->get();
-
-            // Si no tiene geocercas propias, buscar geocercas públicas o de otros administradores
-            if ($geofences->isEmpty()) {
-                $geofences = DB::table('geocercas')
-                    ->where('activa', true)
-                    ->take(50) // Limitar resultados
-                    ->get();
-            }
-
-            $geofencesResultados = [];
-
-            foreach ($geofences as $geofence) {
-                $distance = null;
-                $insideGeofence = false;
-
-                if ($geofence->tipo == 'circular' && $geofence->latitud && $geofence->longitud && $geofence->radio) {
-                    // Calcular distancia a geocerca circular
-                    $distance = $this->calcularDistancia(
-                        $userLat, 
-                        $userLng, 
-                        $geofence->latitud, 
-                        $geofence->longitud
-                    );
-                    
-                    // Convertir radio a metros si está en kilómetros
-                    $radioMetros = $geofence->unidad_distancia == 'kilometros' 
-                        ? $geofence->radio * 1000 
-                        : $geofence->radio;
-                    
-                    $insideGeofence = ($distance <= $radioMetros);
-                    
-                } elseif ($geofence->tipo == 'poligono' && $geofence->coordenadas) {
-                    // Verificar si está dentro del polígono
-                    $polygon = json_decode($geofence->coordenadas, true);
-                    
-                    if (is_array($polygon) && !empty($polygon)) {
-                        $insideGeofence = $this->puntoEnPoligono($userLat, $userLng, $polygon);
-                        
-                        // Calcular distancia al centroide del polígono
-                        $centro = $this->calcularCentroide($polygon);
-                        if ($centro) {
-                            $distance = $this->calcularDistancia(
-                                $userLat, 
-                                $userLng, 
-                                $centro['lat'], 
-                                $centro['lng']
-                            );
-                        }
-                    }
-                }
-
-                // Solo incluir geocercas dentro del rango máximo
-                if ($distance === null || $distance <= $maxDistance) {
-                    // Calcular distancia al borde más cercano
-                    $distanceToEdge = $this->calcularDistanciaAlBorde(
-                        $userLat, $userLng, $geofence, $distance
-                    );
-
-                    $geofencesResultados[] = [
-                        'id' => $geofence->id,
-                        'name' => $geofence->nombre,
-                        'latitude' => $geofence->latitud,
-                        'longitude' => $geofence->longitud,
-                        'radius' => $geofence->tipo == 'circular' ? 
-                            ($geofence->unidad_distancia == 'kilometros' ? $geofence->radio * 1000 : $geofence->radio) 
-                            : null,
-                        'type' => $geofence->tipo,
-                        'distance_to_user' => $distance,
-                        'distance_to_edge' => $distanceToEdge,
-                        'inside_geofence' => $insideGeofence,
-                        'color' => $geofence->color,
-                        'description' => $geofence->descripcion,
-                        'polygon_points' => $geofence->tipo == 'poligono' && $geofence->coordenadas 
-                            ? json_decode($geofence->coordenadas, true) 
-                            : null
-                    ];
-                }
-            }
-
-            // Ordenar por distancia (más cercana primero)
-            usort($geofencesResultados, function($a, $b) {
-                $distA = $a['distance_to_user'] ?? PHP_INT_MAX;
-                $distB = $b['distance_to_user'] ?? PHP_INT_MAX;
-                return $distA <=> $distB;
-            });
-
-            return response()->json([
-                'status' => 1,
-                'message' => count($geofencesResultados) . ' geocercas encontradas',
-                'geofences' => $geofencesResultados
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Error en Geocercas: ' . $e->getMessage(), [
-                'request' => $request->all(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 0,
-                'message' => 'Error interno del servidor'
-            ], 500);
+                'message' => 'Datos inválidos: ' . $validator->errors()->first()
+            ], 400);
         }
+
+        $userId = $request->userId;
+        $userLat = $request->latitude;
+        $userLng = $request->longitude;
+        $maxDistance = $request->maxDistance ?? 5000;
+        $limit = $request->limit ?? 20; // Por defecto 20 geocercas
+
+        // 1. Verificar que el userId existe y obtener su id_administrador
+        $operador = DB::table('operadores')
+            ->where('id', $userId)
+            ->where('activo', 1)
+            ->first();
+
+        if (!$operador) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Usuario operador no válido o inactivo'
+            ], 403);
+        }
+
+        // 2. Obtener geocercas del administrador
+        $geofences = DB::table('geocercas')
+            ->where('id_administrador', $operador->id_administrador)
+            ->where('activa', true)
+            ->get();
+
+        $geofencesResultados = [];
+
+        foreach ($geofences as $geofence) {
+            $distance = null;
+            $insideGeofence = false;
+
+            if ($geofence->tipo == 'circular' && $geofence->latitud && $geofence->longitud && $geofence->radio) {
+                $distance = $this->calcularDistancia(
+                    $userLat, 
+                    $userLng, 
+                    $geofence->latitud, 
+                    $geofence->longitud
+                );
+                
+                $radioMetros = $geofence->unidad_distancia == 'kilometros' 
+                    ? $geofence->radio * 1000 
+                    : $geofence->radio;
+                
+                $insideGeofence = ($distance <= $radioMetros);
+                
+            } elseif ($geofence->tipo == 'poligono' && $geofence->coordenadas) {
+                $polygon = json_decode($geofence->coordenadas, true);
+                
+                if (is_array($polygon) && !empty($polygon)) {
+                    $insideGeofence = $this->puntoEnPoligono($userLat, $userLng, $polygon);
+                    
+                    $centro = $this->calcularCentroide($polygon);
+                    if ($centro) {
+                        $distance = $this->calcularDistancia(
+                            $userLat, 
+                            $userLng, 
+                            $centro['lat'], 
+                            $centro['lng']
+                        );
+                    }
+                }
+            }
+
+            // Solo incluir geocercas dentro del rango máximo
+            if ($distance !== null && $distance <= $maxDistance) {
+                $distanceToEdge = $this->calcularDistanciaAlBorde(
+                    $userLat, $userLng, $geofence, $distance
+                );
+
+                $geofencesResultados[] = [
+                    'id' => $geofence->id,
+                    'name' => $geofence->nombre,
+                    'latitude' => $geofence->latitud,
+                    'longitude' => $geofence->longitud,
+                    'radius' => $geofence->tipo == 'circular' ? 
+                        ($geofence->unidad_distancia == 'kilometros' ? $geofence->radio * 1000 : $geofence->radio) 
+                        : null,
+                    'type' => $geofence->tipo,
+                    'distance_to_user' => $distance,
+                    'distance_to_edge' => $distanceToEdge,
+                    'inside_geofence' => $insideGeofence,
+                    'color' => $geofence->color,
+                    'description' => $geofence->descripcion,
+                    'polygon_points' => $geofence->tipo == 'poligono' && $geofence->coordenadas 
+                        ? json_decode($geofence->coordenadas, true) 
+                        : null
+                ];
+            }
+        }
+
+        // Ordenar por distancia y limitar a las más cercanas
+        usort($geofencesResultados, function($a, $b) {
+            $distA = $a['distance_to_user'] ?? PHP_INT_MAX;
+            $distB = $b['distance_to_user'] ?? PHP_INT_MAX;
+            return $distA <=> $distB;
+        });
+
+        // Tomar solo las más cercanas según el límite
+        $geofencesResultados = array_slice($geofencesResultados, 0, $limit);
+
+        return response()->json([
+            'status' => 1,
+            'message' => count($geofencesResultados) . ' geocercas encontradas',
+            'geofences' => $geofencesResultados
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Error en Geocercas: ' . $e->getMessage(), [
+            'request' => $request->all(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return response()->json([
+            'status' => 0,
+            'message' => 'Error interno del servidor'
+        ], 500);
     }
+}
 
     // ==================== MÉTODOS AUXILIARES ====================
 
