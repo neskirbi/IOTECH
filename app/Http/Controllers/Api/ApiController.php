@@ -87,34 +87,7 @@ class ApiController extends Controller
             break;
     }
 
-     // ============================================
-    // SI ES OPCIÓN 4 (Apertura Chapa)
-    // ============================================
-    if (($request->opcion * 1) == 4) {
-        if (isset($request->mac) && !empty($request->mac)) {
-            
-            // Guardar en BD local
-            DB::table('equipo_estados')->insert([
-                'mac' => strtolower($request->mac),
-                'cerrado' => 0,
-                'latitud' => isset($request->latitud) ? $request->latitud : 0,
-                'longitud' => isset($request->longitud) ? $request->longitud : 0,
-                'datetime' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            // ============================================
-            // 🔥 ENVIAR A FIREBASE (SOLO ESTO)
-            // ============================================
-            EnviarAfirebase(
-                $request->mac,
-                0, // Abierto
-                isset($request->latitud) ? $request->latitud : 0,
-                isset($request->longitud) ? $request->longitud : 0
-            );
-        }
-    }
+    
 
     //haseando
     $codigo = hash('sha256', $request->codent);
