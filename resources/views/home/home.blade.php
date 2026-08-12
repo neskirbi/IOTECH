@@ -8,8 +8,10 @@
     <meta name="description" content="OII-ON: Soluciones avanzadas de seguridad con GPS, app Android y arquitectura tecnológica basada en divisiones especializadas: CORE, MOTION, VISION y NEXO.">
     <meta name="keywords" content="OII-ON, CORE, MOTION, VISION, NEXO, seguridad, GPS, app Android, arquitectura tecnológica">
 
-    <!-- Favicon -->
-    <link href="{{asset('img/favicon.ico')}}" rel="icon">
+    <!-- Favicon -->    
+    <link rel="icon" type="image/png" href="{{ asset('images/oiin-logo.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/oiin-logo.png') }}">
+
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
