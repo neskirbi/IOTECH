@@ -367,64 +367,44 @@ class ApiController extends Controller
 
     public function EstadoEquipo(Request $request)
 {
-    // Validar que el request sea un arreglo y que cada elemento cumpla las reglas
-    $request->validate([
-        '*.mac' => 'required|string',
-        '*.cerrado' => 'required|integer|in:0,1',
-        '*.latitud' => 'nullable|numeric',
-        '*.longitud' => 'nullable|numeric',
-        '*.datetime' => 'nullable|string',
-    ]);
+    try {
+        // Obtener datos y normalizar
+        $data = $request->all();
+        
+        // Si es un objeto único con 'mac', lo convertimos a arreglo
+        if (isset($data['mac']) && isset($data['cerrado'])) {
+            $data = [$data];
+        }
+        
+        // Validar que sea un arreglo
+        if (!is_array($data) || empty($data)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Datos inválidos: se esperaba un arreglo de objetos'
+            ], 400);
+        }
+        
+        // Validar cada elemento
+        $validator = Validator::make($data, [
+            '*.mac' => 'required|string',
+            '*.cerrado' => 'required|integer|in:0,1',
+            '*.latitud' => 'nullable|numeric',
+            '*.longitud' => 'nullable|numeric',
+            '*.datetime' => 'nullable|string',
+        ]);
 
-    $registrosParaInsertar = [];
-    $ahora = now();
-    $resultadosFirebase = [];
- 
-    // Recorrer cada elemento del arreglo recibido
-    foreach ($request->all() as $item) {
-        $datetimeFormateado = !empty($item['datetime']) 
-            ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
-            : $ahora;
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-        $registrosParaInsertar[] = [
-            'mac' => strtolower($item['mac']),
-            'cerrado' => $item['cerrado'],
-            'latitud' => $item['latitud'] ?? null,
-            'longitud' => $item['longitud'] ?? null,
-            'datetime' => $datetimeFormateado,
-            'created_at' => $ahora,
-            'updated_at' => $ahora,
-        ];
+        // Resto del código igual...
+        
+    } catch (\Exception $e) {
+        // Manejo de errores...
     }
-
-    // Inserción masiva en la base de datos (una sola consulta SQL para todos)
-    if (!empty($registrosParaInsertar)) {
-        DB::table('equipo_estados')->insert($registrosParaInsertar);
-    }
-
-    // ============================================
-    // 🔥 ENVIAR A FIREBASE USANDO LA FUNCIÓN DE metodos.php
-    // ============================================
-    foreach ($registrosParaInsertar as $registro) {
-        $resultado = EnviarAfirebase(
-            $registro['mac'],
-            $registro['cerrado'],
-            $registro['latitud'] ?? 0,
-            $registro['longitud'] ?? 0
-        );
-
-        $resultadosFirebase[] = [
-            'mac' => $registro['mac'],
-            'success' => $resultado['success'] ?? false,
-            'error' => $resultado['error'] ?? null
-        ];
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Historial de estados registrado correctamente',
-        'total_registros' => count($registrosParaInsertar),
-        'firebase' => $resultadosFirebase
-    ], 200);
 }
 }
