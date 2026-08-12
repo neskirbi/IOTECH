@@ -401,7 +401,7 @@ class ApiController extends Controller
                             'longitud' => -99.04119199
                         ],
                         [
-                            'mac' => '84:1F:E8:31:F6:D1',
+                            'mac' => '84:1F:E8:31:F6:D0',
                             'cerrado' => 0,
                             'latitud' => 19.42648050,
                             'longitud' => -99.04119200
@@ -435,15 +435,17 @@ class ApiController extends Controller
         // ============================================
         $registrosParaInsertar = [];
         $ahora = now();
-        $resultadosFirebase = [];
+        $macsProcesadas = [];
 
         foreach ($data as $item) {
             $datetimeFormateado = !empty($item['datetime']) 
                 ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
                 : $ahora;
 
+            $macLimpia = strtolower(trim($item['mac']));
+            
             $registrosParaInsertar[] = [
-                'mac' => strtolower(trim($item['mac'])),
+                'mac' => $macLimpia,
                 'cerrado' => $item['cerrado'],
                 'latitud' => $item['latitud'] ?? 0,
                 'longitud' => $item['longitud'] ?? 0,
@@ -451,6 +453,11 @@ class ApiController extends Controller
                 'created_at' => $ahora,
                 'updated_at' => $ahora,
             ];
+            
+            // Guardar MACs únicas para consultar después
+            if (!in_array($macLimpia, $macsProcesadas)) {
+                $macsProcesadas[] = $macLimpia;
+            }
         }
 
         // ============================================
@@ -461,27 +468,45 @@ class ApiController extends Controller
         }
 
         // ============================================
-        // 5. ENVIAR A FIREBASE
+        // 5. OBTENER EL ÚLTIMO REGISTRO DE LA BD Y ENVIAR A FIREBASE
         // ============================================
-        foreach ($registrosParaInsertar as $registro) {
-            $resultado = EnviarAfirebase(
-                $registro['mac'],
-                $registro['cerrado'],
-                $registro['latitud'] ?? 0,
-                $registro['longitud'] ?? 0
-            );
+        $resultadosFirebase = [];
+        
+        if (!empty($macsProcesadas)) {
+            // Obtener el último registro de cada MAC desde la BD
+            $ultimosEstados = DB::table('equipo_estados')
+                ->whereIn('mac', $macsProcesadas)
+                ->whereRaw('datetime = (
+                    SELECT MAX(datetime) 
+                    FROM equipo_estados AS e2 
+                    WHERE e2.mac = equipo_estados.mac
+                )')
+                ->get();
 
-            $resultadosFirebase[] = [
-                'mac' => $registro['mac'],
-                'success' => $resultado['success'] ?? false,
-                'error' => $resultado['error'] ?? null
-            ];
+            // Enviar cada último estado a Firebase
+            foreach ($ultimosEstados as $estado) {
+                $resultado = EnviarAfirebase(
+                    $estado->mac,
+                    $estado->cerrado,
+                    $estado->latitud ?? 0,
+                    $estado->longitud ?? 0
+                );
+
+                $resultadosFirebase[] = [
+                    'mac' => $estado->mac,
+                    'cerrado' => $estado->cerrado,
+                    'datetime' => $estado->datetime,
+                    'success' => $resultado['success'] ?? false,
+                    'error' => $resultado['error'] ?? null
+                ];
+            }
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Historial de estados registrado correctamente',
-            'total_registros' => count($registrosParaInsertar),
+            'total_registros_insertados' => count($registrosParaInsertar),
+            'total_enviados_firebase' => count($resultadosFirebase),
             'firebase' => $resultadosFirebase
         ], 200);
 
