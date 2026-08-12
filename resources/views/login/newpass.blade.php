@@ -45,7 +45,7 @@
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.06);
             backdrop-filter: blur(10px);
-            margin: 200px auto 0 auto !important;
+            margin: 0 auto auto auto !important;
             position: relative !important;
             top: 0 !important;
         }
