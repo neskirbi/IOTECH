@@ -511,24 +511,22 @@
         var myLatlng = { lat: lat, lng: lng };
         var mapDiv = document.getElementById('googleMap');
         
-        // SVG personalizado para caja fuerte (abierta/cerrada)
+        // --- FUNCIÓN PARA CREAR ÍCONO PERSONALIZADO ---
         function crearIconoCajaFuerte(abierta) {
             var color = abierta ? '#10b981' : '#ef4444';
-            var estado = abierta ? 'Abierta' : 'Cerrada';
-            
+            // SVG más simple y compatible
             return {
                 path: 'M 12 2 C 8 2 4 4 4 8 L 4 16 C 4 18 6 20 8 20 L 16 20 C 18 20 20 18 20 16 L 20 8 C 20 4 16 2 12 2 Z M 8 6 L 16 6 C 18 6 18 8 18 8 L 6 8 C 6 8 6 6 8 6 Z M 12 10 C 13.1 10 14 10.9 14 12 C 14 13.1 13.1 14 12 14 C 10.9 14 10 13.1 10 12 C 10 10.9 10.9 10 12 10 Z M 6 10 L 18 10 L 18 16 C 18 17.1 17.1 18 16 18 L 8 18 C 6.9 18 6 17.1 6 16 L 6 10 Z',
-                scale: 1.8,
                 fillColor: color,
                 fillOpacity: 1,
                 strokeColor: '#ffffff',
                 strokeWeight: 2,
-                strokeOpacity: 0.8,
-                labelOrigin: new google.maps.Point(12, 0),
+                scale: 1.8,
                 anchor: new google.maps.Point(12, 12)
             };
         }
 
+        // --- VERIFICAR SI EL MAPA YA EXISTE ---
         if (!googleMapInstance) {
             // Crear mapa por primera vez
             googleMapInstance = new google.maps.Map(mapDiv, {
@@ -554,15 +552,26 @@
                     map: googleMapInstance,
                     icon: icono,
                     title: numeconomico + ' - ' + estadoTexto,
-                    animation: google.maps.Animation.DROP,
+                    animation: google.maps.Animation.DROP
+                });
+                
+                // Agregar label por separado para mejor compatibilidad
+                var label = new google.maps.Marker({
+                    position: myLatlng,
+                    map: googleMapInstance,
                     label: {
                         text: numeconomico,
                         color: '#ffffff',
                         fontSize: '11px',
-                        fontWeight: 'bold',
-                        textShadow: '0 0 8px rgba(0,0,0,0.8)'
+                        fontWeight: 'bold'
+                    },
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 0
                     }
                 });
+                // Guardar referencia al label
+                googleMarkerInstance._label = label;
             }
         } else {
             // Actualizar mapa existente
@@ -573,55 +582,71 @@
                 var icono = crearIconoCajaFuerte(cerrado == 0);
                     
                 if (!googleMarkerInstance) {
+                    // Crear nuevo marcador
                     googleMarkerInstance = new google.maps.Marker({
                         position: myLatlng,
                         map: googleMapInstance,
                         icon: icono,
                         title: numeconomico + ' - ' + estadoTexto,
-                        animation: google.maps.Animation.DROP,
+                        animation: google.maps.Animation.DROP
+                    });
+                    
+                    var label = new google.maps.Marker({
+                        position: myLatlng,
+                        map: googleMapInstance,
                         label: {
                             text: numeconomico,
                             color: '#ffffff',
                             fontSize: '11px',
-                            fontWeight: 'bold',
-                            textShadow: '0 0 8px rgba(0,0,0,0.8)'
+                            fontWeight: 'bold'
+                        },
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 0
                         }
                     });
+                    googleMarkerInstance._label = label;
                 } else {
+                    // Actualizar marcador existente
                     googleMarkerInstance.setPosition(myLatlng);
                     googleMarkerInstance.setTitle(numeconomico + ' - ' + estadoTexto);
                     googleMarkerInstance.setIcon(icono);
                     googleMarkerInstance.setMap(googleMapInstance);
-                    googleMarkerInstance.setLabel({
-                        text: numeconomico,
-                        color: '#ffffff',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        textShadow: '0 0 8px rgba(0,0,0,0.8)'
-                    });
+                    
+                    // Actualizar label
+                    if (googleMarkerInstance._label) {
+                        googleMarkerInstance._label.setPosition(myLatlng);
+                        googleMarkerInstance._label.setMap(googleMapInstance);
+                        googleMarkerInstance._label.setLabel({
+                            text: numeconomico,
+                            color: '#ffffff',
+                            fontSize: '11px',
+                            fontWeight: 'bold'
+                        });
+                    }
                 }
             } else {
+                // No hay ubicación, eliminar marcador
                 if (googleMarkerInstance) {
+                    if (googleMarkerInstance._label) {
+                        googleMarkerInstance._label.setMap(null);
+                    }
                     googleMarkerInstance.setMap(null);
                     googleMarkerInstance = null;
                 }
             }
         }
         
-        // Forzar resize y centrado
-        google.maps.event.trigger(googleMapInstance, 'resize');
-        googleMapInstance.setCenter(myLatlng);
-        
-        // Forzar centrado después de que el modal esté completamente visible
+        // Forzar resize y centrado del mapa
         setTimeout(function() {
             if (googleMapInstance) {
                 google.maps.event.trigger(googleMapInstance, 'resize');
                 googleMapInstance.setCenter(myLatlng);
-                if (tieneUbicacion && googleMarkerInstance) {
+                if (tieneUbicacion) {
                     googleMapInstance.setZoom(16);
                 }
             }
-        }, 500);
+        }, 300);
       },
       error: function(error) {
         console.error('Error:', error);
@@ -654,12 +679,20 @@
             googleMapInstance.setCenter(myLatlng);
             googleMapInstance.setZoom(6);
             if (googleMarkerInstance) {
+                if (googleMarkerInstance._label) {
+                    googleMarkerInstance._label.setMap(null);
+                }
                 googleMarkerInstance.setMap(null);
                 googleMarkerInstance = null;
             }
         }
-        google.maps.event.trigger(googleMapInstance, 'resize');
-        googleMapInstance.setCenter(myLatlng);
+        
+        setTimeout(function() {
+            if (googleMapInstance) {
+                google.maps.event.trigger(googleMapInstance, 'resize');
+                googleMapInstance.setCenter(myLatlng);
+            }
+        }, 300);
       }
     });
   }
@@ -681,7 +714,7 @@
   function inicializarAplicacion() {
     console.log('Google Maps API cargada correctamente');
     // Aquí puedes inicializar cosas si es necesario
-}
+  }
 
 </script>
 
