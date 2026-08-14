@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   @include('header')
-  <title>OIIon | Geocercas</title>
+  <title>{{ getSiteTitle('Geocercas') }}</title>
   <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry&callback=inicializarAplicacion" async defer></script>
   
@@ -246,12 +246,7 @@
     </section>
   </div>
   
-  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
-    <div class="float-right d-none d-sm-inline">
-      OIIon Security Platform
-    </div>
-    <strong>Copyright &copy; OIIon.</strong> Todos los derechos reservados.
-  </footer>
+  @include('footer')
 </div>
 
 <script>

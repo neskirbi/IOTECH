@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   @include('header')
-  <title>OIIon | Crear Geocerca</title>
+  <title>{{ getSiteTitle('Crear Geocerca') }}</title>
   
   <style>
     #map {
@@ -197,12 +197,7 @@
     </section>
   </div>
   
-  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
-    <div class="float-right d-none d-sm-inline">
-      OIIon Security Platform
-    </div>
-    <strong>Copyright &copy; OIIon.</strong> Todos los derechos reservados.
-  </footer>
+  @include('footer')
 </div>
 
 <script>
@@ -437,6 +432,5 @@
   });
 </script>
 
-@include('administradores.footer')
 </body>
 </html>

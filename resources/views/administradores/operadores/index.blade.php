@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   @include('header')
-  <title>OIIon | Operadores</title>
+  <title>{{ getSiteTitle('Operadores') }}</title>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
 @include('toast.toasts')  
@@ -180,12 +180,7 @@
     </section>
   </div>
 
-  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
-    <div class="float-right d-none d-sm-inline">
-      OIIon Security Platform
-    </div>
-    <strong>Copyright &copy; OIIon.</strong> Todos los derechos reservados.
-  </footer>
+  @include('footer')
 </div>
 <!-- Modal de Confirmación para Eliminar Operador -->
 <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
@@ -223,6 +218,5 @@
     </div>
   </div>
 </div>
-@include('administradores.footer')
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   @include('header')
-  <title>OIIon | Dashboard General</title>
+  <title>{{ getSiteTitle('Dashboard General') }}</title>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
 @include('toast.toasts')  
@@ -209,12 +209,7 @@
   </div>
 
   <!-- Footer -->
-  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
-    <div class="float-right d-none d-sm-inline">
-      OIIon Security Platform
-    </div>
-    <strong>Copyright &copy; OIIon.</strong> Todos los derechos reservados.
-  </footer>
+ @include('footer')
 </div>
 
 @include('administradores.footer')

@@ -1,0 +1,899 @@
+/* ==========================================================================
+   KEYSECURE AI THEME - Basado en la estructura OIION
+   Branding: Ámbar, tipografía Archivo, esquinas rectas
+   ========================================================================== */
+
+/* ------------------------------------------------------------
+   IMPORTS Y FUENTES
+   ------------------------------------------------------------ */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ------------------------------------------------------------
+   VARIABLES DE MARCA (Sobrescriben las de OIION)
+   ------------------------------------------------------------ */
+:root {
+  /* --- Colores KeySecure --- */
+  --bg-main: #0a0a0b;
+  --bg-card: #18191d;
+  --bg-hover: #1e2025;
+  
+  --accent-cyan: #f0a500;        /* ← Ámbar en lugar de cyan */
+  --accent-green: #27ae60;
+  --accent-red: #e74c3c;
+  
+  --text-main: #e8e4dc;
+  --text-muted: #9a9590;
+  --border-color: #2a2b30;
+  
+  /* Dimensiones (igual que OIION) */
+  --sidebar-width: 260px;
+  --header-height: 64px;
+  --border-radius: 4px;          /* ← KeySecure usa esquinas rectas */
+  
+  /* Tipografía KeySecure */
+  --font-family: 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ------------------------------------------------------------
+   BASE - KeySecure
+   ------------------------------------------------------------ */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------
+   LAYOUT (MISMA ESTRUCTURA QUE OIION)
+   ------------------------------------------------------------ */
+.app-wrapper {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--bg-main);
+}
+
+.app-navbar {
+  height: var(--header-height);
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.app-content {
+  flex: 1;
+  padding: 24px;
+  width: 100%;
+}
+
+.app-footer {
+  padding: 16px 24px;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   COMPONENTES OIION (MISMAS CLASES, NUEVOS ESTILOS)
+   ------------------------------------------------------------ */
+
+/* --- Card --- */
+.card-oiion {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: none;              /* ← KeySecure sin sombras */
+}
+
+/* --- Formularios --- */
+.form-control-oiion {
+  background-color: var(--bg-main) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  border-radius: var(--border-radius);
+  padding: 12px 14px;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-control-oiion:focus {
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 2px rgba(240, 165, 0, 0.15) !important; /* ← Ámbar */
+}
+
+/* --- Botones (Estilo KeySecure) --- */
+.btn-action {
+  background-color: transparent;
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  padding: 10px 22px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: all 200ms ease;
+  font-family: var(--font-family);
+}
+
+.btn-action:hover {
+  background-color: var(--accent-cyan);
+  color: #0B0B0B;
+  box-shadow: none;
+  border-color: var(--accent-cyan);
+}
+
+/* --- Botón primario lleno (variante) --- */
+.btn-primary-ks {
+  background: var(--accent-cyan);
+  color: #0B0B0B;
+  border: none;
+  padding: 10px 22px;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.btn-primary-ks:hover {
+  background: #d4860a;
+}
+
+/* ------------------------------------------------------------
+   STATUS BADGES (MISMAS CLASES QUE OIION)
+   ------------------------------------------------------------ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid transparent;
+}
+
+/* Activo (Verde) */
+.status-badge.online {
+  background-color: rgba(39, 174, 96, 0.15);
+  color: var(--accent-green);
+  border-color: rgba(39, 174, 96, 0.3);
+}
+
+.status-badge.online i {
+  color: var(--accent-green);
+  animation: pulse-green 1.5s infinite;
+}
+
+/* Inactivo (Rojo) */
+.status-badge.offline {
+  background-color: rgba(231, 76, 60, 0.15);
+  color: var(--accent-red);
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.status-badge.offline i {
+  color: var(--accent-red);
+  animation: pulse-red 1.5s infinite;
+}
+
+/* Ámbar (Estado especial KeySecure) */
+.status-badge.amber {
+  background-color: rgba(240, 165, 0, 0.15);
+  color: var(--accent-cyan);
+  border-color: rgba(240, 165, 0, 0.3);
+}
+
+/* Estados Chapa (MISMA CLASE que OIION) */
+.status-badge.abierto {
+  background-color: rgba(39, 174, 96, 0.15);
+  border-color: rgba(39, 174, 96, 0.4);
+  color: #27ae60;
+}
+
+.status-badge.cerrado {
+  background-color: rgba(231, 76, 60, 0.15);
+  border-color: rgba(231, 76, 60, 0.4);
+  color: #e74c3c;
+}
+
+.status-badge.sin-estado {
+  background-color: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #9a9590;
+}
+
+/* ------------------------------------------------------------
+   TOASTS (ESTILO KEYSECURE)
+   ------------------------------------------------------------ */
+#oiion-toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.oiion-toast {
+  pointer-events: auto;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 12px 20px;
+  border-radius: var(--border-radius);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-color);
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.oiion-toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.oiion-toast-success {
+  border-color: var(--accent-green);
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.25);
+}
+.oiion-toast-success i.toast-icon { color: var(--accent-green); }
+
+.oiion-toast-error {
+  border-color: var(--accent-red);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.25);
+}
+.oiion-toast-error i.toast-icon { color: var(--accent-red); }
+
+.oiion-toast-info {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 4px 15px rgba(240, 165, 0, 0.25);
+}
+.oiion-toast-info i.toast-icon { color: var(--accent-cyan); }
+
+.oiion-toast-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.oiion-toast-close:hover {
+  color: var(--text-main);
+}
+
+/* ------------------------------------------------------------
+   ELEMENTOS ESPECÍFICOS DE KEYSECURE (Nuevos)
+   ------------------------------------------------------------ */
+
+/* --- Títulos KeySecure --- */
+.ks-title {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+}
+
+.ks-title-h1 {
+  font-size: clamp(1.5rem, 5vw, 3.25rem);
+  line-height: 1.05;
+}
+
+.ks-title-h2 {
+  font-size: clamp(1.5rem, 4.2vw, 2.5rem);
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+/* --- Eyebrow (etiqueta con línea) --- */
+.ks-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Archivo', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+}
+
+.ks-eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--accent-cyan);
+}
+
+/* --- Monoespaciado para datos técnicos --- */
+.ks-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+/* --- Equipment Avatar (Misma clase que OIION pero con ámbar) --- */
+.equipment-avatar-container {
+  width: 85px;
+  height: 85px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(240, 165, 0, 0.1) 0%, rgba(10, 15, 29, 0.7) 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.equipment-icon {
+  font-size: 2.2rem;
+}
+
+.equip-status-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* --- Radio Cards --- */
+.card-radio-input {
+  display: none;
+}
+
+.card-radio-btn {
+  background: rgba(10, 15, 29, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9a9590;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-radio-btn:hover {
+  border-color: rgba(240, 165, 0, 0.4);
+  color: #fff;
+}
+
+.card-radio-input:checked + .card-radio-btn {
+  background: rgba(240, 165, 0, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(240, 165, 0, 0.2);
+  font-weight: bold;
+}
+
+/* ------------------------------------------------------------
+   ANIMACIONES (Mismas que OIION)
+   ------------------------------------------------------------ */
+@keyframes pulse-green {
+  0% { transform: scale(0.95); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.4; }
+}
+
+@keyframes pulse-red {
+  0% { transform: scale(0.95); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.4; }
+}
+
+/* ------------------------------------------------------------
+   UTILIDADES KEYSECURE
+   ------------------------------------------------------------ */
+.ks-text-amber { color: var(--accent-cyan); }
+.ks-text-muted { color: var(--text-muted); }
+.ks-bg-card-alt { background: var(--bg-hover); }
+.ks-border-strong { border-color: #3a3b40; }
+
+/* Touch optimizations (PWA) */
+* { touch-action: manipulation; }
+body { overscroll-behavior: none; }
+button, [role="button"], label {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ============================================================
+   ESTILOS KEYSECURE PARA ELEMENTOS DE BOOTSTRAP
+   (SIN MODIFICAR LAS CLASES ORIGINALES DE BOOTSTRAP)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   TARJETAS (Card de Bootstrap)
+   ------------------------------------------------------------ */
+.card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    border-color: rgba(240, 165, 0, 0.3) !important;
+    box-shadow: 0 0 20px rgba(240, 165, 0, 0.05) !important;
+}
+
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.card-title {
+    color: var(--text-main) !important;
+}
+
+.card-body {
+    color: var(--text-main) !important;
+}
+
+/* ------------------------------------------------------------
+   MODALES (Modal de Bootstrap)
+   ------------------------------------------------------------ */
+.modal-content {
+    background: rgba(10, 10, 11, 0.98) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(240, 165, 0, 0.3) !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(240, 165, 0, 0.15) !important;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.modal-header .modal-title {
+    color: var(--text-main) !important;
+    font-weight: 700;
+}
+
+.modal-header .close {
+    color: var(--text-muted) !important;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.modal-header .close:hover {
+    color: var(--text-main) !important;
+    opacity: 1;
+}
+
+.modal-body {
+    color: var(--text-main) !important;
+}
+
+.modal-body label {
+    color: var(--text-muted) !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color) !important;
+}
+
+/* ------------------------------------------------------------
+   BOTONES (Bootstrap)
+   ------------------------------------------------------------ */
+.btn {
+    border-radius: var(--border-radius) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-size: 0.8rem !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Botón primary (se usa en algunos lugares) */
+.btn-primary {
+    background-color: var(--accent-cyan) !important;
+    border-color: var(--accent-cyan) !important;
+    color: #0B0B0B !important;
+}
+
+.btn-primary:hover {
+    background-color: #d4860a !important;
+    border-color: #d4860a !important;
+    color: #0B0B0B !important;
+}
+
+/* Botón outline (transparente) */
+.btn-outline-secondary {
+    border-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: rgba(240, 165, 0, 0.05) !important;
+    border-color: var(--accent-cyan) !important;
+    color: var(--accent-cyan) !important;
+}
+
+/* Botón acción (personalizado) */
+.btn-action {
+    background-color: transparent !important;
+    border: 1px solid var(--accent-cyan) !important;
+    color: var(--accent-cyan) !important;
+    padding: 10px 22px !important;
+    border-radius: var(--border-radius) !important;
+    font-weight: 800 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    transition: all 200ms ease !important;
+}
+
+.btn-action:hover {
+    background-color: var(--accent-cyan) !important;
+    color: #0B0B0B !important;
+    box-shadow: 0 0 20px rgba(240, 165, 0, 0.2) !important;
+    border-color: var(--accent-cyan) !important;
+}
+
+/* ------------------------------------------------------------
+   FORMULARIOS (Inputs de Bootstrap)
+   ------------------------------------------------------------ */
+.form-control {
+    background-color: var(--bg-main) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+    border-radius: var(--border-radius) !important;
+    padding: 12px 14px !important;
+    font-size: 16px !important;
+}
+
+.form-control:focus {
+    border-color: var(--accent-cyan) !important;
+    box-shadow: 0 0 0 2px rgba(240, 165, 0, 0.15) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-faint) !important;
+}
+
+/* ------------------------------------------------------------
+   DROPDOWN (Menú desplegable de Bootstrap)
+   ------------------------------------------------------------ */
+.dropdown-menu {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dropdown-item {
+    color: var(--text-muted) !important;
+    transition: all 0.15s ease;
+    font-size: 0.85rem;
+}
+
+.dropdown-item:hover {
+    background: rgba(240, 165, 0, 0.05) !important;
+    color: var(--text-main) !important;
+}
+
+.dropdown-item.text-danger:hover {
+    background: rgba(231, 76, 60, 0.1) !important;
+    color: var(--accent-red) !important;
+}
+
+.dropdown-divider {
+    border-color: var(--border-color) !important;
+}
+
+/* ------------------------------------------------------------
+   INPUT GROUP (Bootstrap)
+   ------------------------------------------------------------ */
+.input-group-text {
+    background-color: var(--bg-main) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--accent-cyan) !important;
+    border-radius: var(--border-radius) 0 0 var(--border-radius) !important;
+}
+
+/* ------------------------------------------------------------
+   TABS (Bootstrap)
+   ------------------------------------------------------------ */
+.nav-tabs .nav-link {
+    color: var(--text-muted) !important;
+    border-color: transparent !important;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--accent-cyan) !important;
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    border-bottom-color: var(--accent-cyan) !important;
+}
+
+/* ------------------------------------------------------------
+   TABLAS (Bootstrap)
+   ------------------------------------------------------------ */
+.table {
+    color: var(--text-main) !important;
+}
+
+.table thead th {
+    border-bottom: 2px solid var(--border-color) !important;
+    color: var(--text-muted) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.table td {
+    border-top: 1px solid var(--border-color) !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(240, 165, 0, 0.03) !important;
+}
+
+/* ------------------------------------------------------------
+   ALERTAS (Bootstrap)
+   ------------------------------------------------------------ */
+.alert {
+    border-radius: var(--border-radius) !important;
+    border: 1px solid var(--border-color) !important;
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+}
+
+.alert-success {
+    border-color: var(--accent-green) !important;
+    color: var(--accent-green) !important;
+}
+
+.alert-danger {
+    border-color: var(--accent-red) !important;
+    color: var(--accent-red) !important;
+}
+
+.alert-warning {
+    border-color: var(--accent-cyan) !important;
+    color: var(--accent-cyan) !important;
+}
+
+/* ------------------------------------------------------------
+   BADGES (Bootstrap)
+   ------------------------------------------------------------ */
+.badge {
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-radius: 999px !important;
+    padding: 4px 10px !important;
+}
+
+.badge-success {
+    background-color: rgba(39, 174, 96, 0.15) !important;
+    color: var(--accent-green) !important;
+}
+
+.badge-danger {
+    background-color: rgba(231, 76, 60, 0.15) !important;
+    color: var(--accent-red) !important;
+}
+
+.badge-warning {
+    background-color: rgba(240, 165, 0, 0.15) !important;
+    color: var(--accent-cyan) !important;
+}
+
+.badge-info {
+    background-color: rgba(240, 165, 0, 0.1) !important;
+    color: var(--accent-cyan) !important;
+}
+
+/* ------------------------------------------------------------
+   PAGINACIÓN (Bootstrap)
+   ------------------------------------------------------------ */
+.pagination .page-link {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(240, 165, 0, 0.05) !important;
+    border-color: var(--accent-cyan) !important;
+    color: var(--accent-cyan) !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--accent-cyan) !important;
+    border-color: var(--accent-cyan) !important;
+    color: #0B0B0B !important;
+}
+
+/* ------------------------------------------------------------
+   TOOLTIPS (Bootstrap)
+   ------------------------------------------------------------ */
+.tooltip-inner {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--border-radius) !important;
+}
+
+/* ------------------------------------------------------------
+   PROGRESS BARS (Bootstrap)
+   ------------------------------------------------------------ */
+.progress {
+    background-color: var(--bg-main) !important;
+    border-radius: var(--border-radius) !important;
+}
+
+.progress-bar {
+    background-color: var(--accent-cyan) !important;
+}
+
+/* ------------------------------------------------------------
+   LIST GROUP (Bootstrap)
+   ------------------------------------------------------------ */
+.list-group-item {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+.list-group-item:hover {
+    background-color: rgba(240, 165, 0, 0.03) !important;
+}
+
+/* ------------------------------------------------------------
+   CAROUSEL (Bootstrap)
+   ------------------------------------------------------------ */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(240, 165, 0, 0.2) !important;
+    border-radius: 50%;
+    padding: 20px;
+}
+
+/* ------------------------------------------------------------
+   ACCORDION (Bootstrap)
+   ------------------------------------------------------------ */
+.accordion .card {
+    border: 1px solid var(--border-color) !important;
+}
+
+.accordion .card-header {
+    background-color: var(--bg-card) !important;
+}
+
+.accordion .card-header button {
+    color: var(--text-main) !important;
+    text-decoration: none;
+}
+
+.accordion .card-header button:hover {
+    color: var(--accent-cyan) !important;
+}
+
+/* ------------------------------------------------------------
+   NAVBAR (Bootstrap - AdminLTE)
+   ------------------------------------------------------------ */
+.navbar {
+    background-color: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.navbar .nav-link {
+    color: var(--text-muted) !important;
+}
+
+.navbar .nav-link:hover {
+    color: var(--text-main) !important;
+}
+
+/* ------------------------------------------------------------
+   SIDEBAR (AdminLTE)
+   ------------------------------------------------------------ */
+.main-sidebar {
+    background-color: var(--bg-card) !important;
+    border-right: 1px solid var(--border-color) !important;
+}
+
+.main-sidebar .nav-link {
+    color: var(--text-muted) !important;
+}
+
+.main-sidebar .nav-link:hover {
+    color: var(--text-main) !important;
+}
+
+.main-sidebar .nav-link.active {
+    color: var(--accent-cyan) !important;
+}
+
+/* ------------------------------------------------------------
+   FOOTER
+   ------------------------------------------------------------ */
+.main-footer {
+    background-color: var(--bg-card) !important;
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
+/* ------------------------------------------------------------
+   RESPONSIVE (Móviles)
+   ------------------------------------------------------------ */
+@media (max-width: 768px) {
+    .card {
+        border-radius: var(--border-radius) !important;
+    }
+    
+    .modal-dialog {
+        margin: 10px !important;
+    }
+    
+    .btn {
+        font-size: 0.7rem !important;
+        padding: 6px 12px !important;
+    }
+}

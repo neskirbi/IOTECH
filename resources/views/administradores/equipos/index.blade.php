@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   @include('header')
-  <title>OIIon | Gestión y Soporte de Equipos</title>
+  <title>{{ getSiteTitle(' Gestión y Soporte de Equipos') }}</title>
   
   <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing&callback=inicializarAplicacion" async defer></script>
 </head>
@@ -124,7 +124,7 @@
                           <!-- BADGE IZQUIERDA: ESTADO DE LA CHAPA (Abierto/Cerrado) -->
                           <!-- ============================================ -->
                           <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="status-badge {{ $chapaClase }}">
+                            <span class="status-badge {{ $chapaClase }}" style="display:none;">
                               <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
                               <i class="fas {{ $chapaIcono }} ml-1" style="font-size: 0.7rem;"></i>
                               <span class="badge-text">{{ $chapaTexto }}</span>
@@ -185,12 +185,7 @@
     </section>
   </div>
 
-  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
-    <div class="float-right d-none d-sm-inline">
-      OIIon Security Platform
-    </div>
-    <strong>Copyright &copy; OIIon.</strong> Todos los derechos reservados.
-  </footer>
+  @include('footer')
 </div>
 
 <!-- ================= MODALES ================= -->
@@ -297,7 +292,7 @@
       <div class="modal-body py-4">
         @csrf                        
         <div class="row">
-          
+  
           <!-- Columna Izquierda: Comandos y Generador -->
           <div class="col-md-5">
             <!-- Campo Código Entrada -->
@@ -315,26 +310,17 @@
 
             <!-- Opciones tipo Selectors Neón (estilo original) -->
             <label class="text-white-50 small font-weight-bold text-uppercase mb-2">Acción a Ejecutar</label>
-            <div class="row custom-oiion-radios px-2">
+            <div class="row custom-oiion-radios px-2">  
               
-              <div class="col-6 p-1">
+             <div class="col-6 p-1">
                 <label class="w-100 m-0">
-                  <input type="radio" value="1" name="opcion" class="card-radio-input" checked>
+                  <input type="radio" value="5" name="opcion" class="card-radio-input" checked>
                   <div class="card-radio-btn p-2 text-center rounded d-flex align-items-center justify-content-center">
-                    <i class="fas fa-bolt mr-2"></i> Activar Motor
+                    <i class="fas fa-key mr-2"></i> Apertura Chapa
                   </div>
                 </label>
               </div>
-            
-              <div class="col-6 p-1">
-                <label class="w-100 m-0">
-                  <input type="radio" value="2" name="opcion" class="card-radio-input">
-                  <div class="card-radio-btn p-2 text-center rounded d-flex align-items-center justify-content-center">
-                    <i class="fas fa-lock mr-2"></i> Chapa
-                  </div>
-                </label>
-              </div>
-           
+          
               <div class="col-6 p-1">
                 <label class="w-100 m-0">
                   <input type="radio" value="3" name="opcion" class="card-radio-input">
@@ -343,28 +329,37 @@
                   </div>
                 </label>
               </div>
-           
-              <div class="col-6 p-1">
-                <label class="w-100 m-0">
-                  <input type="radio" value="4" name="opcion" class="card-radio-input">
-                  <div class="card-radio-btn p-2 text-center rounded d-flex align-items-center justify-content-center">
-                    <i class="fas fa-key mr-2"></i> Apertura Chapa
-                  </div>
-                </label>
+          
+             
+
+            </div>
+
+            <!-- ============================================ -->
+            <!-- CONTENEDOR: Respuesta del Módulo + Botón     -->
+            <!-- ============================================ -->
+            <div class="mt-4">
+              
+              <!-- Pantalla de Resultado Código Salida -->
+              <div class="p-3 rounded text-center position-relative overflow-hidden" style="background: rgba(10, 15, 29, 0.9); border: 1px dashed rgba(0, 242, 254, 0.4);">
+                <span class="text-muted small font-weight-bold d-block text-uppercase mb-1" style="letter-spacing: 1px;">Respuesta del Módulo</span>
+                <h2 class="m-0 font-weight-bold" style="color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); font-size: 2rem;">
+                  <div id="codsal">-----</div>
+                </h2>
+              </div>
+
+              <!-- Botón Generar (debajo de respuesta y a la derecha) -->
+              <div class="d-flex justify-content-end mt-3">
+                <button data-id="0" data-mac="" id="btn_generar_codigo" onclick="GenerarCodigo(this);" class="btn btn-action bgenerar py-2 font-weight-bold" data-id_operador="{{GetId();}}" style="font-size: 1rem; border-radius: 8px; min-width: 150px;">
+                  <i class="fas fa-sync-alt mr-2"></i> Generar
+                </button>
               </div>
 
             </div>
+            <!-- ============================================ -->
 
-            <!-- Pantalla de Resultado Código Salida -->
-            <div class="mt-4 p-3 rounded text-center position-relative overflow-hidden" style="background: rgba(10, 15, 29, 0.9); border: 1px dashed rgba(0, 242, 254, 0.4);">
-              <span class="text-muted small font-weight-bold d-block text-uppercase mb-1" style="letter-spacing: 1px;">Respuesta del Módulo</span>
-              <h2 class="m-0 font-weight-bold" style="color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); font-size: 2rem;">
-                <div id="codsal">-----</div>
-              </h2>
-            </div>
           </div>
 
-          <!-- Columna Derecha: Google Maps (MÁS GRANDE) -->
+          <!-- Columna Derecha: Google Maps -->
           <div class="col-md-7 d-flex flex-column">
             <!-- Título del equipo encima del mapa -->
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -376,11 +371,11 @@
               </span>
             </div>
             
-            <!-- Mapa más grande -->
+            <!-- Mapa -->
             <div id="googleMap" class="rounded shadow-sm" style="min-height: 350px; width: 100%; border: 1px solid rgba(0, 242, 254, 0.3);"></div>
             
-            <!-- Estado de Cerradura (Neón) -->
-            <div class="mt-2 text-center" style="font-size: 0.9rem;">
+            <!-- Estado de Cerradura (oculto) -->
+            <div class="mt-2 text-center" style="font-size: 0.9rem; display: none;">
               <i class="fas fa-lock text-muted mr-1"></i> 
               <span class="text-white-50 small font-weight-bold text-uppercase">Cerradura:</span>
               <span id="cerradura_estado" class="ml-1 font-weight-bold" style="font-size: 1rem; text-shadow: 0 0 15px currentColor;">
@@ -391,13 +386,9 @@
 
         </div>
       </div>
-
-      <!-- Footer / Botón Acción -->
-      <div class="modal-footer border-0 pt-0" style="background: transparent;">
-        <button data-id="0" data-mac="" id="btn_generar_codigo" onclick="GenerarCodigo(this);" class="btn btn-action btn-block bgenerar py-2 font-weight-bold" data-id_operador="{{GetId();}}" style="font-size: 1rem; border-radius: 8px;">
-          <i class="fas fa-sync-alt mr-2"></i> Generar
-      </button>
-      </div>
+      
+      <!-- Footer vacío (sin botón) -->
+      <div class="modal-footer border-0 pt-0" style="background: transparent; display: none;"></div>
     
     </div>
   </div>
@@ -454,10 +445,10 @@
     }
 
     $.ajax({
-      url: url,
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
+    url: url,
+    type: 'GET',
+    dataType: 'json',
+    success: function(data) {
         console.log('Datos recibidos:', data);
         
         // Verificar si hay datos de ubicación
@@ -511,21 +502,6 @@
         var myLatlng = { lat: lat, lng: lng };
         var mapDiv = document.getElementById('googleMap');
         
-        // --- FUNCIÓN PARA CREAR ÍCONO PERSONALIZADO ---
-        function crearIconoCajaFuerte(abierta) {
-            var color = abierta ? '#10b981' : '#ef4444';
-            // SVG más simple y compatible
-            return {
-                path: 'M 12 2 C 8 2 4 4 4 8 L 4 16 C 4 18 6 20 8 20 L 16 20 C 18 20 20 18 20 16 L 20 8 C 20 4 16 2 12 2 Z M 8 6 L 16 6 C 18 6 18 8 18 8 L 6 8 C 6 8 6 6 8 6 Z M 12 10 C 13.1 10 14 10.9 14 12 C 14 13.1 13.1 14 12 14 C 10.9 14 10 13.1 10 12 C 10 10.9 10.9 10 12 10 Z M 6 10 L 18 10 L 18 16 C 18 17.1 17.1 18 16 18 L 8 18 C 6.9 18 6 17.1 6 16 L 6 10 Z',
-                fillColor: color,
-                fillOpacity: 1,
-                strokeColor: '#ffffff',
-                strokeWeight: 2,
-                scale: 1.8,
-                anchor: new google.maps.Point(12, 12)
-            };
-        }
-
         // --- VERIFICAR SI EL MAPA YA EXISTE ---
         if (!googleMapInstance) {
             // Crear mapa por primera vez
@@ -546,11 +522,13 @@
 
             // Crear marcador si hay ubicación
             if (tieneUbicacion) {
-                var icono = crearIconoCajaFuerte(cerrado == 0);
                 googleMarkerInstance = new google.maps.Marker({
                     position: myLatlng,
                     map: googleMapInstance,
-                    icon: icono,
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                        scaledSize: new google.maps.Size(32, 32)
+                    },
                     title: numeconomico + ' - ' + estadoTexto,
                     animation: google.maps.Animation.DROP
                 });
@@ -579,14 +557,15 @@
             googleMapInstance.setZoom(tieneUbicacion ? 16 : 6);
             
             if (tieneUbicacion) {
-                var icono = crearIconoCajaFuerte(cerrado == 0);
-                    
                 if (!googleMarkerInstance) {
                     // Crear nuevo marcador
                     googleMarkerInstance = new google.maps.Marker({
                         position: myLatlng,
                         map: googleMapInstance,
-                        icon: icono,
+                        icon: {
+                            url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                            scaledSize: new google.maps.Size(32, 32)
+                        },
                         title: numeconomico + ' - ' + estadoTexto,
                         animation: google.maps.Animation.DROP
                     });
@@ -610,7 +589,10 @@
                     // Actualizar marcador existente
                     googleMarkerInstance.setPosition(myLatlng);
                     googleMarkerInstance.setTitle(numeconomico + ' - ' + estadoTexto);
-                    googleMarkerInstance.setIcon(icono);
+                    googleMarkerInstance.setIcon({
+                        url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                        scaledSize: new google.maps.Size(32, 32)
+                    });
                     googleMarkerInstance.setMap(googleMapInstance);
                     
                     // Actualizar label
@@ -647,8 +629,8 @@
                 }
             }
         }, 300);
-      },
-      error: function(error) {
+    },
+    error: function(error) {
         console.error('Error:', error);
         $('#cerradura_estado')
             .html('<i class="fas fa-exclamation-triangle"></i> Error')
@@ -693,8 +675,8 @@
                 googleMapInstance.setCenter(myLatlng);
             }
         }, 300);
-      }
-    });
+    }
+});
   }
 
   function AbrirModalEditar(id, numeconomico, matricula, mac) {

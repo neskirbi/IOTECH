@@ -2,8 +2,7 @@
 <html lang="es">
 <head>
   @include('header')
-  <title>OIIon | Editar Geocerca</title>
-  
+  <title>{{ getSiteTitle('Editar Geocerca') }}</title>
   <style>
     #map {
       height: 520px;
@@ -173,9 +172,7 @@
     </section>
   </div>
   
-  <footer class="main-footer border-top-0 text-muted" style="background-color: var(--bg-card); font-size: 0.85rem;">
-    @include('administradores.footer')
-  </footer>
+  @include('footer')
 </div>
 
 <script>

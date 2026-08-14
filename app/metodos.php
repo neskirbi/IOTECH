@@ -16,6 +16,88 @@ function Version(){
     return 9;
 }
 
+// ============================================================
+// MÉTODOS PARA DETECCIÓN DE DOMINIO Y TEMAS
+// ============================================================
+
+function getTheme()
+{
+    $domain = $_SERVER['HTTP_HOST'] ?? '';
+    
+    // Detectar localhost
+    $isLocal = in_array($domain, ['localhost', '127.0.0.1', '::1']) || 
+               strpos($domain, '.test') !== false ||
+               strpos($domain, '.local') !== false;
+    
+    // Configuración de temas
+    $themes = [
+        'keysecure' => [
+            'css' => 'css/keysecureai-theme.css',
+            'favicon' => 'images/keysecure-favicon.ico',
+            'logo' => 'images/keysecure-logo.svg',
+            'logo_png' => 'images/keysecure-logo.png',
+            'name' => 'KeySecure AI',
+            'font' => 'Archivo'
+        ],
+        'oiion' => [
+            'css' => 'css/oiion-theme.css',
+            'favicon' => 'images/oiin-logo.png',
+            'logo' => 'images/oiin-logo.svg',
+            'logo_png' => 'images/oiin-logo.png',
+            'name' => 'OII-ON',
+            'font' => 'Inter'
+        ]
+    ];
+    
+    // Si es local, usar el tema del .env
+    if ($isLocal) {
+        $defaultTheme = env('APP_THEME', 'oiion');
+        $theme = $themes[$defaultTheme] ?? $themes['oiion'];
+        return array_merge($theme, ['key' => $defaultTheme]);
+    }
+    
+    // Producción: detectar por dominio
+    $domainMap = [
+        'keysecure' => ['keysecure-ai.mx', 'keysecure.mx'],
+        'oiion' => ['oii-on.com', 'oiion.com']
+    ];
+    
+    foreach ($domainMap as $key => $domains) {
+        foreach ($domains as $domainPattern) {
+            if (strpos($domain, $domainPattern) !== false) {
+                $theme = $themes[$key];
+                return array_merge($theme, ['key' => $key]);
+            }
+        }
+    }
+    
+    // Default: OIION
+    $default = $themes['oiion'];
+    return array_merge($default, ['key' => 'oiion']);
+}
+
+function isKeySecure()
+{
+    $theme = getTheme();
+    return $theme['key'] === 'keysecure';
+}
+
+function getLogo($format = 'svg')
+{
+    $theme = getTheme();
+    return $theme['logo'] ?? $theme['logo_png'] ?? 'images/default-logo.png';
+}
+
+
+function getSiteTitle($page = 'Dashboard')
+{
+    $theme = getTheme();
+    $siteName = $theme['name']; // 'KeySecure AI' o 'OII-ON'
+    
+    return $siteName . ' | ' . $page;
+}
+
+
 function GetUuid(){
     $data = random_bytes(16);
     $data[6] = chr(ord($data[6]) & 0x0f | 0x40); 

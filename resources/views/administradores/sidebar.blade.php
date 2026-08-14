@@ -1,9 +1,21 @@
-<!-- Main Sidebar Container OIIon -->
+
+
+@php
+    $theme = getTheme();
+    $isKeySecure = isKeySecure();
+@endphp<!-- Main Sidebar Container OIIon -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: var(--bg-card) !important; border-right: 1px solid var(--border-color);">
     <!-- Brand Logo -->
     <a href="#" class="brand-link border-bottom-0 d-flex align-items-center" style="gap: 10px; padding: 16px 20px;">
-      <img src="{{asset('images/oiin-logo.png')}}" alt="OIIon" class="brand-image elevation-3" style="opacity: .9; border-radius: 6px;">
-      <span class="brand-text font-weight-bold" style="color: var(--accent-cyan); letter-spacing: 1px;">OIIon</span>
+        @if($isKeySecure)
+            <!-- Logo KeySecure -->
+            <img src="{{ asset('images/keysecure-logo.png') }}" alt="KeySecure" class="brand-image elevation-3" style="opacity: .9; border-radius: 6px; height: 33px; width: auto;">
+            
+        @else
+            <!-- Logo OIION -->
+            <img src="{{ asset('images/oiin-logo.png') }}" alt="OIIon" class="brand-image elevation-3" style="opacity: .9; border-radius: 6px;">
+            <span class="brand-text font-weight-bold" style="color: var(--accent-cyan); letter-spacing: 1px;">OIIon</span>
+        @endif
     </a>
 
     <!-- Sidebar -->
@@ -62,14 +74,14 @@
               <i class="nav-icon fa fa-phone" style="color: var(--accent-cyan);" aria-hidden="true"></i>
               <p class="text-light">Soporte</p>
             </a>
-          </li>-->
+          </li>
 
           <li class="nav-item mt-3" style="border-top: 1px solid var(--border-color);">
             <a href="{{url('logout')}}" class="nav-link text-danger mt-2">
               <i class="nav-icon fa fa-arrow-left text-danger" aria-hidden="true"></i>
               <p>Cerrar sesión</p>
             </a>
-          </li>
+          </li>-->
 
         </ul>
       </nav>
