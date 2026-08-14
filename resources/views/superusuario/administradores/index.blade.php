@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  @include('superusuario.header')
+  @include('header')
   <title>IOTECH | Administradores</title>
 
   
