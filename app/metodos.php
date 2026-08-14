@@ -13,7 +13,7 @@ function Memoria(){
 }
 
 function Version(){
-    return 9;
+    return 11;
 }
 
 // ============================================================
@@ -24,17 +24,12 @@ function getTheme()
 {
     $domain = $_SERVER['HTTP_HOST'] ?? '';
     
-    // Detectar localhost
-    $isLocal = in_array($domain, ['localhost', '127.0.0.1', '::1']) || 
-               strpos($domain, '.test') !== false ||
-               strpos($domain, '.local') !== false;
-    
     // Configuración de temas
     $themes = [
         'keysecure' => [
             'css' => 'css/keysecureai-theme.css',
             'favicon' => 'images/keysecure-favicon.ico',
-            'logo' => 'images/keysecure-logo.svg',
+            'logo' => 'images/keysecure-logo.png',
             'logo_png' => 'images/keysecure-logo.png',
             'name' => 'KeySecure AI',
             'font' => 'Archivo'
@@ -42,24 +37,24 @@ function getTheme()
         'oiion' => [
             'css' => 'css/oiion-theme.css',
             'favicon' => 'images/oiin-logo.png',
-            'logo' => 'images/oiin-logo.svg',
+            'logo' => 'images/oiin-logo.png',
             'logo_png' => 'images/oiin-logo.png',
             'name' => 'OII-ON',
             'font' => 'Inter'
         ]
     ];
     
-    // Si es local, usar el tema del .env
-    if ($isLocal) {
-        $defaultTheme = env('APP_THEME', 'oiion');
-        $theme = $themes[$defaultTheme] ?? $themes['oiion'];
-        return array_merge($theme, ['key' => $defaultTheme]);
+    // 🔥 PRIMERO: Verificar si existe APP_THEME en .env
+    $envTheme = env('APP_THEME');
+    if ($envTheme && isset($themes[$envTheme])) {
+        $theme = $themes[$envTheme];
+        return array_merge($theme, ['key' => $envTheme]);
     }
     
-    // Producción: detectar por dominio
+    // 🔥 SEGUNDO: Si no hay APP_THEME, detectar por dominio
     $domainMap = [
-        'keysecure' => ['keysecure-ai.mx', 'keysecure.mx'],
-        'oiion' => ['oii-on.com', 'oiion.com']
+        'keysecure' => ['keysecure-ai.mx'],
+        'oiion' => ['oii-on.com']
     ];
     
     foreach ($domainMap as $key => $domains) {

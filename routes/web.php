@@ -14,7 +14,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-
+    // Detectar dominio actual
+    $domain = $_SERVER['HTTP_HOST'] ?? '';
+    
+    // Detectar si estamos en local
+    $isLocal = in_array($domain, ['localhost', '127.0.0.1', '::1']) || 
+               strpos($domain, '.test') !== false ||
+               strpos($domain, '.local') !== false;
+    
+    // En local usar APP_THEME, en producción detectar por dominio
+    if ($isLocal) {
+        $isKeySecure = env('APP_THEME', 'oiion') === 'keysecure';
+    } else {
+        $isKeySecure = strpos($domain, 'keysecure-ai.mx') !== false || 
+                       strpos($domain, 'keysecure.mx') !== false;
+    }
+    
+    
     if(Auth::guard('superusuarios')->check()){
         return redirect('administradores');
     }  
@@ -26,6 +42,12 @@ Route::get('/', function () {
     if(Auth::guard('operadores')->check()){
         //return redirect('equiposop');
     }  
+
+    // Si es KeySecure (en producción o local con APP_THEME=keysecure)
+    if ($isKeySecure) {
+        return redirect('https://keysecure.mx');
+    }
+
 
     return view('home.home');
 });
