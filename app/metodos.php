@@ -13,7 +13,7 @@ function Memoria(){
 }
 
 function Version(){
-    return 11;
+    return 12;
 }
 
 // ============================================================
