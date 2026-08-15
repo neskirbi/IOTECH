@@ -19,7 +19,9 @@
     
     <div class="content-header">
       <div class="container-fluid">
-        <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.5rem;">Gestión de Operadores</h1>
+        <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
+          <i class="fas fa-users mr-2" style="color: var(--accent-cyan);"></i>Gestión de Operadores
+        </h1>
       </div>
     </div>
 
@@ -180,9 +182,7 @@
     </section>
   </div>
 
-  @include('footer')
-</div>
-<!-- Modal de Confirmación para Eliminar Operador -->
+  <!-- Modal de Confirmación para Eliminar Operador -->
 <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content" style="background-color: var(--bg-card); border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);">
@@ -218,5 +218,8 @@
     </div>
   </div>
 </div>
+  @include('footer')
+</div>
+@include('administradores.footer')
 </body>
 </html>
