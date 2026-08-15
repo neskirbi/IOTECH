@@ -199,7 +199,7 @@
   
   @include('footer')
 </div>
-
+@include('administradores.footer')
 <script>
   var map;
   var circle = null;

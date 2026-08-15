@@ -172,8 +172,9 @@
     </section>
   </div>
   
-  @include('footer')
+ @include('footer')
 </div>
+@include('administradores.footer')
 
 <script>
   var map;
