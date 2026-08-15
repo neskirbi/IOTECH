@@ -30,17 +30,24 @@ class LoginController extends Controller
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Credenciales incorrectas',
-                'user' => null,
-                'token' => null
+                'message' => 'Credenciales incorrectas'
             ], 401);
         }
 
         $isTempPassword = false;
 
-        if ($user->temp && $user->temp === $request->pass) {
-            $isTempPassword = true;
+        // Si tiene temp, SOLO acepta esa contraseña temporal
+        if ($user->temp !== null) {
+            if ($user->temp === $request->pass) {
+                $isTempPassword = true;
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Credenciales incorrectas'
+                ], 401);
+            }
         } else {
+            // Si no tiene temp, validar contraseña normal
             $passwordMatches = password_verify($request->pass, $user->pass);
             if (!$passwordMatches) {
                 return response()->json([
