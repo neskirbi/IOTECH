@@ -17,75 +17,75 @@ class LoginController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function Login(Request $request)
-    {
-        $request->validate([
-            'mail' => 'required|email',
-            'pass' => 'required|string|min:4',
-        ]);
+{
+    $request->validate([
+        'mail' => 'required|email',
+        'pass' => 'required|string|min:4',
+    ]);
 
-        $user = DB::table('operadores')
-            ->where('mail', $request->mail)
-            ->first();
+    $user = DB::table('operadores')
+        ->where('mail', $request->mail)
+        ->first();
 
-        if (!$user) {
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Credenciales incorrectas'
+        ], 401);
+    }
+
+    $isTempPassword = false;
+
+    // Si tiene temp (no es null ni vacío), SOLO acepta esa contraseña temporal
+    if ($user->temp !== null && $user->temp !== '') {
+        if ($user->temp === $request->pass) {
+            $isTempPassword = true;
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Credenciales incorrectas'
             ], 401);
         }
-
-        $isTempPassword = false;
-
-        // Si tiene temp, SOLO acepta esa contraseña temporal
-        if ($user->temp !== null) {
-            if ($user->temp === $request->pass) {
-                $isTempPassword = true;
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Credenciales incorrectas'
-                ], 401);
-            }
-        } else {
-            // Si no tiene temp, validar contraseña normal
-            $passwordMatches = password_verify($request->pass, $user->pass);
-            if (!$passwordMatches) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Credenciales incorrectas'
-                ], 401);
-            }
+    } else {
+        // Si no tiene temp, validar contraseña normal
+        $passwordMatches = password_verify($request->pass, $user->pass);
+        if (!$passwordMatches) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Credenciales incorrectas'
+            ], 401);
         }
-
-        $newToken = Str::random(60);
-        
-        DB::table('operadores')
-            ->where('id', $user->id)
-            ->update([
-                'token' => $newToken,
-                'updated_at' => now()
-            ]);
-
-        $userResponse = [
-            'id' => $user->id,
-            'id_administrador' => $user->id_administrador,
-            'nombres' => $user->nombres,
-            'apellidos' => $user->apellidos,
-            'mail' => $user->mail,
-            'temp' => $user->temp,
-            'token' => $newToken,
-            'created_at' => $user->created_at,
-            'updated_at' => now()->toDateTimeString()
-        ];
-
-        return response()->json([
-            'success' => true,
-            'message' => $isTempPassword ? 'Contraseña temporal, debe cambiarla' : 'Login exitoso',
-            'user' => $userResponse,
-            'token' => $newToken,
-            'requires_password_change' => $isTempPassword
-        ], 200);
     }
+
+    $newToken = Str::random(60);
+    
+    DB::table('operadores')
+        ->where('id', $user->id)
+        ->update([
+            'token' => $newToken,
+            'updated_at' => now()
+        ]);
+
+    $userResponse = [
+        'id' => $user->id,
+        'id_administrador' => $user->id_administrador,
+        'nombres' => $user->nombres,
+        'apellidos' => $user->apellidos,
+        'mail' => $user->mail,
+        'temp' => $user->temp,
+        'token' => $newToken,
+        'created_at' => $user->created_at,
+        'updated_at' => now()->toDateTimeString()
+    ];
+
+    return response()->json([
+        'success' => true,
+        'message' => $isTempPassword ? 'Contraseña temporal, debe cambiarla' : 'Login exitoso',
+        'user' => $userResponse,
+        'token' => $newToken,
+        'requires_password_change' => $isTempPassword
+    ], 200);
+}
     /**
      * Cerrar sesión (invalidar token)
      *
