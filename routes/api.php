@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
  
 Route::post('auth/login', 'App\Http\Controllers\Api\LoginController@Login');
+Route::post('auth/change-password', 'App\Http\Controllers\Api\LoginController@changePassword');
+
 Route::post('auth/logout', 'App\Http\Controllers\Api\LoginController@Logout')->middleware('auth:sanctum');
 Route::get('auth/verify', 'App\Http\Controllers\Api\LoginController@VerifyToken');
 Route::get('auth/profile', 'App\Http\Controllers\Api\LoginController@Profile')->middleware('auth:sanctum');

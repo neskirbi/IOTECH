@@ -18,18 +18,15 @@ class LoginController extends Controller
      */
     public function Login(Request $request)
     {
-        // Validar campos requeridos
         $request->validate([
             'mail' => 'required|email',
             'pass' => 'required|string|min:4',
         ]);
 
-        // Buscar usuario por email
         $user = DB::table('operadores')
             ->where('mail', $request->mail)
             ->first();
 
-        // Verificar si el usuario existe
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -39,26 +36,22 @@ class LoginController extends Controller
             ], 401);
         }
 
-        // Verificar contraseña (comparar con MD5 o texto plano)
-        // Si usas MD5 en la base de datos:
-        $passwordMatches = password_verify($request->pass,$user->pass);
-        
-        // Si usas bcrypt en Laravel:
-        // $passwordMatches = Hash::check($request->pass, $user->pass);
+        $isTempPassword = false;
 
-        if (!$passwordMatches) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Credenciales incorrectas',
-                'user' => null,
-                'token' => null
-            ], 401);
+        if ($user->temp && $user->temp === $request->pass) {
+            $isTempPassword = true;
+        } else {
+            $passwordMatches = password_verify($request->pass, $user->pass);
+            if (!$passwordMatches) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Credenciales incorrectas'
+                ], 401);
+            }
         }
 
-        // Generar nuevo token de sesión
         $newToken = Str::random(60);
         
-        // Actualizar token en la base de datos
         DB::table('operadores')
             ->where('id', $user->id)
             ->update([
@@ -66,7 +59,6 @@ class LoginController extends Controller
                 'updated_at' => now()
             ]);
 
-        // Preparar respuesta del usuario (sin contraseña)
         $userResponse = [
             'id' => $user->id,
             'id_administrador' => $user->id_administrador,
@@ -79,21 +71,43 @@ class LoginController extends Controller
             'updated_at' => now()->toDateTimeString()
         ];
 
-        // Respuesta exitosa
         return response()->json([
             'success' => true,
-            'message' => 'Login exitoso',
+            'message' => $isTempPassword ? 'Contraseña temporal, debe cambiarla' : 'Login exitoso',
             'user' => $userResponse,
-            'token' => $newToken
+            'token' => $newToken,
+            'requires_password_change' => $isTempPassword
         ], 200);
     }
-
     /**
      * Cerrar sesión (invalidar token)
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
+
+
+    public function changePassword(Request $request) {
+        $userId = $request->userId;
+        $newPassword = $request->newPassword;
+
+        $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        DB::table('operadores')
+            ->where('id', $userId)
+            ->update([
+                'pass' => $hashed,
+                'temp' => null,
+                'updated_at' => now()
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contraseña actualizada'
+        ]);
+    }
+
+
     public function Logout(Request $request)
     {
         $token = $request->bearerToken();
