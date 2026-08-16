@@ -23,7 +23,7 @@ class GeocercaController extends Controller
         
         // Ordenar y paginar
         $geocercas = $query->orderBy('created_at', 'desc')
-                        ->paginate(2); // Cambiado a 15
+                    ->paginate(15); // Cambiado a 15
         
         // Si es una petición AJAX (para el toggle de estado)
         if ($request->ajax()) {
