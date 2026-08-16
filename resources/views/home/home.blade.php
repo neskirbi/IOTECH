@@ -410,6 +410,27 @@
                 font-size: 0.85rem;
             }
         }
+
+        .btn-keysecure {
+    background-color: #f0a500;
+    border: 2px solid #f0a500;
+    color: #0B0B0B;
+    font-weight: 700;
+    border-radius: 4px;
+    border-radius: 40px;
+    transition: all 0.3s ease;
+}
+
+.btn-keysecure:hover {
+    background-color: #d4860a;
+    border-color: #d4860a;
+    color: #0B0B0B;
+    box-shadow: 0 0 20px rgba(240, 165, 0, 0.3);
+}
+
+.btn-keysecure i {
+    color: #0B0B0B;
+}
     </style>
 </head>
 
@@ -461,30 +482,33 @@
 
     <!-- Hero Section -->
     <section class="hero" id="dashboard">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
-                    <span class="badge-android mb-3 d-inline-block"><i class="fab fa-android me-1"></i> Exclusivo Android & Hardware</span>
-                    <h1 class="mb-4">Seguridad que <span class="highlight">siempre te acompaña</span>, donde estés.</h1>
-                    <p class="lead mb-4 text-white-50">Monitoreo en tiempo real, alertas inteligentes y control total desde tu dispositivo Android. OII-ON protege tu flota, familia o negocio con tecnología de rastreo de última generación.</p>
-                    <div class="d-flex flex-wrap gap-3">
-                        <a href="{{asset('apk/Oii-On_v4.0.0_20260816.apk')}}" class="btn btn-android btn-lg px-5" download>
-                            <i class="fab fa-android me-2"></i>Descargar APK v4.0.0
-                        </a>
-                        <a href="#core" class="btn btn-outline-light-custom btn-lg"><i class="fas fa-cubes me-2"></i>Ver divisiones</a>
-                    </div>
-                    <div class="mt-5 d-flex gap-4">
-                        <div><i class="fas fa-chart-line" style="color:#00e0ff"></i> <span class="text-white">Tecnología robusta</span></div>
-                        <div><i class="fas fa-rocket" style="color:#00e0ff"></i> <span class="text-white">Innovación constante</span></div>
-                        <div><i class="fas fa-clock" style="color:#00e0ff"></i> <span class="text-white">Soporte 24/7</span></div>
-                    </div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
+                <span class="badge-android mb-3 d-inline-block"><i class="fab fa-android me-1"></i> Exclusivo Android & Hardware</span>
+                <h1 class="mb-4">Seguridad que <span class="highlight">siempre te acompaña</span>, donde estés.</h1>
+                <p class="lead mb-4 text-white-50">Monitoreo en tiempo real, alertas inteligentes y control total desde tu dispositivo Android. OII-ON protege tu flota, familia o negocio con tecnología de rastreo de última generación.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{asset('apk/Oiion_V5_200816.apk')}}" class="btn btn-android btn-lg px-5" download>
+                        <i class="fab fa-android me-2"></i>Descargar OIION v5.0.0
+                    </a>
+                    <a href="{{asset('apk/KS_V5_20260816.apk')}}" class="btn btn-keysecure btn-lg px-5" download>
+                        <i class="fas fa-shield-alt me-2"></i>Descargar KeySecure v5.0.0
+                    </a>
+                    <a href="#core" class="btn btn-outline-light-custom btn-lg"><i class="fas fa-cubes me-2"></i>Ver divisiones</a>
                 </div>
-                <div class="col-lg-6 text-center" data-aos="fade-left">
-                    <img src="{{asset('images/home/pexels-lastly-699122.jpg')}}" alt="App Android seguridad GPS" class="img-fluid rounded-4 shadow-lg" style="max-height: 450px; object-fit: cover; width: 100%;">
+                <div class="mt-5 d-flex gap-4">
+                    <div><i class="fas fa-chart-line" style="color:#00e0ff"></i> <span class="text-white">Tecnología robusta</span></div>
+                    <div><i class="fas fa-rocket" style="color:#00e0ff"></i> <span class="text-white">Innovación constante</span></div>
+                    <div><i class="fas fa-clock" style="color:#00e0ff"></i> <span class="text-white">Soporte 24/7</span></div>
                 </div>
             </div>
+            <div class="col-lg-6 text-center" data-aos="fade-left">
+                <img src="{{asset('images/home/pexels-lastly-699122.jpg')}}" alt="App Android seguridad GPS" class="img-fluid rounded-4 shadow-lg" style="max-height: 450px; object-fit: cover; width: 100%;">
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Secciones de Divisiones -->
     <section class="py-5 py-md-8 bg-light">
