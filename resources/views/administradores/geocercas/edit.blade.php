@@ -95,12 +95,7 @@
                         <textarea class="form-control form-control-oiion" id="descripcion" name="descripcion" rows="2">{{ $geocerca->descripcion }}</textarea>
                       </div>
 
-                      <div class="form-group mb-0">
-                        <div class="custom-control custom-switch">
-                          <input type="checkbox" class="custom-control-input" id="activa" name="activa" value="1" {{ $geocerca->activa ? 'checked' : '' }}>
-                          <label class="custom-control-label text-white font-weight-bold" for="activa">Geocerca activa</label>
-                        </div>
-                      </div>
+                      
                     </div>
 
                     <!-- Columna 2: Parámetros del Trazo -->

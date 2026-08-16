@@ -8,14 +8,32 @@ use App\Models\Geocerca;
 
 class GeocercaController extends Controller
 {
-    public function index()
+   public function index(Request $request)
     {
-        $geocercas = Geocerca::where('id_administrador', GetId())
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
+        $query = Geocerca::where('id_administrador', GetId());
+        
+        // Buscador
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nombre', 'LIKE', "%{$search}%")
+                ->orWhere('descripcion', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Ordenar y paginar
+        $geocercas = $query->orderBy('created_at', 'desc')
+                        ->paginate(2); // Cambiado a 15
+        
+        // Si es una petición AJAX (para el toggle de estado)
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+        
         return view('administradores.geocercas.index', compact('geocercas'));
     }
+
+
 
     public function create()
     {

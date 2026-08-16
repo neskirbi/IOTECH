@@ -30,6 +30,78 @@
       right: 25px;
       z-index: 5;
     }
+
+    /* ===== NUEVOS ESTILOS PARA SWITCH ===== */
+    .switch-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 10px;
+    }
+    .switch-container .switch-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .switch-container .switch-label.active {
+      color: var(--accent-green);
+    }
+    .switch-container .switch-label.inactive {
+      color: var(--accent-red);
+    }
+    .switch-container .custom-switch {
+      padding-left: 2.2rem;
+      margin-bottom: 0;
+    }
+    .switch-container .custom-control-label::before {
+      width: 2rem;
+      height: 1rem;
+      border-radius: 1rem;
+      background-color: var(--bg-main);
+      border: 1px solid var(--border-color);
+    }
+    .switch-container .custom-control-label::after {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+      top: 0.1rem;
+      left: -1.8rem;
+      transition: all 0.3s ease;
+    }
+    .switch-container .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+    .switch-container .custom-control-input:checked ~ .custom-control-label::after {
+      background-color: #fff;
+      transform: translateX(1rem);
+    }
+    .switch-container .custom-control-input:disabled ~ .custom-control-label {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ===== ESTILOS BUSCADOR ===== */
+    .search-box .form-control {
+      background-color: var(--bg-main) !important;
+      border: 1px solid var(--border-color) !important;
+      color: var(--text-main) !important;
+    }
+    .search-box .form-control:focus {
+      border-color: var(--accent-cyan) !important;
+      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15) !important;
+    }
+    .search-box .btn-search {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .search-box .btn-search:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-main);
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
@@ -138,91 +210,133 @@
           <div class="col-12">
             <div class="card card-oiion">
               <div class="card-header border-0">
-                <h3 class="card-title text-white font-weight-bold m-0">
-                  <i class="fas fa-list mr-2" style="color: var(--accent-green);"></i> Geocercas Registradas
-                </h3>
+                <div class="row align-items-center">
+                  <div class="col-md-5">
+                    <h3 class="card-title text-white font-weight-bold m-0">
+                      <i class="fas fa-list mr-2" style="color: var(--accent-green);"></i> Geocercas Registradas
+                      <span class="badge badge-info ml-2">{{ $geocercas->total() }}</span>
+                    </h3>
+                  </div>
+                  <div class="col-md-7">
+                    <!-- BUSCADOR -->
+                    <form method="GET" action="{{ route('geocercas.index') }}" class="search-box">
+                      <div class="input-group">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="Buscar por nombre o descripción..." 
+                               value="{{ request('search') }}">
+                        <div class="input-group-append">
+                          <button class="btn btn-search" type="submit">
+                            <i class="fas fa-search"></i>
+                          </button>
+                          @if(request('search'))
+                            <a href="{{ route('geocercas.index') }}" class="btn btn-search">
+                              <i class="fas fa-times"></i>
+                            </a>
+                          @endif
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
               </div>
               <div class="card-body">
                 @if($geocercas->count() > 0)
                   @foreach($geocercas as $geocerca)
-                  <div class="card geocerca-card" style="border-left-color: {{ $geocerca->color ?? '#3B82F6' }};">
-                    <div class="card-body py-3">
-                      <div class="row align-items-center">
-                        
-                        <!-- Datos Principales -->
-                        <div class="col-md-9 col-10">
-                          <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                            <h5 class="card-title text-white font-weight-bold m-0" style="font-size: 1.1rem;">
-                              {{ $geocerca->nombre }}
-                            </h5>
-                            
-                            <!-- Badge Estado Parpadeante -->
-                            <span class="status-badge {{ $geocerca->activa ? 'online' : 'offline' }} ml-2">
-                              <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
-                              <span class="badge-text">{{ $geocerca->activa ? 'Activa' : 'Inactiva' }}</span>
-                            </span>
+<div class="card geocerca-card" style="border-left-color: {{ $geocerca->color ?? '#3B82F6' }};">
+  <div class="card-body py-3">
+    <div class="row align-items-center">
+      
+      <!-- Datos Principales -->
+      <div class="col-md-8 col-8">
+        <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+          <h5 class="card-title text-white font-weight-bold m-0" style="font-size: 1.1rem;">
+            {{ $geocerca->nombre }}
+          </h5>
+          
+          <!-- Badge Estado Parpadeante -->
+          <span class="status-badge {{ $geocerca->activa ? 'online' : 'offline' }} ml-2">
+            <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+            <span class="badge-text">{{ $geocerca->activa ? 'Activa' : 'Inactiva' }}</span>
+          </span>
 
-                            <span class="badge bg-dark border border-secondary text-cyan ml-1" style="font-size: 0.75rem;">
-                              <i class="{{ $geocerca->tipo == 'circular' ? 'fas fa-circle-notch' : 'fas fa-draw-polygon' }} mr-1"></i>
-                              {{ ucfirst($geocerca->tipo) }}
-                            </span>
-                          </div>
+          <span class="badge bg-dark border border-secondary text-cyan ml-1" style="font-size: 0.75rem;">
+            <i class="{{ $geocerca->tipo == 'circular' ? 'fas fa-circle-notch' : 'fas fa-draw-polygon' }} mr-1"></i>
+            {{ ucfirst($geocerca->tipo) }}
+          </span>
+        </div>
 
-                          <p class="card-text text-muted small mb-2">
-                            {{ $geocerca->descripcion ?? 'Sin descripción proporcionada.' }}
-                          </p>
+        <p class="card-text text-muted small mb-2">
+          {{ $geocerca->descripcion ?? 'Sin descripción proporcionada.' }}
+        </p>
 
-                          <p class="card-text mb-0">
-                            <small class="text-muted">
-                              @if($geocerca->tipo == 'circular')
-                                <i class="fas fa-map-marker-alt mr-1 text-cyan"></i> Centro: {{ number_format($geocerca->latitud, 6) }}, {{ number_format($geocerca->longitud, 6) }} &bull;
-                                <i class="fas fa-expand-arrows-alt mx-1 text-cyan"></i> Radio: {{ $geocerca->radio }} {{ $geocerca->unidad_distancia ?? 'metros' }} &bull;
-                              @else
-                                <i class="fas fa-draw-polygon mr-1 text-cyan"></i> Polígono delimitado por coordenadas &bull;
-                              @endif
-                              <i class="far fa-clock ml-1 mr-1"></i> Creada: {{ $geocerca->created_at->format('d/m/Y H:i') }}
-                            </small>
-                          </p>
-                        </div>
+        <p class="card-text mb-0">
+          <small class="text-muted">
+            @if($geocerca->tipo == 'circular')
+              <i class="fas fa-map-marker-alt mr-1 text-cyan"></i> Centro: {{ number_format($geocerca->latitud, 6) }}, {{ number_format($geocerca->longitud, 6) }} &bull;
+              <i class="fas fa-expand-arrows-alt mx-1 text-cyan"></i> Radio: {{ $geocerca->radio }} {{ $geocerca->unidad_distancia ?? 'metros' }} &bull;
+            @else
+              <i class="fas fa-draw-polygon mr-1 text-cyan"></i> Polígono delimitado por coordenadas &bull;
+            @endif
+            <i class="far fa-clock ml-1 mr-1"></i> Creada: {{ $geocerca->created_at->format('d/m/Y H:i') }}
+          </small>
+        </p>
+      </div>
 
-                        <!-- Menú Desplegable de Tres Puntos a la Derecha -->
-                        <div class="col-md-3 col-2 text-right">
-                          <div class="btn-group dropleft">
-                            <button class="btn btn-sm text-white-50 border-0" type="button" id="menu_geocerca_{{$geocerca->id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: transparent;">
-                              <i class="fas fa-ellipsis-v text-white font-weight-bold" style="font-size: 1.2rem;"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                              
-                              <!-- Ver en Mapa -->
-                              <a class="dropdown-item text-light ver-geocerca" href="javascript:void(0)" 
-                                 data-id="{{ $geocerca->id }}" 
-                                 data-tipo="{{ $geocerca->tipo }}">
-                                <i class="fas fa-eye mr-2 text-info"></i> Ver en Mapa
-                              </a>
+      <!-- Menú Desplegable con Switch dentro -->
+      <div class="col-md-4 col-4 text-right">
+        <div class="btn-group dropleft">
+          <button class="btn btn-sm text-white-50 border-0" type="button" 
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                  style="background: transparent;">
+            <i class="fas fa-ellipsis-v text-white font-weight-bold" style="font-size: 1.2rem;"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right" style="background-color: var(--bg-card); border-color: var(--border-color); min-width: 200px;">
+            
+            <!-- SWITCH DENTRO DEL DROPDOWN -->
+            <div class="dropdown-item-switch">
+              <span class="switch-label ">
+                Activar o Desactivar
+              </span>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input toggle-status" 
+                       id="toggle_{{ $geocerca->id }}"
+                       data-id="{{ $geocerca->id }}"
+                       {{ $geocerca->activa ? 'checked' : '' }}>
+                <label class="custom-control-label" for="toggle_{{ $geocerca->id }}"></label>
+              </div>
+            </div>
+            
+            <div class="dropdown-divider" style="border-color: var(--border-color);"></div>
+            
+            <!-- Ver en Mapa -->
+            <a class="dropdown-item text-light ver-geocerca" href="javascript:void(0)" 
+               data-id="{{ $geocerca->id }}" data-tipo="{{ $geocerca->tipo }}">
+              <i class="fas fa-eye mr-2 text-info"></i> Ver en Mapa
+            </a>
 
-                              <!-- Editar -->
-                              <a class="dropdown-item text-light" href="{{ route('geocercas.edit', $geocerca->id) }}">
-                                <i class="fas fa-edit mr-2 text-warning"></i> Editar Geocerca
-                              </a>
+            <!-- Editar -->
+            <a class="dropdown-item text-light" href="{{ route('geocercas.edit', $geocerca->id) }}">
+              <i class="fas fa-edit mr-2 text-warning"></i> Editar
+            </a>
 
-                              <div class="dropdown-divider" style="border-color: var(--border-color);"></div>
+            <div class="dropdown-divider" style="border-color: var(--border-color);"></div>
 
-                              <!-- Eliminar Modal -->
-                              <a class="dropdown-item text-danger btn-eliminar" href="javascript:void(0)"
-                                 data-id="{{ $geocerca->id }}" 
-                                 data-nombre="{{ $geocerca->nombre }}"
-                                 data-url="{{ route('geocercas.destroy', $geocerca->id) }}">
-                                <i class="fas fa-trash-alt mr-2"></i> Eliminar Geocerca
-                              </a>
+            <!-- Eliminar -->
+            <a class="dropdown-item text-danger btn-eliminar" href="javascript:void(0)"
+               data-id="{{ $geocerca->id }}" 
+               data-nombre="{{ $geocerca->nombre }}"
+               data-url="{{ route('geocercas.destroy', $geocerca->id) }}">
+              <i class="fas fa-trash-alt mr-2"></i> Eliminar
+            </a>
 
-                            </div>
-                          </div>
-                        </div>
+          </div>
+        </div>
+      </div>
 
-                      </div>
-                    </div>
-                  </div>
-                  @endforeach
+    </div>
+  </div>
+</div>
+@endforeach
                 @else
                   <div class="alert text-cyan border-secondary" style="background-color: rgba(6, 182, 212, 0.05);">
                     <i class="fas fa-info-circle mr-2"></i> No hay geocercas registradas. 
@@ -233,8 +347,13 @@
 
               @if($geocercas->hasPages())
               <div class="card-footer border-top-0" style="background-color: transparent;">
-                <div class="float-right">
-                   {{ $geocercas->appends($_GET)->links('pagination::bootstrap-4') }}
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                  <div class="text-muted small">
+                    Mostrando {{ $geocercas->firstItem() ?? 0 }} - {{ $geocercas->lastItem() ?? 0 }} de {{ $geocercas->total() }} geocercas
+                  </div>
+                  <div>
+                    {{ $geocercas->appends(request()->query())->links('pagination::bootstrap-4') }}
+                  </div>
                 </div>
               </div>
               @endif
@@ -271,6 +390,52 @@
         $('#geocercaName').text('"' + geocercaNombre + '"');
         $('#deleteForm').attr('action', deleteUrl);
         $('#confirmDeleteModal').modal('show');
+      });
+
+      // Toggle de estado (Activar/Desactivar)
+      $(document).on('change', '.toggle-status', function() {
+        var checkbox = $(this);
+        var id = checkbox.data('id');
+        var isChecked = checkbox.prop('checked');
+        var card = checkbox.closest('.geocerca-card');
+        var statusBadge = card.find('.status-badge');
+        var label = checkbox.closest('.switch-container').find('.switch-label');
+        
+        // Deshabilitar mientras se procesa
+        checkbox.prop('disabled', true);
+        
+        $.ajax({
+          url: Url()+'api/geocercas/' + id + '/toggle-status',
+          method: 'PUT',
+          data: {
+            _token: '{{ csrf_token() }}'
+          },
+          success: function(response) {
+            if (response.success) {
+              // Actualizar badge
+              statusBadge.removeClass('online offline');
+              if (response.activa) {
+                statusBadge.addClass('online');
+                statusBadge.find('.badge-text').text('Activa');
+                label.removeClass('inactive').addClass('active').text('Activa');
+              } else {
+                statusBadge.addClass('offline');
+                statusBadge.find('.badge-text').text('Inactiva');
+                label.removeClass('active').addClass('inactive').text('Inactiva');
+              }
+              
+              showToast(response.message, 'success');
+            }
+          },
+          error: function() {
+            // Revertir el cambio si hay error
+            checkbox.prop('checked', !isChecked);
+            showToast('Error al cambiar el estado de la geocerca', 'error');
+          },
+          complete: function() {
+            checkbox.prop('disabled', false);
+          }
+        });
       });
     });
   }
@@ -389,6 +554,42 @@
         }, 3000);
       }
     });
+  }
+
+  // Toast notifications
+  function showToast(message, type) {
+    var toastContainer = document.getElementById('oiion-toast-container');
+    if (!toastContainer) {
+      var container = document.createElement('div');
+      container.id = 'oiion-toast-container';
+      document.body.appendChild(container);
+      toastContainer = container;
+    }
+    
+    var toast = document.createElement('div');
+    toast.className = 'oiion-toast oiion-toast-' + type;
+    
+    var iconMap = {
+      'success': 'fa-check-circle',
+      'error': 'fa-exclamation-circle',
+      'warning': 'fa-exclamation-triangle',
+      'info': 'fa-info-circle'
+    };
+    
+    toast.innerHTML = `
+      <i class="fas ${iconMap[type] || 'fa-info-circle'} toast-icon mr-2"></i>
+      <span>${message}</span>
+      <button class="oiion-toast-close" onclick="this.parentElement.remove()">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    
+    toastContainer.appendChild(toast);
+    setTimeout(function() { toast.classList.add('show'); }, 10);
+    setTimeout(function() {
+      toast.classList.remove('show');
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 4000);
   }
 </script>
 

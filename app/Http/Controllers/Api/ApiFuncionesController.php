@@ -10,6 +10,7 @@ use App\Models\Operador;
 use App\Models\Registro;
 use App\Models\Equipo;
 use App\Models\EquipoEstado;
+use App\Models\Geocerca;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -92,5 +93,30 @@ class ApiFuncionesController extends Controller
         }
 
         return response()->json($estado);
+    }
+
+
+    // Método para toggle de estado (activar/desactivar)
+    public function toggleStatus($id)
+    {
+         
+        try {
+            $geocerca = Geocerca::where('id', $id)
+                ->firstOrFail();
+            
+            $geocerca->activa = !$geocerca->activa;
+            $geocerca->save();
+            
+            return response()->json([
+                'success' => true,
+                'activa' => $geocerca->activa,
+                'message' => $geocerca->activa ? 'Geocerca activada' : 'Geocerca desactivada'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cambiar el estado'
+            ], 500);
+        }
     }
 }

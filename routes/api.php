@@ -48,5 +48,9 @@ Route::post('ToggleOperadorStatus', 'App\Http\Controllers\Api\ApiFuncionesContro
 Route::post('ToggleEquipoStatus', 'App\Http\Controllers\Api\ApiFuncionesController@ToggleEquipoStatus');
 Route::get('ObtenerUltimoEstadoEquipo/{mac}', 'App\Http\Controllers\Api\ApiFuncionesController@ObtenerUltimoEstadoEquipo');
 
+Route::get('ObtenerUltimoEstadoEquipo/{mac}', 'App\Http\Controllers\Api\ApiFuncionesController@ObtenerUltimoEstadoEquipo');
+Route::put('/geocercas/{id}/toggle-status', 'App\Http\Controllers\Api\ApiFuncionesController@toggleStatus')
+->name('geocercas.toggle-status');
+
 // Nueva ruta para el estado del equipo
 Route::post('equipos/estado', 'App\Http\Controllers\Api\ApiController@EstadoEquipo');
