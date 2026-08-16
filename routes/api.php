@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   * Login
   */
 
- 
+
 Route::post('auth/login', 'App\Http\Controllers\Api\LoginController@Login');
 Route::post('auth/change-password', 'App\Http\Controllers\Api\LoginController@changePassword');
 
