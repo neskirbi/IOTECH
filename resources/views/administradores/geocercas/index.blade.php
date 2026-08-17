@@ -226,10 +226,10 @@
                 </div>
               </div>
 
-              <div class="card-body position-relative p-3">
+             <div class="card-body position-relative p-3">
                 <div id="map"></div>
-                <!-- Control en mapa -->
-                <div class="map-controls-overlay">
+                <!-- Control de Centrar Mapa en la esquina inferior izquierda -->
+                <div class="map-controls-overlay" style="top: auto; bottom: 25px; right: auto; left: 25px;">
                   <button type="button" class="btn btn-sm btn-dark text-cyan border-secondary" onclick="centrarMapa()" style="box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
                     <i class="fas fa-crosshairs mr-1"></i> Centrar Mapa
                   </button>
