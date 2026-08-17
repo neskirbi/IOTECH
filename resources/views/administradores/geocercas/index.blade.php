@@ -102,6 +102,40 @@
       background-color: var(--bg-hover);
       color: var(--text-main);
     }
+
+    /* ===== ESTILOS PARA CONTROLES DE MAPA PERSONALIZADOS ===== */
+    .custom-map-control {
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      padding: 4px;
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    .custom-map-control button {
+      background: white;
+      border: none;
+      border-radius: 2px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+      transition: all 0.2s;
+      min-width: 80px;
+      text-align: center;
+    }
+    .custom-map-control button:hover {
+      background: #f0f0f0;
+    }
+    .custom-map-control button.active {
+      background: #1a73e8;
+      color: white;
+    }
+    .custom-map-control button:first-child {
+      border-bottom: 1px solid #e0e0e0;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
@@ -370,6 +404,7 @@
 
   function inicializarAplicacion() {
     initMap();
+    agregarControlesMapa();
     
     $(document).ready(function() {
       $('.ver-geocerca').click(function() {
@@ -389,6 +424,39 @@
 
       
     });
+  }
+
+  // Función para agregar controles personalizados de mapa y satélite
+  function agregarControlesMapa() {
+    // Crear el contenedor del control
+    var controlDiv = document.createElement('div');
+    controlDiv.className = 'custom-map-control';
+    
+    // Botón Mapa
+    var btnMapa = document.createElement('button');
+    btnMapa.textContent = '🌍 Mapa';
+    btnMapa.className = 'active';
+    btnMapa.addEventListener('click', function() {
+      map.setMapTypeId('roadmap');
+      btnMapa.className = 'active';
+      btnSatelite.className = '';
+    });
+    
+    // Botón Satélite
+    var btnSatelite = document.createElement('button');
+    btnSatelite.textContent = '🛰️ Satélite';
+    btnSatelite.addEventListener('click', function() {
+      map.setMapTypeId('satellite');
+      btnSatelite.className = 'active';
+      btnMapa.className = '';
+    });
+    
+    // Agregar botones al contenedor
+    controlDiv.appendChild(btnMapa);
+    controlDiv.appendChild(btnSatelite);
+    
+    // Posicionar el control en la esquina superior derecha
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
   }
 
   // ============================================================
@@ -454,7 +522,7 @@
       center: { lat: 19.4326, lng: -99.1332 },
       mapTypeId: 'roadmap',
       streetViewControl: false,
-      mapTypeControl: false,
+      mapTypeControl: false, // Desactivamos el control nativo
       fullscreenControl: true,
       zoomControl: true
     });
