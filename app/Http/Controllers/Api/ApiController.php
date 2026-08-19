@@ -64,43 +64,43 @@ class ApiController extends Controller
     $registro->id_operador = isset($request->user_id) ? $request->user_id : '';
     $registro->codent = isset($request->codent) ? $request->codent : '';
     $registro->opcion = $request->opcion;
-    $registro->mac = isset($request->mac) ? $request->mac : ''; // <-- AGREGAR MAC
+    $registro->mac = isset($request->mac) ? $request->mac : '';
+    
+    // 👇 AGREGAR SOLO COORDENADAS
+    $registro->latitud = isset($request->latitud) ? $request->latitud : null;
+    $registro->longitud = isset($request->longitud) ? $request->longitud : null;
+    
     $registro->save();
 
     $codigo='';
     $rango=0;
-    switch(($request->opcion*1)){
+    switch(($request->opcion * 1)){
         case 1:
             $rango = 15;
             break;
-
         case 2:
             $rango = 20;
             break;
-
         case 3:
             $rango = 25;
             break;
-
         case 4:
             $rango = 2;
             break;
-
         case 5:
             $rango = 10;
             break;
     }
 
-    
-
-    //haseando
+    //hasheando
     $codigo = hash('sha256', $request->codent);
     //Extrayendo del 20 al 24 servicio y del 15 al 19 para el motor
     $codigo = substr($codigo, $rango, 4);
-    //String to e=hexadecimal
+    //String to hexadecimal
     $codigo = hex2bin(bin2hex($codigo));
-    //Exadecimal to decimal
+    //Hexadecimal to decimal
     $codigo = hexdec($codigo);
+    
     return array('status' => 1, 'codigo' => $codigo);
 }
 
