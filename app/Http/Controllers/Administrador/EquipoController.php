@@ -22,35 +22,7 @@ class EquipoController extends Controller
 {
     $equipos = Equipo::where('id_administrador', GetId())
         ->select(
-            'equipos.*',
-            DB::raw('(
-                SELECT cerrado 
-                FROM equipo_estados 
-                WHERE mac = equipos.mac 
-                ORDER BY datetime DESC 
-                LIMIT 1
-            ) as cerrado'),
-            DB::raw('(
-                SELECT latitud 
-                FROM registros 
-                WHERE mac = equipos.mac 
-                ORDER BY created_at DESC 
-                LIMIT 1
-            ) as latitud1'),
-            DB::raw('(
-                SELECT longitud 
-                FROM registros 
-                WHERE mac = equipos.mac 
-                ORDER BY created_at DESC 
-                LIMIT 1
-            ) as longitud1'),
-            DB::raw('(
-                SELECT created_at 
-                FROM registros 
-                WHERE mac = equipos.mac 
-                ORDER BY created_at DESC 
-                LIMIT 1
-            ) as fecha_registro')
+            'equipos.*'
         )
         ->get();
     
