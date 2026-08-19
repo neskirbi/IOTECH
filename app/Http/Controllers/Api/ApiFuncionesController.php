@@ -75,25 +75,56 @@ class ApiFuncionesController extends Controller
 
 
     public function ObtenerUltimoEstadoEquipo($mac)
-    {
-        // Obtiene el reporte más reciente basado en la fecha o el ID autoincremental
-        $estado = EquipoEstado::where('mac', $mac)
-                    ->latest('datetime') // o ->latest('id')
-                    ->first();
+{
+    // Obtiene el reporte más reciente de equipo_estados
+    $estado = EquipoEstado::where('mac', $mac)
+                ->latest('datetime')
+                ->first();
 
-        if (!$estado) {
-            // Retorna valores por defecto si el equipo aún no tiene registros de estado
-            return response()->json([
-                'mac' => $mac,
-                'cerrado' => 1, // Por defecto cerrado (verde)
-                'latitud' => 0.00000000,
-                'longitud' => 0.00000000,
-                'datetime' => null
-            ]);
-        }
+    // Obtiene el registro más reciente de la tabla registros
+    $registro = Registro::where('mac', $mac)
+                ->latest('created_at')
+                ->first();
 
-        return response()->json($estado);
+    // Valores por defecto
+    $cerrado = 1;
+    $latitud = 0.00000000;
+    $longitud = 0.00000000;
+    $datetime = null;
+    $latitud_registro = 0.00000000;
+    $longitud_registro = 0.00000000;
+    $fecha_registro = null;
+    $geofence_id = null;
+    $opcion = null;
+
+    // Si existe estado, tomar sus valores
+    if ($estado) {
+        $cerrado = $estado->cerrado;
+        $datetime = $estado->datetime;
     }
+
+    // Si existe registro, tomar sus coordenadas
+    if ($registro) {
+        $latitud_registro = $registro->latitud ?? 0.00000000;
+        $longitud_registro = $registro->longitud ?? 0.00000000;
+        $fecha_registro = $registro->created_at;
+        $geofence_id = $registro->geofence_id;
+        $opcion = $registro->opcion;
+    }
+
+    return response()->json([
+        'mac' => $mac,
+        // Datos de equipo_estados
+        'cerrado' => $cerrado,
+        'datetime' => $datetime,
+        // Datos de registros
+        'latitud' => $latitud_registro,
+        'longitud' => $longitud_registro,
+        'fecha_registro' => $fecha_registro,
+        'geofence_id' => $geofence_id,
+        'opcion' => $opcion
+    ]);
+}
 
 
     // Método para toggle de estado (activar/desactivar)
