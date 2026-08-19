@@ -32,25 +32,25 @@ class EquipoController extends Controller
             ) as cerrado'),
             DB::raw('(
                 SELECT latitud 
-                FROM equipo_estados 
+                FROM registros 
                 WHERE mac = equipos.mac 
-                ORDER BY datetime DESC 
+                ORDER BY created_at DESC 
                 LIMIT 1
-            ) as latitud'),
+            ) as latitud1'),
             DB::raw('(
                 SELECT longitud 
-                FROM equipo_estados 
+                FROM registros 
                 WHERE mac = equipos.mac 
-                ORDER BY datetime DESC 
+                ORDER BY created_at DESC 
                 LIMIT 1
-            ) as longitud'),
+            ) as longitud1'),
             DB::raw('(
-                SELECT datetime 
-                FROM equipo_estados 
+                SELECT created_at 
+                FROM registros 
                 WHERE mac = equipos.mac 
-                ORDER BY datetime DESC 
+                ORDER BY created_at DESC 
                 LIMIT 1
-            ) as datetime')
+            ) as fecha_registro')
         )
         ->get();
     
