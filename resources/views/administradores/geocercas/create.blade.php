@@ -57,6 +57,94 @@
     .custom-map-control button:first-child {
       border-bottom: 1px solid #e0e0e0;
     }
+
+    /* Estilos para el buscador de direcciones */
+    .search-box {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      width: 90%;
+      max-width: 500px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 8px 0;
+      font-size: 14px;
+      background: transparent;
+      color: #333;
+    }
+    .search-box input::placeholder {
+      color: #999;
+    }
+    .search-box button {
+      background: #1a73e8;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    .search-box button:hover {
+      background: #1557b0;
+    }
+    .search-box .clear-btn {
+      background: transparent;
+      color: #999;
+      padding: 4px 6px;
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+    }
+    .search-box .clear-btn:hover {
+      color: #333;
+    }
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      z-index: 10;
+    }
+    .search-results .result-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+      color: #333;
+    }
+    .search-results .result-item:hover {
+      background: #f5f5f5;
+    }
+    .search-results .result-item:last-child {
+      border-bottom: none;
+    }
+    .search-results .result-item .main-text {
+      font-weight: 500;
+    }
+    .search-results .result-item .sub-text {
+      font-size: 12px;
+      color: #777;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style="background-color: var(--bg-main);">
@@ -107,6 +195,15 @@
                 <!-- Mapa extendido al 100% con controles personalizados -->
                 <div class="position-relative mb-4">
                   <div id="map"></div>
+                  
+                  <!-- Buscador de Direcciones -->
+                  <div class="search-box" id="searchBox">
+                    <i class="fas fa-search text-muted"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar dirección, ciudad o lugar..." autocomplete="off">
+                    <button id="searchBtn" class="search-btn">Buscar</button>
+                    <span class="clear-btn" id="clearSearch">×</span>
+                    <div class="search-results" id="searchResults"></div>
+                  </div>
                 </div>
 
                 <!-- Formulario Integrado debajo del Mapa -->
@@ -241,11 +338,14 @@
   var circleCenter = null;
   var drawingMode = null;
   var polygonClickListener = null;
+  var geocoder = null;
+  var markers = [];
 
   function inicializarAplicacion() {
     initMap();
     configurarEventos();
     agregarControlesMapa();
+    configurarBuscador();
   }
 
   function cargarGoogleMaps() {
@@ -255,7 +355,7 @@
     }
     
     var script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry&callback=inicializarAplicacion';
+    script.src = 'https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=drawing,geometry,places&callback=inicializarAplicacion';
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
@@ -267,18 +367,18 @@
       center: { lat: 19.4326, lng: -99.1332 },
       mapTypeId: 'roadmap',
       streetViewControl: false,
-      mapTypeControl: false, // Desactivamos el control nativo
+      mapTypeControl: false,
       fullscreenControl: true
     });
+    
+    geocoder = new google.maps.Geocoder();
   }
 
   // Función para agregar controles personalizados de mapa y satélite
   function agregarControlesMapa() {
-    // Crear el contenedor del control
     var controlDiv = document.createElement('div');
     controlDiv.className = 'custom-map-control';
     
-    // Botón Mapa
     var btnMapa = document.createElement('button');
     btnMapa.textContent = '🌍 Mapa';
     btnMapa.className = 'active';
@@ -288,7 +388,6 @@
       btnSatelite.className = '';
     });
     
-    // Botón Satélite
     var btnSatelite = document.createElement('button');
     btnSatelite.textContent = '🛰️ Satélite';
     btnSatelite.addEventListener('click', function() {
@@ -297,12 +396,132 @@
       btnMapa.className = '';
     });
     
-    // Agregar botones al contenedor
     controlDiv.appendChild(btnMapa);
     controlDiv.appendChild(btnSatelite);
     
-    // Posicionar el control en la esquina superior derecha
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+  }
+
+  // ========== CONFIGURACIÓN DEL BUSCADOR ==========
+  function configurarBuscador() {
+    var searchInput = document.getElementById('searchInput');
+    var searchBtn = document.getElementById('searchBtn');
+    var clearBtn = document.getElementById('clearSearch');
+    var resultsContainer = document.getElementById('searchResults');
+
+    // Buscar al hacer clic en el botón
+    searchBtn.addEventListener('click', function() {
+      realizarBusqueda(searchInput.value);
+    });
+
+    // Buscar al presionar Enter
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        realizarBusqueda(searchInput.value);
+      }
+    });
+
+    // Mostrar/ocultar botón de limpiar
+    searchInput.addEventListener('input', function() {
+      clearBtn.style.display = this.value.length > 0 ? 'block' : 'none';
+      if (this.value.length === 0) {
+        resultsContainer.style.display = 'none';
+        limpiarMarcadores();
+      }
+    });
+
+    // Limpiar búsqueda
+    clearBtn.addEventListener('click', function() {
+      searchInput.value = '';
+      clearBtn.style.display = 'none';
+      resultsContainer.style.display = 'none';
+      limpiarMarcadores();
+      searchInput.focus();
+    });
+
+    // Cerrar resultados al hacer clic fuera
+    document.addEventListener('click', function(e) {
+      var searchBox = document.getElementById('searchBox');
+      if (!searchBox.contains(e.target)) {
+        resultsContainer.style.display = 'none';
+      }
+    });
+  }
+
+  function realizarBusqueda(query) {
+    if (!query.trim()) return;
+
+    var resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '<div class="result-item" style="color:#999;text-align:center;">Buscando...</div>';
+    resultsContainer.style.display = 'block';
+
+    geocoder.geocode({ address: query }, function(results, status) {
+      if (status === 'OK') {
+        if (results.length === 0) {
+          resultsContainer.innerHTML = '<div class="result-item" style="color:#999;text-align:center;">No se encontraron resultados</div>';
+          return;
+        }
+
+        resultsContainer.innerHTML = '';
+        results.forEach(function(result) {
+          var item = document.createElement('div');
+          item.className = 'result-item';
+          item.innerHTML = `
+            <div class="main-text">${result.formatted_address}</div>
+            <div class="sub-text">${result.types.join(', ')}</div>
+          `;
+          item.addEventListener('click', function() {
+            seleccionarDireccion(result);
+          });
+          resultsContainer.appendChild(item);
+        });
+      } else {
+        resultsContainer.innerHTML = `<div class="result-item" style="color:#e74c3c;text-align:center;">Error: ${status}</div>`;
+      }
+    });
+  }
+
+  function seleccionarDireccion(result) {
+    var location = result.geometry.location;
+    var lat = location.lat();
+    var lng = location.lng();
+
+    // Cerrar resultados
+    document.getElementById('searchResults').style.display = 'none';
+    document.getElementById('searchInput').value = result.formatted_address;
+    document.getElementById('clearSearch').style.display = 'block';
+
+    // Centrar mapa en la ubicación
+    map.setCenter(location);
+    map.setZoom(15);
+
+    // Limpiar marcadores anteriores
+    limpiarMarcadores();
+
+    // Agregar marcador
+    var marker = new google.maps.Marker({
+      position: location,
+      map: map,
+      title: result.formatted_address,
+      animation: google.maps.Animation.DROP
+    });
+    markers.push(marker);
+
+    // Si estamos en modo círculo, usar esta ubicación como centro
+    if (drawingMode === 'circular') {
+      circleCenter = location;
+      $('#latitud').val(lat.toFixed(8));
+      $('#longitud').val(lng.toFixed(8));
+      dibujarCirculo();
+    }
+  }
+
+  function limpiarMarcadores() {
+    markers.forEach(function(marker) {
+      marker.setMap(null);
+    });
+    markers = [];
   }
 
   function configurarEventos() {
@@ -316,16 +535,19 @@
         $('#circle-fields').show();
         $('#polygon-fields').hide();
         limpiarDibujo();
+        limpiarMarcadores();
       } else if (tipo === 'poligono') {
         $('#default-fields-msg').hide();
         $('#circle-fields').hide();
         $('#polygon-fields').show();
         iniciarDibujoPoligono();
+        limpiarMarcadores();
       } else {
         $('#default-fields-msg').show();
         $('#circle-fields').hide();
         $('#polygon-fields').hide();
         limpiarDibujo();
+        limpiarMarcadores();
       }
       
       actualizarEstadoBoton();
@@ -337,6 +559,8 @@
         $('#latitud').val(circleCenter.lat().toFixed(8));
         $('#longitud').val(circleCenter.lng().toFixed(8));
         dibujarCirculo();
+        // Limpiar marcadores al hacer clic en el mapa
+        limpiarMarcadores();
       } else if (drawingMode === 'poligono') {
         agregarPuntoPoligono(event.latLng);
       }
@@ -422,7 +646,6 @@
     actualizarCoordenadasPoligono();
   }
 
-  // Actualiza los datos leyendo la ruta actual del polígono (evita recursión infinita)
   function actualizarCoordenadasDesdePath() {
     if (!polygon) return;
     var path = polygon.getPath();
