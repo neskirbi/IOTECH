@@ -49,35 +49,50 @@
                 <div class="row">
                   @foreach($equipos as $equipo)
                   @php 
-                    // ============================================
-                    // 1. ESTADO DEL EQUIPO (Activo/Inactivo)
-                    //    Viene de equipos.activo
-                    // ============================================
-                    $estaActivo = (($equipo->activo ?? 1) == 1);
-                    
-                    // ============================================
-                    // 2. ESTADO DE LA CHAPA (Abierto/Cerrado)
-                    //    Viene de equipo_estados.cerrado (último registro)
-                    // ============================================
-                    $tieneEstado = isset($equipo->cerrado);
-                    $chapaAbierta = $tieneEstado && $equipo->cerrado == 0;
-                    $chapaCerrada = $tieneEstado && $equipo->cerrado == 1;
-                    
-                    // Variables para el badge de la chapa (izquierda)
-                    $chapaClase = 'sin-estado';
-                    $chapaTexto = 'Sin estado';
-                    $chapaIcono = 'fa-question-circle';
-                    
-                    if ($chapaAbierta) {
-                        $chapaClase = 'abierto';
-                        $chapaTexto = 'Abierto';
-                        $chapaIcono = 'fa-lock-open';
-                    } elseif ($chapaCerrada) {
-                        $chapaClase = 'cerrado';
-                        $chapaTexto = 'Cerrado';
-                        $chapaIcono = 'fa-lock';
-                    }
-                  @endphp
+    // ============================================
+    // 1. ESTADO DEL EQUIPO (Activo/Inactivo)
+    //    Viene de equipos.activo
+    // ============================================
+    $estaActivo = (($equipo->activo ?? 1) == 1);
+    
+    // ============================================
+    // 2. ESTADO DE LA CHAPA (Abierto/Cerrado/Movimiento)
+    //    Viene de equipo_estados.evento y estado
+    // ============================================
+    $tieneEstado = isset($equipo->evento) && isset($equipo->estado);
+    $evento = $tieneEstado ? $equipo->evento : 'desconocido';
+    $estado = $tieneEstado ? $equipo->estado : 'desconocido';
+    
+    // Variables para el badge de la chapa (izquierda)
+    $chapaClase = 'sin-estado';
+    $chapaTexto = 'Sin estado';
+    $chapaIcono = 'fa-question-circle';
+    
+    if ($tieneEstado) {
+        switch ($evento) {
+            case 'apertura':
+                $chapaClase = 'abierto';
+                $chapaTexto = 'Abierto';
+                $chapaIcono = 'fa-lock-open';
+                break;
+            case 'cierre':
+                $chapaClase = 'cerrado';
+                $chapaTexto = 'Cerrado';
+                $chapaIcono = 'fa-lock';
+                break;
+            case 'movimiento':
+                $chapaClase = 'movimiento';
+                $chapaTexto = 'Movimiento';
+                $chapaIcono = 'fa-arrows-alt';
+                break;
+            default:
+                $chapaClase = 'sin-estado';
+                $chapaTexto = 'Sin estado';
+                $chapaIcono = 'fa-question-circle';
+                break;
+        }
+    }
+@endphp
                   
                   <div class="col-xl-4 col-lg-4 col-md-6 mb-4">           
                     <div class="card card-oiion h-100" 
@@ -431,7 +446,7 @@
   // Coordenadas de la República Mexicana (centro)
   var MEXICO_CENTER = { lat: 23.6345, lng: -102.5528 };
 
-  function ObtenerUltimoEstadoEquipo(id, numeconomico, macEquipo) {
+ function ObtenerUltimoEstadoEquipo(id, numeconomico, macEquipo) {
     var url = Url() + 'api/ObtenerUltimoEstadoEquipo/' + macEquipo;
 
     // Resetear estado de cerradura
@@ -445,131 +460,113 @@
     }
 
     $.ajax({
-    url: url,
-    type: 'GET',
-    dataType: 'json',
-    success: function(data) {
-        console.log('Datos recibidos:', data);
-        
-        // Verificar si hay datos de ubicación
-        var tieneUbicacion = data && data.latitud && data.longitud && data.latitud != 0 && data.longitud != 0;
-        
-        // Estado de la chapa
-        var cerrado = data.cerrado;
-        var estadoTexto = '';
-        var estadoColor = '';
-        
-        // ============================================
-        // ACTUALIZAR ESTADO DE CERRADURA (NEÓN)
-        // ============================================
-        if (data && typeof data.cerrado !== 'undefined') {
-            if (data.cerrado == 1) {
-                estadoTexto = 'Cerrado';
-                estadoColor = '#ef4444';
-                $('#cerradura_estado')
-                    .html('<i class="fas fa-lock"></i> Cerrado')
-                    .css('color', '#ef4444')
-                    .css('text-shadow', '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.4)');
-            } else if (data.cerrado == 0) {
-                estadoTexto = 'Abierto';
-                estadoColor = '#10b981';
-                $('#cerradura_estado')
-                    .html('<i class="fas fa-lock-open"></i> Abierto')
-                    .css('color', '#10b981')
-                    .css('text-shadow', '0 0 20px rgba(16, 185, 129, 0.8), 0 0 40px rgba(16, 185, 129, 0.4)');
-            }
-        } else {
-            estadoTexto = 'Sin estado';
-            estadoColor = '#6c757d';
-            $('#cerradura_estado')
-                .html('<i class="fas fa-question-circle"></i> Sin estado')
-                .css('color', '#6c757d')
-                .css('text-shadow', 'none');
-        }
-        
-        // Actualizar título del equipo con estado
-        $('#equipo_info_titulo').html(
-            '<i class="fas fa-vault mr-1" style="color: ' + estadoColor + ';"></i> ' + 
-            numeconomico 
-        );
-        
-        var lat = tieneUbicacion ? parseFloat(data.latitud) : MEXICO_CENTER.lat;
-        var lng = tieneUbicacion ? parseFloat(data.longitud) : MEXICO_CENTER.lng;
-
-        // ============================================
-        // INICIALIZAR / ACTUALIZAR MAPA Y MARCADOR
-        // ============================================
-        var myLatlng = { lat: lat, lng: lng };
-        var mapDiv = document.getElementById('googleMap');
-        
-        // --- VERIFICAR SI EL MAPA YA EXISTE ---
-        if (!googleMapInstance) {
-            // Crear mapa por primera vez
-            googleMapInstance = new google.maps.Map(mapDiv, {
-                zoom: tieneUbicacion ? 16 : 6,
-                center: myLatlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                styles: [
-                    { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
-                    { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
-                    { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
-                    { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
-                    { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283955" }] },
-                    { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
-                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] }
-                ]
-            });
-
-            // Crear marcador si hay ubicación
-            if (tieneUbicacion) {
-                googleMarkerInstance = new google.maps.Marker({
-                    position: myLatlng,
-                    map: googleMapInstance,
-                    icon: {
-                        url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
-                        scaledSize: new google.maps.Size(32, 32)
-                    },
-                    title: numeconomico + ' - ' + estadoTexto,
-                    animation: google.maps.Animation.DROP
-                });
-                
-                // Agregar label por separado para mejor compatibilidad
-                var label = new google.maps.Marker({
-                    position: myLatlng,
-                    map: googleMapInstance,
-                    label: {
-                        text: numeconomico,
-                        color: '#ffffff',
-                        fontSize: '11px',
-                        fontWeight: 'bold'
-                    },
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 0
-                    }
-                });
-                // Guardar referencia al label
-                googleMarkerInstance._label = label;
-            }
-        } else {
-            // Actualizar mapa existente
-            googleMapInstance.setCenter(myLatlng);
-            googleMapInstance.setZoom(tieneUbicacion ? 16 : 6);
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            console.log('Datos recibidos:', data);
             
-            if (tieneUbicacion) {
-                if (!googleMarkerInstance) {
-                    // Crear nuevo marcador
+            // Verificar si hay datos de ubicación
+            var tieneUbicacion = data && data.latitud && data.longitud && data.latitud != 0 && data.longitud != 0;
+            
+            // ============================================
+            // ESTADO DE LA CHAPA (evento + estado)
+            // ============================================
+            var evento = data.evento || 'desconocido';
+            var estado = data.estado || 'desconocido';
+            var estadoTexto = '';
+            var estadoColor = '';
+            var icono = '';
+            
+            // Determinar estado visual basado en evento
+            switch (evento) {
+                case 'apertura':
+                    estadoTexto = 'Abierto';
+                    estadoColor = '#10b981';
+                    icono = 'fa-lock-open';
+                    break;
+                case 'cierre':
+                    estadoTexto = 'Cerrado';
+                    estadoColor = '#ef4444';
+                    icono = 'fa-lock';
+                    break;
+                case 'movimiento':
+                    estadoTexto = 'Movimiento';
+                    estadoColor = '#f59e0b';
+                    icono = 'fa-arrows-alt';
+                    break;
+                default:
+                    estadoTexto = 'Sin estado';
+                    estadoColor = '#6c757d';
+                    icono = 'fa-question-circle';
+                    break;
+            }
+            
+            // Actualizar UI de la cerradura con efecto neón
+            var shadowEffect = estadoColor !== '#6c757d' 
+                ? 'text-shadow: 0 0 20px ' + estadoColor + ', 0 0 40px ' + estadoColor + ';'
+                : '';
+            
+            $('#cerradura_estado')
+                .html('<i class="fas ' + icono + '"></i> ' + estadoTexto)
+                .css('color', estadoColor)
+                .attr('style', function(i, style) {
+                    return style + ' ' + shadowEffect;
+                });
+            
+            // Actualizar título del equipo con estado
+            $('#equipo_info_titulo').html(
+                '<i class="fas fa-vault mr-1" style="color: ' + estadoColor + ';"></i> ' + 
+                numeconomico + ' - ' + estadoTexto
+            );
+            
+            var lat = tieneUbicacion ? parseFloat(data.latitud) : MEXICO_CENTER.lat;
+            var lng = tieneUbicacion ? parseFloat(data.longitud) : MEXICO_CENTER.lng;
+
+            // ============================================
+            // INICIALIZAR / ACTUALIZAR MAPA Y MARCADOR
+            // ============================================
+            var myLatlng = { lat: lat, lng: lng };
+            var mapDiv = document.getElementById('googleMap');
+            
+            // --- VERIFICAR SI EL MAPA YA EXISTE ---
+            if (!googleMapInstance) {
+                // Crear mapa por primera vez
+                googleMapInstance = new google.maps.Map(mapDiv, {
+                    zoom: tieneUbicacion ? 16 : 6,
+                    center: myLatlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    styles: [
+                        { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
+                        { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
+                        { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
+                        { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
+                        { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283955" }] },
+                        { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
+                        { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] }
+                    ]
+                });
+
+                // Crear marcador si hay ubicación
+                if (tieneUbicacion) {
+                    // Color del marcador según estado
+                    var markerColor = 'yellow';
+                    if (evento === 'apertura') markerColor = 'green';
+                    else if (evento === 'cierre') markerColor = 'red';
+                    else if (evento === 'movimiento') markerColor = 'orange';
+                    
                     googleMarkerInstance = new google.maps.Marker({
                         position: myLatlng,
                         map: googleMapInstance,
                         icon: {
-                            url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+                            url: 'https://maps.google.com/mapfiles/ms/icons/' + markerColor + '-dot.png',
                             scaledSize: new google.maps.Size(32, 32)
                         },
                         title: numeconomico + ' - ' + estadoTexto,
                         animation: google.maps.Animation.DROP
                     });
                     
+                    // Agregar label
                     var label = new google.maps.Marker({
                         position: myLatlng,
                         map: googleMapInstance,
@@ -585,30 +582,120 @@
                         }
                     });
                     googleMarkerInstance._label = label;
-                } else {
-                    // Actualizar marcador existente
-                    googleMarkerInstance.setPosition(myLatlng);
-                    googleMarkerInstance.setTitle(numeconomico + ' - ' + estadoTexto);
-                    googleMarkerInstance.setIcon({
-                        url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
-                        scaledSize: new google.maps.Size(32, 32)
-                    });
-                    googleMarkerInstance.setMap(googleMapInstance);
-                    
-                    // Actualizar label
-                    if (googleMarkerInstance._label) {
-                        googleMarkerInstance._label.setPosition(myLatlng);
-                        googleMarkerInstance._label.setMap(googleMapInstance);
-                        googleMarkerInstance._label.setLabel({
-                            text: numeconomico,
-                            color: '#ffffff',
-                            fontSize: '11px',
-                            fontWeight: 'bold'
-                        });
-                    }
                 }
             } else {
-                // No hay ubicación, eliminar marcador
+                // Actualizar mapa existente
+                googleMapInstance.setCenter(myLatlng);
+                googleMapInstance.setZoom(tieneUbicacion ? 16 : 6);
+                
+                if (tieneUbicacion) {
+                    var markerColor = 'yellow';
+                    if (evento === 'apertura') markerColor = 'green';
+                    else if (evento === 'cierre') markerColor = 'red';
+                    else if (evento === 'movimiento') markerColor = 'orange';
+                    
+                    if (!googleMarkerInstance) {
+                        // Crear nuevo marcador
+                        googleMarkerInstance = new google.maps.Marker({
+                            position: myLatlng,
+                            map: googleMapInstance,
+                            icon: {
+                                url: 'https://maps.google.com/mapfiles/ms/icons/' + markerColor + '-dot.png',
+                                scaledSize: new google.maps.Size(32, 32)
+                            },
+                            title: numeconomico + ' - ' + estadoTexto,
+                            animation: google.maps.Animation.DROP
+                        });
+                        
+                        var label = new google.maps.Marker({
+                            position: myLatlng,
+                            map: googleMapInstance,
+                            label: {
+                                text: numeconomico,
+                                color: '#ffffff',
+                                fontSize: '11px',
+                                fontWeight: 'bold'
+                            },
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 0
+                            }
+                        });
+                        googleMarkerInstance._label = label;
+                    } else {
+                        // Actualizar marcador existente
+                        googleMarkerInstance.setPosition(myLatlng);
+                        googleMarkerInstance.setTitle(numeconomico + ' - ' + estadoTexto);
+                        googleMarkerInstance.setIcon({
+                            url: 'https://maps.google.com/mapfiles/ms/icons/' + markerColor + '-dot.png',
+                            scaledSize: new google.maps.Size(32, 32)
+                        });
+                        googleMarkerInstance.setMap(googleMapInstance);
+                        
+                        if (googleMarkerInstance._label) {
+                            googleMarkerInstance._label.setPosition(myLatlng);
+                            googleMarkerInstance._label.setMap(googleMapInstance);
+                            googleMarkerInstance._label.setLabel({
+                                text: numeconomico,
+                                color: '#ffffff',
+                                fontSize: '11px',
+                                fontWeight: 'bold'
+                            });
+                        }
+                    }
+                } else {
+                    // No hay ubicación, eliminar marcador
+                    if (googleMarkerInstance) {
+                        if (googleMarkerInstance._label) {
+                            googleMarkerInstance._label.setMap(null);
+                        }
+                        googleMarkerInstance.setMap(null);
+                        googleMarkerInstance = null;
+                    }
+                }
+            }
+            
+            // Forzar resize y centrado del mapa
+            setTimeout(function() {
+                if (googleMapInstance) {
+                    google.maps.event.trigger(googleMapInstance, 'resize');
+                    googleMapInstance.setCenter(myLatlng);
+                    if (tieneUbicacion) {
+                        googleMapInstance.setZoom(16);
+                    }
+                }
+            }, 300);
+        },
+        error: function(error) {
+            console.error('Error:', error);
+            $('#cerradura_estado')
+                .html('<i class="fas fa-exclamation-triangle"></i> Error')
+                .css('color', '#ef4444');
+            $('#equipo_info_titulo').html('<i class="fas fa-vault mr-1" style="color: #ef4444;"></i> ' + numeconomico + ' - Error');
+
+            // Centrar en México sin marcador
+            var myLatlng = MEXICO_CENTER;
+            var mapDiv = document.getElementById('googleMap');
+            
+            if (!googleMapInstance) {
+                googleMapInstance = new google.maps.Map(mapDiv, {
+                    zoom: 6,
+                    center: myLatlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    styles: [
+                        { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
+                        { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
+                        { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
+                        { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
+                        { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283955" }] },
+                        { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
+                        { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] }
+                    ]
+                });
+                googleMarkerInstance = null;
+            } else {
+                googleMapInstance.setCenter(myLatlng);
+                googleMapInstance.setZoom(6);
                 if (googleMarkerInstance) {
                     if (googleMarkerInstance._label) {
                         googleMarkerInstance._label.setMap(null);
@@ -617,67 +704,16 @@
                     googleMarkerInstance = null;
                 }
             }
-        }
-        
-        // Forzar resize y centrado del mapa
-        setTimeout(function() {
-            if (googleMapInstance) {
-                google.maps.event.trigger(googleMapInstance, 'resize');
-                googleMapInstance.setCenter(myLatlng);
-                if (tieneUbicacion) {
-                    googleMapInstance.setZoom(16);
+            
+            setTimeout(function() {
+                if (googleMapInstance) {
+                    google.maps.event.trigger(googleMapInstance, 'resize');
+                    googleMapInstance.setCenter(myLatlng);
                 }
-            }
-        }, 300);
-    },
-    error: function(error) {
-        console.error('Error:', error);
-        $('#cerradura_estado')
-            .html('<i class="fas fa-exclamation-triangle"></i> Error')
-            .css('color', '#ef4444');
-        $('#equipo_info_titulo').html('<i class="fas fa-vault mr-1" style="color: #ef4444;"></i> ' + numeconomico + ' - Error');
-
-        // Centrar en México sin marcador
-        var myLatlng = MEXICO_CENTER;
-        var mapDiv = document.getElementById('googleMap');
-        
-        if (!googleMapInstance) {
-            googleMapInstance = new google.maps.Map(mapDiv, {
-                zoom: 6,
-                center: myLatlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                styles: [
-                    { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
-                    { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
-                    { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
-                    { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
-                    { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283955" }] },
-                    { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
-                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] }
-                ]
-            });
-            googleMarkerInstance = null;
-        } else {
-            googleMapInstance.setCenter(myLatlng);
-            googleMapInstance.setZoom(6);
-            if (googleMarkerInstance) {
-                if (googleMarkerInstance._label) {
-                    googleMarkerInstance._label.setMap(null);
-                }
-                googleMarkerInstance.setMap(null);
-                googleMarkerInstance = null;
-            }
+            }, 300);
         }
-        
-        setTimeout(function() {
-            if (googleMapInstance) {
-                google.maps.event.trigger(googleMapInstance, 'resize');
-                googleMapInstance.setCenter(myLatlng);
-            }
-        }, 300);
-    }
-});
-  }
+    });
+}
 
   function AbrirModalEditar(id, numeconomico, matricula, mac) {
     $('#edit_numeconomico').val(numeconomico);

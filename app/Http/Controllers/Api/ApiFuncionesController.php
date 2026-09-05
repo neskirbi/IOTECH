@@ -87,7 +87,8 @@ class ApiFuncionesController extends Controller
                 ->first();
 
     // Valores por defecto
-    $cerrado = 1;
+    $evento = 'desconocido';
+    $estado_valor = 'desconocido';
     $latitud = 0.00000000;
     $longitud = 0.00000000;
     $datetime = null;
@@ -99,7 +100,10 @@ class ApiFuncionesController extends Controller
 
     // Si existe estado, tomar sus valores
     if ($estado) {
-        $cerrado = $estado->cerrado;
+        $evento = $estado->evento ?? 'desconocido';
+        $estado_valor = $estado->estado ?? 'desconocido';
+        $latitud = $estado->latitud ?? 0.00000000;
+        $longitud = $estado->longitud ?? 0.00000000;
         $datetime = $estado->datetime;
     }
 
@@ -115,11 +119,14 @@ class ApiFuncionesController extends Controller
     return response()->json([
         'mac' => $mac,
         // Datos de equipo_estados
-        'cerrado' => $cerrado,
+        'evento' => $evento,
+        'estado' => $estado_valor,
+        'latitud' => $latitud,
+        'longitud' => $longitud,
         'datetime' => $datetime,
         // Datos de registros
-        'latitud' => $latitud_registro,
-        'longitud' => $longitud_registro,
+        'latitud_registro' => $latitud_registro,
+        'longitud_registro' => $longitud_registro,
         'fecha_registro' => $fecha_registro,
         'geofence_id' => $geofence_id,
         'opcion' => $opcion

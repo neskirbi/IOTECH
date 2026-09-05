@@ -54,3 +54,6 @@ Route::put('/geocercas/{id}/toggle-status', 'App\Http\Controllers\Api\ApiFuncion
 
 // Nueva ruta para el estado del equipo
 Route::post('equipos/estado', 'App\Http\Controllers\Api\ApiController@EstadoEquipo');
+
+
+Route::post('coordenadas/sync', 'App\Http\Controllers\Api\ApiController@syncCoordenadas');

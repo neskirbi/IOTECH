@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Administrador;
 use App\Models\Operador;
 use App\Models\Registro;
-
+use App\Models\CoordenadaMatch;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -344,161 +344,255 @@ class ApiController extends Controller
 
 
     public function EstadoEquipo(Request $request)
-{
-    try {
-        // Obtener todos los datos
-        $data = $request->all();
-        
-        // ============================================
-        // 1. NORMALIZAR DATOS (arreglo o objeto único)
-        // ============================================
-        
-        // Si es un objeto único con 'mac' y 'cerrado', lo convertimos a arreglo de un elemento
-        if (isset($data['mac']) && isset($data['cerrado'])) {
-            $data = [$data];
-        }
-        
-        // Validar que sea un arreglo y no esté vacío
-        if (!is_array($data) || empty($data)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Datos inválidos: se esperaba un arreglo de objetos o un objeto único',
-                'ejemplo' => [
-                    'formato_individual' => [
-                        'mac' => '84:1F:E8:31:F6:D0',
-                        'cerrado' => 1,
-                        'latitud' => 19.42648049,
-                        'longitud' => -99.04119199,
-                        'datetime' => '2026-08-12 10:00:00'
-                    ],
-                    'formato_multiple' => [
-                        [
+    {
+        try {
+            // Obtener todos los datos
+            $data = $request->all();
+            
+            // ============================================
+            // 1. NORMALIZAR DATOS (arreglo o objeto único)
+            // ============================================
+            
+            // Si es un objeto único con 'mac' y 'cerrado', lo convertimos a arreglo de un elemento
+            if (isset($data['mac']) && isset($data['cerrado'])) {
+                $data = [$data];
+            }
+            
+            // Validar que sea un arreglo y no esté vacío
+            if (!is_array($data) || empty($data)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Datos inválidos: se esperaba un arreglo de objetos o un objeto único',
+                    'ejemplo' => [
+                        'formato_individual' => [
                             'mac' => '84:1F:E8:31:F6:D0',
                             'cerrado' => 1,
                             'latitud' => 19.42648049,
-                            'longitud' => -99.04119199
+                            'longitud' => -99.04119199,
+                            'datetime' => '2026-08-12 10:00:00'
                         ],
-                        [
-                            'mac' => '84:1F:E8:31:F6:D0',
-                            'cerrado' => 0,
-                            'latitud' => 19.42648050,
-                            'longitud' => -99.04119200
+                        'formato_multiple' => [
+                            [
+                                'mac' => '84:1F:E8:31:F6:D0',
+                                'cerrado' => 1,
+                                'latitud' => 19.42648049,
+                                'longitud' => -99.04119199
+                            ],
+                            [
+                                'mac' => '84:1F:E8:31:F6:D0',
+                                'cerrado' => 0,
+                                'latitud' => 19.42648050,
+                                'longitud' => -99.04119200
+                            ]
                         ]
                     ]
-                ]
-            ], 400);
-        }
-        
-        // ============================================
-        // 2. VALIDAR CADA ELEMENTO
-        // ============================================
-        $validator = Validator::make($data, [
-            '*.mac' => 'required|string',
-            '*.cerrado' => 'required|integer|in:0,1',
-            '*.latitud' => 'nullable|numeric',
-            '*.longitud' => 'nullable|numeric',
-            '*.datetime' => 'nullable|string',
-        ]);
+                ], 400);
+            }
+            
+            // ============================================
+            // 2. VALIDAR CADA ELEMENTO
+            // ============================================
+            $validator = Validator::make($data, [
+                '*.mac' => 'required|string',
+                '*.cerrado' => 'required|integer|in:0,1',
+                '*.latitud' => 'nullable|numeric',
+                '*.longitud' => 'nullable|numeric',
+                '*.datetime' => 'nullable|string',
+            ]);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación en los datos',
+                    'errores' => $validator->errors()
+                ], 422);
+            }
+
+            // ============================================
+            // 3. PROCESAR REGISTROS
+            // ============================================
+            $registrosParaInsertar = [];
+            $ahora = now();
+            $macsProcesadas = [];
+
+            foreach ($data as $item) {
+                $datetimeFormateado = !empty($item['datetime']) 
+                    ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
+                    : $ahora;
+
+                $macLimpia = strtolower(trim($item['mac']));
+                
+                $registrosParaInsertar[] = [
+                    'mac' => $macLimpia,
+                    'cerrado' => $item['cerrado'],
+                    'latitud' => $item['latitud'] ?? 0,
+                    'longitud' => $item['longitud'] ?? 0,
+                    'datetime' => $datetimeFormateado,
+                    'created_at' => $ahora,
+                    'updated_at' => $ahora,
+                ];
+                
+                // Guardar MACs únicas para consultar después
+                if (!in_array($macLimpia, $macsProcesadas)) {
+                    $macsProcesadas[] = $macLimpia;
+                }
+            }
+
+            // ============================================
+            // 4. INSERCIÓN MASIVA EN BD
+            // ============================================
+            if (!empty($registrosParaInsertar)) {
+                DB::table('equipo_estados')->insert($registrosParaInsertar);
+            }
+
+            // ============================================
+            // 5. OBTENER EL ÚLTIMO REGISTRO DE LA BD Y ENVIAR A FIREBASE
+            // ============================================
+            $resultadosFirebase = [];
+            
+            if (!empty($macsProcesadas)) {
+                // Obtener el último registro de cada MAC desde la BD
+                $ultimosEstados = DB::table('equipo_estados')
+                    ->whereIn('mac', $macsProcesadas)
+                    ->whereRaw('datetime = (
+                        SELECT MAX(datetime) 
+                        FROM equipo_estados AS e2 
+                        WHERE e2.mac = equipo_estados.mac
+                    )')
+                    ->get();
+
+                // Enviar cada último estado a Firebase
+                foreach ($ultimosEstados as $estado) {
+                    $resultado = EnviarAfirebase(
+                        $estado->mac,
+                        $estado->cerrado,
+                        $estado->latitud ?? 0,
+                        $estado->longitud ?? 0
+                    );
+
+                    $resultadosFirebase[] = [
+                        'mac' => $estado->mac,
+                        'cerrado' => $estado->cerrado,
+                        'datetime' => $estado->datetime,
+                        'success' => $resultado['success'] ?? false,
+                        'error' => $resultado['error'] ?? null
+                    ];
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Historial de estados registrado correctamente',
+                'total_registros_insertados' => count($registrosParaInsertar),
+                'total_enviados_firebase' => count($resultadosFirebase),
+                'firebase' => $resultadosFirebase
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Registrar error en logs
+            Log::error('Error en EstadoEquipo: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error de validación en los datos',
-                'errores' => $validator->errors()
-            ], 422);
+                'message' => 'Error interno del servidor: ' . $e->getMessage()
+            ], 500);
         }
-
-        // ============================================
-        // 3. PROCESAR REGISTROS
-        // ============================================
-        $registrosParaInsertar = [];
-        $ahora = now();
-        $macsProcesadas = [];
-
-        foreach ($data as $item) {
-            $datetimeFormateado = !empty($item['datetime']) 
-                ? \Carbon\Carbon::parse($item['datetime'])->format('Y-m-d H:i:s') 
-                : $ahora;
-
-            $macLimpia = strtolower(trim($item['mac']));
-            
-            $registrosParaInsertar[] = [
-                'mac' => $macLimpia,
-                'cerrado' => $item['cerrado'],
-                'latitud' => $item['latitud'] ?? 0,
-                'longitud' => $item['longitud'] ?? 0,
-                'datetime' => $datetimeFormateado,
-                'created_at' => $ahora,
-                'updated_at' => $ahora,
-            ];
-            
-            // Guardar MACs únicas para consultar después
-            if (!in_array($macLimpia, $macsProcesadas)) {
-                $macsProcesadas[] = $macLimpia;
-            }
-        }
-
-        // ============================================
-        // 4. INSERCIÓN MASIVA EN BD
-        // ============================================
-        if (!empty($registrosParaInsertar)) {
-            DB::table('equipo_estados')->insert($registrosParaInsertar);
-        }
-
-        // ============================================
-        // 5. OBTENER EL ÚLTIMO REGISTRO DE LA BD Y ENVIAR A FIREBASE
-        // ============================================
-        $resultadosFirebase = [];
-        
-        if (!empty($macsProcesadas)) {
-            // Obtener el último registro de cada MAC desde la BD
-            $ultimosEstados = DB::table('equipo_estados')
-                ->whereIn('mac', $macsProcesadas)
-                ->whereRaw('datetime = (
-                    SELECT MAX(datetime) 
-                    FROM equipo_estados AS e2 
-                    WHERE e2.mac = equipo_estados.mac
-                )')
-                ->get();
-
-            // Enviar cada último estado a Firebase
-            foreach ($ultimosEstados as $estado) {
-                $resultado = EnviarAfirebase(
-                    $estado->mac,
-                    $estado->cerrado,
-                    $estado->latitud ?? 0,
-                    $estado->longitud ?? 0
-                );
-
-                $resultadosFirebase[] = [
-                    'mac' => $estado->mac,
-                    'cerrado' => $estado->cerrado,
-                    'datetime' => $estado->datetime,
-                    'success' => $resultado['success'] ?? false,
-                    'error' => $resultado['error'] ?? null
-                ];
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Historial de estados registrado correctamente',
-            'total_registros_insertados' => count($registrosParaInsertar),
-            'total_enviados_firebase' => count($resultadosFirebase),
-            'firebase' => $resultadosFirebase
-        ], 200);
-
-    } catch (\Exception $e) {
-        // Registrar error en logs
-        Log::error('Error en EstadoEquipo: ' . $e->getMessage(), [
-            'request' => $request->all(),
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Error interno del servidor: ' . $e->getMessage()
-        ], 500);
     }
-}
+
+
+    /**
+     * Sincronizar coordenadas GPS con datos Bluetooth
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function syncCoordenadas(Request $request)
+    {
+        try {
+            // Validar datos de entrada (actualizado)
+            $request->validate([
+                'userId' => 'required|string',
+                'datos' => 'required|array',
+                'datos.*.mac' => 'required|string',
+                'datos.*.latitud' => 'required|numeric',
+                'datos.*.longitud' => 'required|numeric',
+                'datos.*.datetime' => 'required|string',
+                'datos.*.datosBluetooth' => 'required|string'
+            ]);
+
+            $userId = $request->input('userId');
+            $datos = $request->input('datos');
+
+            \Log::info("📤 Sincronizando coordenadas para usuario: " . $userId);
+            \Log::info("📤 Cantidad de registros: " . count($datos));
+
+            $guardados = 0;
+            $errores = [];
+
+            foreach ($datos as $item) {
+                try {
+                    // Decodificar datosBluetooth
+                    $bluetoothData = json_decode($item['datosBluetooth'], true);
+                    
+                    // Extraer evento y estado
+                    $evento = $bluetoothData['evento'] ?? 'desconocido';
+                    $estado = $bluetoothData['estado'] ?? 'desconocido';
+
+                    // Guardar en equipo_estados
+                    \DB::table('equipo_estados')->insert([
+                        'mac' => $item['mac'],
+                        'evento' => $evento,
+                        'estado' => $estado,
+                        'latitud' => $item['latitud'],
+                        'longitud' => $item['longitud'],
+                        'datetime' => $item['datetime'],
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+
+                    $guardados++;
+
+                } catch (\Exception $e) {
+                    $errores[] = [
+                        'registro' => $item,
+                        'error' => $e->getMessage()
+                    ];
+                    \Log::error("❌ Error guardando registro: " . $e->getMessage());
+                }
+            }
+
+            \Log::info("✅ Registros guardados: " . $guardados);
+
+            return response()->json([
+                'success' => true,
+                'message' => "{$guardados} registros sincronizados correctamente",
+                'status' => 1,
+                'data' => [
+                    'guardados' => $guardados,
+                    'errores' => count($errores)
+                ]
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'status' => 0,
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            \Log::error("❌ Error en syncCoordenadas: " . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al sincronizar: ' . $e->getMessage(),
+                'status' => 0
+            ], 500);
+        }
+    }
 }
