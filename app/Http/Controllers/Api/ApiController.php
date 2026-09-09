@@ -510,89 +510,90 @@ class ApiController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function syncCoordenadas(Request $request)
-    {
-        try {
-            // Validar datos de entrada (actualizado)
-            $request->validate([
-                'userId' => 'required|string',
-                'datos' => 'required|array',
-                'datos.*.mac' => 'required|string',
-                'datos.*.latitud' => 'required|numeric',
-                'datos.*.longitud' => 'required|numeric',
-                'datos.*.datetime' => 'required|string',
-                'datos.*.datosBluetooth' => 'required|string'
-            ]);
+{
+    try {
+        // Validar datos de entrada (actualizado)
+        $request->validate([
+            'userId' => 'required|string',
+            'datos' => 'required|array',
+            'datos.*.mac' => 'required|string',
+            'datos.*.latitud' => 'required|numeric',
+            'datos.*.longitud' => 'required|numeric',
+            'datos.*.datetime' => 'required|string',
+            'datos.*.datosBluetooth' => 'required|string'
+        ]);
 
-            $userId = $request->input('userId');
-            $datos = $request->input('datos');
+        $userId = $request->input('userId');
+        $datos = $request->input('datos');
 
-            \Log::info("📤 Sincronizando coordenadas para usuario: " . $userId);
-            \Log::info("📤 Cantidad de registros: " . count($datos));
+        \Log::info("📤 Sincronizando coordenadas para usuario: " . $userId);
+        \Log::info("📤 Cantidad de registros: " . count($datos));
 
-            $guardados = 0;
-            $errores = [];
+        $guardados = 0;
+        $errores = [];
 
-            foreach ($datos as $item) {
-                try {
-                    // Decodificar datosBluetooth
-                    $bluetoothData = json_decode($item['datosBluetooth'], true);
-                    
-                    // Extraer evento y estado
-                    $evento = $bluetoothData['evento'] ?? 'desconocido';
-                    $estado = $bluetoothData['estado'] ?? 'desconocido';
+        foreach ($datos as $item) {
+            try {
+                // Decodificar datosBluetooth
+                $bluetoothData = json_decode($item['datosBluetooth'], true);
+                
+                // Extraer evento y estado
+                $evento = $bluetoothData['evento'] ?? 'desconocido';
+                $estado = $bluetoothData['estado'] ?? 'desconocido';
 
-                    // Guardar en equipo_estados
-                    \DB::table('equipo_estados')->insert([
-                        'mac' => $item['mac'],
-                        'evento' => $evento,
-                        'estado' => $estado,
-                        'latitud' => $item['latitud'],
-                        'longitud' => $item['longitud'],
-                        'datetime' => $item['datetime'],
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
+                // Guardar en equipo_estados con UUID
+                \DB::table('equipo_estados')->insert([
+                    'id' => GetUuid(), // ✅ ID generado por tu helper
+                    'mac' => $item['mac'],
+                    'evento' => $evento,
+                    'estado' => $estado,
+                    'latitud' => $item['latitud'],
+                    'longitud' => $item['longitud'],
+                    'datetime' => $item['datetime'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
 
-                    $guardados++;
+                $guardados++;
 
-                } catch (\Exception $e) {
-                    $errores[] = [
-                        'registro' => $item,
-                        'error' => $e->getMessage()
-                    ];
-                    \Log::error("❌ Error guardando registro: " . $e->getMessage());
-                }
+            } catch (\Exception $e) {
+                $errores[] = [
+                    'registro' => $item,
+                    'error' => $e->getMessage()
+                ];
+                \Log::error("❌ Error guardando registro: " . $e->getMessage());
             }
-
-            \Log::info("✅ Registros guardados: " . $guardados);
-
-            return response()->json([
-                'success' => true,
-                'message' => "{$guardados} registros sincronizados correctamente",
-                'status' => 1,
-                'data' => [
-                    'guardados' => $guardados,
-                    'errores' => count($errores)
-                ]
-            ], 200);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación',
-                'status' => 0,
-                'errors' => $e->errors()
-            ], 422);
-
-        } catch (\Exception $e) {
-            \Log::error("❌ Error en syncCoordenadas: " . $e->getMessage());
-            \Log::error($e->getTraceAsString());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al sincronizar: ' . $e->getMessage(),
-                'status' => 0
-            ], 500);
         }
+
+        \Log::info("✅ Registros guardados: " . $guardados);
+
+        return response()->json([
+            'success' => true,
+            'message' => "{$guardados} registros sincronizados correctamente",
+            'status' => 1,
+            'data' => [
+                'guardados' => $guardados,
+                'errores' => count($errores)
+            ]
+        ], 200);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error de validación',
+            'status' => 0,
+            'errors' => $e->errors()
+        ], 422);
+
+    } catch (\Exception $e) {
+        \Log::error("❌ Error en syncCoordenadas: " . $e->getMessage());
+        \Log::error($e->getTraceAsString());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al sincronizar: ' . $e->getMessage(),
+            'status' => 0
+        ], 500);
     }
+}
 }

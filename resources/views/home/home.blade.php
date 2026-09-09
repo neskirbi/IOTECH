@@ -489,8 +489,8 @@
                 <h1 class="mb-4">Seguridad que <span class="highlight">siempre te acompaña</span>, donde estés.</h1>
                 <p class="lead mb-4 text-white-50">Monitoreo en tiempo real, alertas inteligentes y control total desde tu dispositivo Android. OII-ON protege tu flota, familia o negocio con tecnología de rastreo de última generación.</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="{{asset('apk/Oiion_V5_200816.apk')}}" class="btn btn-android btn-lg px-5" download>
-                        <i class="fab fa-android me-2"></i>Descargar OIION v5.0.0
+                    <a href="{{asset('apk/Oiion_V6_200908.apk')}}" class="btn btn-android btn-lg px-5" download>
+                        <i class="fab fa-android me-2"></i>Descargar OIION v6.0.0
                     </a>
                     <a href="{{asset('apk/KS_V5_20260816.apk')}}" class="btn btn-keysecure btn-lg px-5" download>
                         <i class="fas fa-shield-alt me-2"></i>Descargar KeySecure v5.0.0
