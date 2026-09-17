@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administrador;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -18,22 +19,55 @@ class DashboardController extends Controller
         $totalOperadores = DB::table('operadores')->where('activo', 1)->where('id_administrador', '=', $adminId)->count();
         $totalGeocercas = DB::table('geocercas')->where('activa', 1)->where('id_administrador', '=', $adminId)->count();
 
-        // 2. Cajas Abiertas (solo contador)
-        $totalCajasAbiertas = DB::table('equipos')
-            ->join('equipo_estados', function($join) {
-                $join->on('equipos.mac', '=', 'equipo_estados.mac')
-                    ->whereRaw('equipo_estados.datetime = (
-                        SELECT MAX(datetime) 
-                        FROM equipo_estados AS e2 
-                        WHERE e2.mac = equipos.mac
-                    )');
-            })
+        // 2. Cajas Abiertas (por MAC: se decide con el ultimo y penultimo evento)
+        $equiposAdmin = DB::table('equipos')
+            ->where('id_administrador', '=', $adminId)
+            ->where('activo', 1)
+            ->pluck('mac');
+
+        $totalCajasAbiertas = 0;
+
+        foreach ($equiposAdmin as $mac) {
+            $ultimos = DB::table('equipo_estados')
+                ->where('mac', '=', $mac)
+                ->orderBy('datetime', 'DESC')
+                ->limit(2)
+                ->get();
+
+            if ($ultimos->isEmpty()) {
+                continue;
+            }
+
+            $ultimo = $ultimos->first();
+            $penultimo = $ultimos->count() > 1 ? $ultimos->get(1) : null;
+
+            $estaAbierta = false;
+
+            if ($ultimo->evento === 'apertura') {
+                $estaAbierta = true;
+            } elseif ($ultimo->evento === 'ingreso') {
+                if ($penultimo && $penultimo->evento === 'apertura') {
+                    $estaAbierta = true;
+                }
+            }
+
+            if ($estaAbierta) {
+                $totalCajasAbiertas++;
+            }
+        }
+
+        // 3. Ingresos de Dinero del dia actual
+        //    Cuenta TODOS los eventos 'ingreso' del dia, sin importar el orden.
+        $hoy = Carbon::now()->toDateString();
+
+        $totalIngresos = DB::table('equipos')
+            ->join('equipo_estados', 'equipos.mac', '=', 'equipo_estados.mac')
             ->where('equipos.id_administrador', '=', $adminId)
-            ->where('equipos.activo', 1)
-            ->where('equipo_estados.cerrado', 0)
+            ->where('equipo_estados.evento', '=', 'ingreso')
+            ->whereDate('equipo_estados.datetime', '=', $hoy)
             ->count();
 
-        // 3. Registros de los últimos 7 días (por MAC)
+        // 4. Registros de los ultimos 7 dias (por MAC)
         $registrosPorDia = DB::table('equipos')
             ->join('registros', 'equipos.mac', '=', 'registros.mac')
             ->leftJoin('operadores', 'registros.id_operador', '=', 'operadores.id')
@@ -45,7 +79,7 @@ class DashboardController extends Controller
             ->get()
             ->reverse();
 
-        // 4. Distribución de opciones ejecutadas (por MAC)
+        // 5. Distribucion de opciones ejecutadas (por MAC)
         $registrosPorOpcion = DB::table('equipos')
             ->join('registros', 'equipos.mac', '=', 'registros.mac')
             ->leftJoin('operadores', 'registros.id_operador', '=', 'operadores.id')
@@ -54,34 +88,30 @@ class DashboardController extends Controller
             ->groupBy('registros.opcion')
             ->get();
 
-        // 5. Últimos eventos registrados (por MAC, con operador o administrador)
+        // 6. Ultimos eventos registrados (historial: ultimos 10)
         $ultimosRegistros = DB::table('equipos')
-            ->join('registros', 'equipos.mac', '=', 'registros.mac')
-            ->leftJoin('operadores', 'registros.id_operador', '=', 'operadores.id')
-            ->leftJoin('administradores', 'registros.id_operador', '=', 'administradores.id')
+            ->join('equipo_estados', 'equipos.mac', '=', 'equipo_estados.mac')
             ->where('equipos.id_administrador', '=', $adminId)
             ->select(
-                'registros.id',
-                'registros.mac',
-                'registros.opcion',
-                'registros.created_at',
-                DB::raw("CASE 
-                    WHEN operadores.id IS NOT NULL THEN CONCAT(operadores.nombres, ' ', operadores.apellidos)
-                    WHEN administradores.id IS NOT NULL THEN CONCAT(administradores.nombres, ' ', administradores.apellidos)
-                    ELSE 'Kiosco'
-                END as operador_nombre")
+                'equipo_estados.id',
+                'equipo_estados.mac',
+                'equipo_estados.evento',
+                'equipo_estados.estado',
+                'equipo_estados.datetime',
+                'equipos.numeconomico',
+                'equipos.matricula'
             )
-            ->orderBy('registros.created_at', 'DESC')
-            ->limit(8)
+            ->orderBy('equipo_estados.datetime', 'DESC')
+            ->limit(10)
             ->get();
 
-        // Retornamos la vista con los datos actualizados
         return view('administradores.dashboard.index', compact(
             'totalEquipos',
             'equiposActivos',
             'totalOperadores',
             'totalGeocercas',
             'totalCajasAbiertas',
+            'totalIngresos',
             'registrosPorDia',
             'registrosPorOpcion',
             'ultimosRegistros'

@@ -34,7 +34,7 @@
         <div class="row">
           
           <!-- Card Total Equipos -->
-          <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+          <div class="col-xl-4 col-lg-4 col-md-6 mb-4">
             <div class="card card-oiion h-100" style="background-color: rgba(21, 28, 47, 0.6); border: 1px solid var(--border-color);">
               <div class="card-body p-3 d-flex align-items-center justify-content-between">
                 <div>
@@ -52,7 +52,7 @@
           </div>
 
           <!-- Card Operadores -->
-          <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+          <div class="col-xl-4 col-lg-4 col-md-6 mb-4">
             <div class="card card-oiion h-100" style="background-color: rgba(21, 28, 47, 0.6); border: 1px solid var(--border-color);">
               <div class="card-body p-3 d-flex align-items-center justify-content-between">
                 <div>
@@ -68,7 +68,7 @@
           </div>
 
           <!-- Card Geocercas -->
-          <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+          <div class="col-xl-4 col-lg-4 col-md-6 mb-4">
             <div class="card card-oiion h-100" style="background-color: rgba(21, 28, 47, 0.6); border: 1px solid var(--border-color);">
               <div class="card-body p-3 d-flex align-items-center justify-content-between">
                 <div>
@@ -83,28 +83,51 @@
             </div>
           </div>
 
-         <!-- Card Cajas Abiertas -->
-        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        </div>
+
+        <!-- Fila 2: Cajas Abiertas + Ingresos de Dinero -->
+        <div class="row">
+
+          <!-- Card Cajas Abiertas -->
+          <div class="col-xl-6 col-lg-6 col-md-6 mb-4">
             <div class="card card-oiion h-100" style="background-color: rgba(21, 28, 47, 0.6); border: 1px solid var(--border-color);">
-                <div class="card-body p-3 d-flex align-items-center justify-content-between">
-                    <div>
-                        <span class="text-muted small font-weight-bold text-uppercase d-block">Cajas Abiertas</span>
-                        <h3 class="text-white font-weight-bold my-1" style="color: #ef4444;">{{ $totalCajasAbiertas }}</h3>
-                        <span class="badge badge-pill status-badge abierto">
-                            <i class="fas fa-lock-open mr-1"></i> 
-                            <span class="badge-text">Abiertas</span>
-                        </span>
-                    </div>
-                    <div class="equipment-avatar-container m-0" style="border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);">
-                        <i class="fas fa-exclamation-triangle equipment-icon" style="color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));"></i>
-                    </div>
+              <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                <div>
+                  <span class="text-muted small font-weight-bold text-uppercase d-block">Cajas Abiertas</span>
+                  <h3 class="text-white font-weight-bold my-1" style="color: #ef4444;">{{ $totalCajasAbiertas }}</h3>
+                  <span class="badge badge-pill status-badge abierto">
+                    <i class="fas fa-lock-open mr-1"></i> 
+                    <span class="badge-text">Abiertas</span>
+                  </span>
                 </div>
+                <div class="equipment-avatar-container m-0" style="border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);">
+                  <i class="fas fa-exclamation-triangle equipment-icon" style="color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));"></i>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
+
+          <!-- Card Ingresos de Dinero -->
+          <div class="col-xl-6 col-lg-6 col-md-6 mb-4">
+            <div class="card card-oiion h-100" style="background-color: rgba(21, 28, 47, 0.6); border: 1px solid var(--border-color);">
+              <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                <div>
+                  <span class="text-muted small font-weight-bold text-uppercase d-block">Ingresos de Dinero</span>
+                  <h3 class="text-white font-weight-bold my-1" style="color: #22c55e;">{{ $totalIngresos }}</h3>
+                  <span class="badge badge-pill" style="background-color: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4);">
+                    <i class="fas fa-dollar-sign mr-1"></i> Detectados
+                  </span>
+                </div>
+                <div class="equipment-avatar-container m-0" style="border-color: #22c55e; box-shadow: 0 0 15px rgba(34, 197, 94, 0.25);">
+                  <i class="fas fa-hand-holding-usd equipment-icon" style="color: #22c55e; filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));"></i>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
 
-        <!-- Fila 2: Gráficas de Monitoreo -->
+        <!-- Fila 3: Gráficas de Monitoreo -->
         <div class="row">
           
           <!-- Gráfica de Líneas -->
@@ -137,13 +160,13 @@
 
         </div>
 
-        <!-- Fila 3: Tabla Neón de Últimos Eventos -->
+        <!-- Fila 4: Tabla Neón de Últimos Eventos -->
         <div class="row mb-4">
           <div class="col-12">
             <div class="card card-oiion">
               <div class="card-header border-0">
                 <h3 class="card-title text-white font-weight-bold" style="font-size: 1.1rem;">
-                  <i class="fas fa-list-alt mr-2" style="color: var(--accent-cyan);"></i> Registros de Comandos Recientes
+                  <i class="fas fa-list-alt mr-2" style="color: var(--accent-cyan);"></i> Historial de Eventos Recientes
                 </h3>
               </div>
               <div class="card-body p-0">
@@ -151,44 +174,62 @@
                   <table class="table table-borderless table-striped text-white mb-0" style="background-color: transparent;">
                     <thead style="background-color: rgba(10, 15, 29, 0.8); border-bottom: 1px solid var(--border-color);">
                       <tr class="text-muted small text-uppercase">
-                        <th class="py-3">Operador</th>
+                        <th class="py-3">Equipo</th>
                         <th class="py-3">MAC</th>
-                        <th class="py-3">Acción Ejecutada</th>
+                        <th class="py-3">Evento</th>
+                        <th class="py-3">Estado</th>
                         <th class="py-3 px-4 text-right">Fecha / Hora</th>
                       </tr>
                     </thead>
                     <tbody>
                       @forelse ($ultimosRegistros as $registro)
+                        @php
+                          $evento = $registro->evento ?? 'desconocido';
+                          $colorEvento = '#6c757d';
+                          $iconoEvento = 'fa-question-circle';
+                          $textoEvento = ucfirst($evento);
+
+                          switch ($evento) {
+                            case 'apertura':
+                              $colorEvento = '#10b981';
+                              $iconoEvento = 'fa-lock-open';
+                              $textoEvento = 'Apertura';
+                              break;
+                            case 'cierre':
+                              $colorEvento = '#ef4444';
+                              $iconoEvento = 'fa-lock';
+                              $textoEvento = 'Cierre';
+                              break;
+                            case 'ingreso':
+                              $colorEvento = '#22c55e';
+                              $iconoEvento = 'fa-dollar-sign';
+                              $textoEvento = 'Ingreso de Dinero';
+                              break;
+                            case 'movimiento':
+                              $colorEvento = '#f59e0b';
+                              $iconoEvento = 'fa-arrows-alt';
+                              $textoEvento = 'Movimiento';
+                              break;
+                          }
+                        @endphp
                         <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                           <td class="py-3 align-middle">
-                            @php
-                              $nombreOperador = $registro->operador_nombre ?? '';
-                              if (empty($nombreOperador) || $nombreOperador == 'Kiosco / Desconocido') {
-                                  $nombreOperador = 'Kiosco';
-                              }
-                            @endphp
-                            {{ $nombreOperador }}
+                            <i class="fas fa-vault mr-1" style="color: var(--accent-cyan);"></i>
+                            {{ $registro->numeconomico ?? 'N/A' }}
                           </td>
                           <td class="py-3 align-middle">
                             <span class="text-muted small">{{ $registro->mac ?: 'N/A' }}</span>
                           </td>
-                          
                           <td class="py-3 align-middle">
-                            @php
-                              $opcionesAccion = [
-                                  1 => 'Motor',
-                                  2 => 'Estatus',
-                                  3 => 'Configuración',
-                                  4 => 'Abrir Chapa'
-                              ];
-                              $nombreAccion = $opcionesAccion[$registro->opcion] ?? 'Opción #'.$registro->opcion;
-                            @endphp
-                            <span class="badge badge-pill px-3 py-2" style="background-color: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.3);">
-                              {{ $nombreAccion }}
+                            <span class="badge badge-pill px-3 py-2" style="background-color: {{ $colorEvento }}22; color: {{ $colorEvento }}; border: 1px solid {{ $colorEvento }}55;">
+                              <i class="fas {{ $iconoEvento }} mr-1"></i> {{ $textoEvento }}
                             </span>
                           </td>
+                          <td class="py-3 align-middle text-muted small">
+                            {{ ucfirst($registro->estado ?? '-') }}
+                          </td>
                           <td class="py-3 px-4 align-middle text-right text-muted small">
-                            <i class="far fa-clock mr-1"></i>{{ \Carbon\Carbon::parse($registro->created_at)->format('d/m/Y H:i:s') }}
+                            <i class="far fa-clock mr-1"></i>{{ \Carbon\Carbon::parse($registro->datetime)->format('d/m/Y H:i:s') }}
                           </td>
                         </tr>
                       @empty
@@ -218,11 +259,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   $(document).ready(function() {
-    // Configuración estética Neón para Chart.js
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.08)';
 
-    // 1. Gráfica de Registros por día
     const labelsDias = {!! json_encode($registrosPorDia->pluck('fecha')) !!};
     const dataDias = {!! json_encode($registrosPorDia->pluck('total')) !!};
 
@@ -252,7 +291,6 @@
         }
     });
 
-    // 2. Gráfica de Opciones Ejecutadas
     const labelsOpciones = {!! json_encode($registrosPorOpcion->pluck('opcion')->map(function($op) {
         $mapa = [
             1 => 'Motor',

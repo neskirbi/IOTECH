@@ -157,4 +157,23 @@ class ApiFuncionesController extends Controller
             ], 500);
         }
     }
+
+
+    public function ObtenerIngresosPorFecha($mac, $fecha)
+    {
+        $ingresos = DB::table('equipo_estados')
+            ->where('mac', $mac)
+            ->where('evento', 'ingreso')
+            ->whereDate('datetime', $fecha)
+            ->orderBy('datetime', 'ASC')
+            ->get(['id', 'latitud', 'longitud', 'datetime', 'estado']);
+
+        return response()->json([
+            'success' => true,
+            'mac' => $mac,
+            'fecha' => $fecha,
+            'total' => $ingresos->count(),
+            'ingresos' => $ingresos
+        ]);
+    }
 }

@@ -10,13 +10,9 @@
 @include('toast.toasts')  
 <div class="wrapper">
 
-  <!-- Navbar -->
   @include('administradores.navbar')
-
-  <!-- Main Sidebar Container -->
   @include('administradores.sidebar')
 
-  <!-- Content Wrapper -->
   <div class="content-wrapper" style="background-color: var(--bg-main);">
     
     <div class="content-header">
@@ -24,20 +20,17 @@
         <h1 class="m-0 text-white font-weight-bold" style="font-size: 1.5rem;">
           <i class="fas fa-microchip mr-2" style="color: var(--accent-cyan);"></i> Gestión Integral de Equipos
         </h1>
-        <!-- Botón para abrir el Modal de Nuevo Equipo -->
         <button type="button" class="btn btn-action btn-sm px-3 shadow-sm" data-toggle="modal" data-target="#modalRegistrarEquipo">
           <i class="fas fa-plus-circle mr-1"></i> Nuevo Equipo
         </button>
       </div>
     </div>
 
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
             
-            <!-- Card Principal de Equipos Registrados -->
             <div class="card card-oiion mb-4">
               <div class="card-header border-0 d-flex align-items-center justify-content-between">
                 <h3 class="card-title text-white font-weight-bold">
@@ -49,50 +42,45 @@
                 <div class="row">
                   @foreach($equipos as $equipo)
                   @php 
-    // ============================================
-    // 1. ESTADO DEL EQUIPO (Activo/Inactivo)
-    //    Viene de equipos.activo
-    // ============================================
-    $estaActivo = (($equipo->activo ?? 1) == 1);
-    
-    // ============================================
-    // 2. ESTADO DE LA CHAPA (Abierto/Cerrado/Movimiento)
-    //    Viene de equipo_estados.evento y estado
-    // ============================================
-    $tieneEstado = isset($equipo->evento) && isset($equipo->estado);
-    $evento = $tieneEstado ? $equipo->evento : 'desconocido';
-    $estado = $tieneEstado ? $equipo->estado : 'desconocido';
-    
-    // Variables para el badge de la chapa (izquierda)
-    $chapaClase = 'sin-estado';
-    $chapaTexto = 'Sin estado';
-    $chapaIcono = 'fa-question-circle';
-    
-    if ($tieneEstado) {
-        switch ($evento) {
-            case 'apertura':
-                $chapaClase = 'abierto';
-                $chapaTexto = 'Abierto';
-                $chapaIcono = 'fa-lock-open';
-                break;
-            case 'cierre':
-                $chapaClase = 'cerrado';
-                $chapaTexto = 'Cerrado';
-                $chapaIcono = 'fa-lock';
-                break;
-            case 'movimiento':
-                $chapaClase = 'movimiento';
-                $chapaTexto = 'Movimiento';
-                $chapaIcono = 'fa-arrows-alt';
-                break;
-            default:
-                $chapaClase = 'sin-estado';
-                $chapaTexto = 'Sin estado';
-                $chapaIcono = 'fa-question-circle';
-                break;
-        }
-    }
-@endphp
+                    $estaActivo = (($equipo->activo ?? 1) == 1);
+                    $tieneEstado = isset($equipo->evento) && isset($equipo->estado);
+                    $evento = $tieneEstado ? $equipo->evento : 'desconocido';
+                    $estado = $tieneEstado ? $equipo->estado : 'desconocido';
+                    
+                    $chapaClase = 'sin-estado';
+                    $chapaTexto = 'Sin estado';
+                    $chapaIcono = 'fa-question-circle';
+                    
+                    if ($tieneEstado) {
+                        switch ($evento) {
+                            case 'apertura':
+                                $chapaClase = 'abierto';
+                                $chapaTexto = 'Abierto';
+                                $chapaIcono = 'fa-lock-open';
+                                break;
+                            case 'cierre':
+                                $chapaClase = 'cerrado';
+                                $chapaTexto = 'Cerrado';
+                                $chapaIcono = 'fa-lock';
+                                break;
+                            case 'ingreso':
+                                $chapaClase = 'movimiento';
+                                $chapaTexto = 'Ingreso';
+                                $chapaIcono = 'fa-dollar-sign';
+                                break;
+                            case 'movimiento':
+                                $chapaClase = 'movimiento';
+                                $chapaTexto = 'Movimiento';
+                                $chapaIcono = 'fa-arrows-alt';
+                                break;
+                            default:
+                                $chapaClase = 'sin-estado';
+                                $chapaTexto = 'Sin estado';
+                                $chapaIcono = 'fa-question-circle';
+                                break;
+                        }
+                    }
+                  @endphp
                   
                   <div class="col-xl-4 col-lg-4 col-md-6 mb-4">           
                     <div class="card card-oiion h-100" 
@@ -101,21 +89,17 @@
                       <div class="card-body d-flex flex-column justify-content-between p-3">
                         
                         <div>
-                          <!-- Cabecera de la tarjeta con Estado y Opciones -->
                           <div class="d-flex justify-content-between align-items-center w-100 mb-2">
                             <h4 class="card-title text-white font-weight-bold m-0" style="font-size: 1.1rem;">
                               <i class="fas fa-vault mr-1" style="color: var(--accent-cyan);"></i> {{$equipo->numeconomico}}
                             </h4> 
                             
-                            <!-- Menú de opciones de tres puntos -->
                             <div class="card-tools">
                               <div class="btn-group dropleft">
                                 <button class="btn btn-sm text-white-50 border-0" type="button" id="menu_{{$equipo->id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: transparent;">
                                   <i class="fas fa-ellipsis-v text-white"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                                  
-                                  <!-- Alternar Estado del Equipo (Activo/Inactivo) -->
                                   <a class="dropdown-item text-light" id="btn_toggle_{{$equipo->id}}" href="javascript:void(0)" onclick="ToggleEquipoStatus('{{$equipo->id}}', this)">
                                     @if($estaActivo)
                                       <i class="fas fa-power-off mr-2 text-warning"></i> Desactivar Equipo
@@ -123,10 +107,7 @@
                                       <i class="fas fa-check-circle mr-2 text-success"></i> Activar Equipo
                                     @endif
                                   </a>
-
                                   <div class="dropdown-divider" style="border-color: var(--border-color);"></div>
-
-                                  <!-- Eliminar -->
                                   <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="ConfirmarEliminarEquipo('{{$equipo->id}}', '{{$equipo->numeconomico}}')">
                                     <i class="fas fa-trash-alt mr-2"></i> Quitar Equipo
                                   </a>
@@ -135,26 +116,19 @@
                             </div>
                           </div>
 
-                          <!-- ============================================ -->
-                          <!-- BADGE IZQUIERDA: ESTADO DE LA CHAPA (Abierto/Cerrado) -->
-                          <!-- ============================================ -->
                           <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="status-badge {{ $chapaClase }}" style="display:none;">
+                            <span class="status-badge {{ $chapaClase }}">
                               <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
                               <i class="fas {{ $chapaIcono }} ml-1" style="font-size: 0.7rem;"></i>
                               <span class="badge-text">{{ $chapaTexto }}</span>
                             </span>
 
-                            <!-- ============================================ -->
-                            <!-- BADGE DERECHA: ESTADO DEL EQUIPO (Activo/Inactivo) -->
-                            <!-- ============================================ -->
                             <span id="badge_estado_{{$equipo->id}}" class="status-badge {{ $estaActivo ? 'online' : 'offline' }}">
                               <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
                               <span class="badge-text">{{ $estaActivo ? 'Activo' : 'Inactivo' }}</span>
                             </span>
                           </div>
                           
-                          <!-- Datos del Equipo -->
                           <div class="text-left text-muted small p-2 rounded mb-3" style="background-color: rgba(10, 15, 29, 0.8); border: 1px solid var(--border-color);">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                               <span style="font-size: 0.8rem;"><i class="fas fa-id-card text-muted mr-1"></i> Matrícula:</span>
@@ -173,14 +147,11 @@
                           </div>
                         </div>         
                         
-                        <!-- Botones de Acción Rápida (Editar y Soporte) -->
                         <div class="d-flex" style="gap: 8px;">
-                          <!-- Botón Editar -->
                           <button type="button" class="btn btn-outline-info btn-sm flex-fill" onclick="AbrirModalEditar('{{$equipo->id}}', '{{$equipo->numeconomico}}', '{{$equipo->matricula}}', '{{$equipo->mac}}')">
                             <i class="fas fa-edit mr-1"></i> Editar
                           </button>
 
-                          <!-- Botón Soporte / Generar Código (SIEMPRE HABILITADO) -->
                           <button type="button" class="btn btn-action btn-sm flex-fill" onclick="PreCodigo('{{$equipo->id}}','{{$equipo->numeconomico}}','{{$equipo->mac}}'); ObtenerUltimoEstadoEquipo('{{$equipo->id}}','{{$equipo->numeconomico}}','{{$equipo->mac}}');" data-toggle="modal" data-target="#modalcodegen">
                               <i class="fas fa-key mr-1"></i> Soporte
                           </button>
@@ -287,7 +258,6 @@
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(0, 242, 254, 0.3); box-shadow: 0 0 25px rgba(0, 242, 254, 0.15); border-radius: 12px;">
       
-      <!-- Header -->
       <div class="modal-header border-0 pb-0" style="background: transparent;">
         <div class="d-flex align-items-center">
           <div class="mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 10px; background: rgba(0, 242, 254, 0.1); border: 1px solid var(--accent-cyan);">
@@ -303,14 +273,11 @@
         </button>
       </div>
 
-      <!-- Body -->
       <div class="modal-body py-4">
         @csrf                        
         <div class="row">
   
-          <!-- Columna Izquierda: Comandos y Generador -->
           <div class="col-md-5">
-            <!-- Campo Código Entrada -->
             <div class="form-group mb-4">              
               <label for="codent" class="text-white-50 small font-weight-bold text-uppercase mb-2">Código Entrada</label>
               <div class="input-group">
@@ -323,7 +290,6 @@
               </div>
             </div>
 
-            <!-- Opciones tipo Selectors Neón (estilo original) -->
             <label class="text-white-50 small font-weight-bold text-uppercase mb-2">Acción a Ejecutar</label>
             <div class="row custom-oiion-radios px-2">  
               
@@ -344,17 +310,11 @@
                   </div>
                 </label>
               </div>
-          
-             
 
             </div>
 
-            <!-- ============================================ -->
-            <!-- CONTENEDOR: Respuesta del Módulo + Botón     -->
-            <!-- ============================================ -->
             <div class="mt-4">
               
-              <!-- Pantalla de Resultado Código Salida -->
               <div class="p-3 rounded text-center position-relative overflow-hidden" style="background: rgba(10, 15, 29, 0.9); border: 1px dashed rgba(0, 242, 254, 0.4);">
                 <span class="text-muted small font-weight-bold d-block text-uppercase mb-1" style="letter-spacing: 1px;">Respuesta del Módulo</span>
                 <h2 class="m-0 font-weight-bold" style="color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); font-size: 2rem;">
@@ -362,7 +322,6 @@
                 </h2>
               </div>
 
-              <!-- Botón Generar (debajo de respuesta y a la derecha) -->
               <div class="d-flex justify-content-end mt-3">
                 <button data-id="0" data-mac="" id="btn_generar_codigo" onclick="GenerarCodigo(this);" class="btn btn-action bgenerar py-2 font-weight-bold" data-id_operador="{{GetId();}}" style="font-size: 1rem; border-radius: 8px; min-width: 150px;">
                   <i class="fas fa-sync-alt mr-2"></i> Generar
@@ -370,19 +329,38 @@
               </div>
 
             </div>
-            <!-- ============================================ -->
 
           </div>
 
           <!-- Columna Derecha: Google Maps -->
           <div class="col-md-7 d-flex flex-column">
-            <!-- Título del equipo encima del mapa -->
+            
+            <!-- Filtro por fecha -->
             <div class="d-flex justify-content-between align-items-center mb-2">
               <span class="text-white-50 small font-weight-bold text-uppercase">
-                <i class="fas fa-map-marker-alt text-danger mr-1"></i> Última Posición GPS
+                <i class="fas fa-map-marker-alt text-danger mr-1"></i> Ingresos por fecha
               </span>
+              <div class="d-flex align-items-center" style="gap: 8px;">
+                <input type="date" 
+                       id="filtro_fecha_ingresos" 
+                       class="form-control form-control-sm"
+                       style="background: rgba(10, 15, 29, 0.8); border: 1px solid rgba(0, 242, 254, 0.3); color: #fff; width: 160px;">
+                <button type="button" 
+                        class="btn btn-sm btn-action"
+                        onclick="CargarIngresosPorFecha()">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Título + contador -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
               <span id="equipo_info_titulo" class="text-white font-weight-bold" style="font-size: 0.9rem;">
                 <i class="fas fa-vault mr-1" style="color: var(--accent-cyan);"></i> Cargando...
+              </span>
+              <span id="total_ingresos_dia" class="badge badge-pill" 
+                    style="background-color: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4);">
+                <i class="fas fa-dollar-sign mr-1"></i> 0
               </span>
             </div>
             
@@ -402,7 +380,6 @@
         </div>
       </div>
       
-      <!-- Footer vacío (sin botón) -->
       <div class="modal-footer border-0 pt-0" style="background: transparent; display: none;"></div>
     
     </div>
@@ -441,279 +418,155 @@
 
 <script>
   var googleMapInstance = null;
-  var googleMarkerInstance = null;
+  var googleMarkers = [];
+  var macActualModal = null;
+  var numEconomicoActual = null;
 
-  // Coordenadas de la República Mexicana (centro)
   var MEXICO_CENTER = { lat: 23.6345, lng: -102.5528 };
 
- function ObtenerUltimoEstadoEquipo(id, numeconomico, macEquipo) {
-    var url = Url() + 'api/ObtenerUltimoEstadoEquipo/' + macEquipo;
+  // Se llama al abrir el modal (botón Soporte)
+  function ObtenerUltimoEstadoEquipo(id, numeconomico, macEquipo) {
+    macActualModal = macEquipo;
+    numEconomicoActual = numeconomico;
 
-    // Resetear estado de cerradura
-    $('#cerradura_estado').html('<i class="fas fa-spinner fa-spin"></i> Cargando...').css('color', '#6c757d');
     $('#equipo_info_titulo').html('<i class="fas fa-vault mr-1" style="color: var(--accent-cyan);"></i> ' + numeconomico + ' - Cargando...');
 
-    // Limpiar marcador anterior
-    if (googleMarkerInstance) {
-        googleMarkerInstance.setMap(null);
-        googleMarkerInstance = null;
+    // Fecha de hoy por defecto
+    var hoy = new Date().toISOString().slice(0, 10);
+    $('#filtro_fecha_ingresos').val(hoy);
+
+    CargarIngresosPorFecha();
+  }
+
+  // Cargar ingresos de la MAC en la fecha seleccionada
+  function CargarIngresosPorFecha() {
+    if (!macActualModal) {
+      console.warn('No hay MAC en el modal');
+      return;
     }
 
+    var fecha = $('#filtro_fecha_ingresos').val();
+    if (!fecha) {
+      fecha = new Date().toISOString().slice(0, 10);
+      $('#filtro_fecha_ingresos').val(fecha);
+    }
+
+    var url = Url() + 'api/ObtenerIngresosPorFecha/' + macActualModal + '/' + fecha;
+
+    $('#total_ingresos_dia').html('<i class="fas fa-spinner fa-spin"></i>');
+    LimpiarMarcadores();
+
     $.ajax({
-        url: url,
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            console.log('Datos recibidos:', data);
-            
-            // Verificar si hay datos de ubicación
-            var tieneUbicacion = data && data.latitud && data.longitud && data.latitud != 0 && data.longitud != 0;
-            
-            // ============================================
-            // ESTADO DE LA CHAPA (evento + estado)
-            // ============================================
-            var evento = data.evento || 'desconocido';
-            var estado = data.estado || 'desconocido';
-            var estadoTexto = '';
-            var estadoColor = '';
-            var icono = '';
-            
-            // Determinar estado visual basado en evento
-            switch (evento) {
-                case 'apertura':
-                    estadoTexto = 'Abierto';
-                    estadoColor = '#10b981';
-                    icono = 'fa-lock-open';
-                    break;
-                case 'cierre':
-                    estadoTexto = 'Cerrado';
-                    estadoColor = '#ef4444';
-                    icono = 'fa-lock';
-                    break;
-                case 'movimiento':
-                    estadoTexto = 'Movimiento';
-                    estadoColor = '#f59e0b';
-                    icono = 'fa-arrows-alt';
-                    break;
-                default:
-                    estadoTexto = 'Sin estado';
-                    estadoColor = '#6c757d';
-                    icono = 'fa-question-circle';
-                    break;
-            }
-            
-            // Actualizar UI de la cerradura con efecto neón
-            var shadowEffect = estadoColor !== '#6c757d' 
-                ? 'text-shadow: 0 0 20px ' + estadoColor + ', 0 0 40px ' + estadoColor + ';'
-                : '';
-            
-            $('#cerradura_estado')
-                .html('<i class="fas ' + icono + '"></i> ' + estadoTexto)
-                .css('color', estadoColor)
-                .attr('style', function(i, style) {
-                    return style + ' ' + shadowEffect;
-                });
-            
-            // Actualizar título del equipo con estado
-            $('#equipo_info_titulo').html(
-                '<i class="fas fa-vault mr-1" style="color: ' + estadoColor + ';"></i> ' + 
-                numeconomico + ' - ' + estadoTexto
-            );
-            
-            var lat = tieneUbicacion ? parseFloat(data.latitud) : MEXICO_CENTER.lat;
-            var lng = tieneUbicacion ? parseFloat(data.longitud) : MEXICO_CENTER.lng;
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        console.log('Ingresos recibidos:', data);
 
-            // ============================================
-            // INICIALIZAR / ACTUALIZAR MAPA Y MARCADOR
-            // ============================================
-            var myLatlng = { lat: lat, lng: lng };
-            var mapDiv = document.getElementById('googleMap');
-            
-            // --- VERIFICAR SI EL MAPA YA EXISTE ---
-            if (!googleMapInstance) {
-                // Crear mapa por primera vez
-                googleMapInstance = new google.maps.Map(mapDiv, {
-                    zoom: tieneUbicacion ? 16 : 6,
-                    center: myLatlng,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    styles: [
-                        { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
-                        { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
-                        { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
-                        { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
-                        { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283955" }] },
-                        { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
-                        { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] }
-                    ]
-                });
+        var ingresos = data.ingresos || [];
+        var total = ingresos.length;
 
-                // Crear marcador si hay ubicación
-                if (tieneUbicacion) {
-                    // Color del marcador según estado
-                    var markerColor = 'yellow';
-                    if (evento === 'apertura') markerColor = 'green';
-                    else if (evento === 'cierre') markerColor = 'red';
-                    else if (evento === 'movimiento') markerColor = 'orange';
-                    
-                    googleMarkerInstance = new google.maps.Marker({
-                        position: myLatlng,
-                        map: googleMapInstance,
-                        icon: {
-                            url: 'https://maps.google.com/mapfiles/ms/icons/' + markerColor + '-dot.png',
-                            scaledSize: new google.maps.Size(32, 32)
-                        },
-                        title: numeconomico + ' - ' + estadoTexto,
-                        animation: google.maps.Animation.DROP
-                    });
-                    
-                    // Agregar label
-                    var label = new google.maps.Marker({
-                        position: myLatlng,
-                        map: googleMapInstance,
-                        label: {
-                            text: numeconomico,
-                            color: '#ffffff',
-                            fontSize: '11px',
-                            fontWeight: 'bold'
-                        },
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 0
-                        }
-                    });
-                    googleMarkerInstance._label = label;
-                }
-            } else {
-                // Actualizar mapa existente
-                googleMapInstance.setCenter(myLatlng);
-                googleMapInstance.setZoom(tieneUbicacion ? 16 : 6);
-                
-                if (tieneUbicacion) {
-                    var markerColor = 'yellow';
-                    if (evento === 'apertura') markerColor = 'green';
-                    else if (evento === 'cierre') markerColor = 'red';
-                    else if (evento === 'movimiento') markerColor = 'orange';
-                    
-                    if (!googleMarkerInstance) {
-                        // Crear nuevo marcador
-                        googleMarkerInstance = new google.maps.Marker({
-                            position: myLatlng,
-                            map: googleMapInstance,
-                            icon: {
-                                url: 'https://maps.google.com/mapfiles/ms/icons/' + markerColor + '-dot.png',
-                                scaledSize: new google.maps.Size(32, 32)
-                            },
-                            title: numeconomico + ' - ' + estadoTexto,
-                            animation: google.maps.Animation.DROP
-                        });
-                        
-                        var label = new google.maps.Marker({
-                            position: myLatlng,
-                            map: googleMapInstance,
-                            label: {
-                                text: numeconomico,
-                                color: '#ffffff',
-                                fontSize: '11px',
-                                fontWeight: 'bold'
-                            },
-                            icon: {
-                                path: google.maps.SymbolPath.CIRCLE,
-                                scale: 0
-                            }
-                        });
-                        googleMarkerInstance._label = label;
-                    } else {
-                        // Actualizar marcador existente
-                        googleMarkerInstance.setPosition(myLatlng);
-                        googleMarkerInstance.setTitle(numeconomico + ' - ' + estadoTexto);
-                        googleMarkerInstance.setIcon({
-                            url: 'https://maps.google.com/mapfiles/ms/icons/' + markerColor + '-dot.png',
-                            scaledSize: new google.maps.Size(32, 32)
-                        });
-                        googleMarkerInstance.setMap(googleMapInstance);
-                        
-                        if (googleMarkerInstance._label) {
-                            googleMarkerInstance._label.setPosition(myLatlng);
-                            googleMarkerInstance._label.setMap(googleMapInstance);
-                            googleMarkerInstance._label.setLabel({
-                                text: numeconomico,
-                                color: '#ffffff',
-                                fontSize: '11px',
-                                fontWeight: 'bold'
-                            });
-                        }
-                    }
-                } else {
-                    // No hay ubicación, eliminar marcador
-                    if (googleMarkerInstance) {
-                        if (googleMarkerInstance._label) {
-                            googleMarkerInstance._label.setMap(null);
-                        }
-                        googleMarkerInstance.setMap(null);
-                        googleMarkerInstance = null;
-                    }
-                }
-            }
-            
-            // Forzar resize y centrado del mapa
-            setTimeout(function() {
-                if (googleMapInstance) {
-                    google.maps.event.trigger(googleMapInstance, 'resize');
-                    googleMapInstance.setCenter(myLatlng);
-                    if (tieneUbicacion) {
-                        googleMapInstance.setZoom(16);
-                    }
-                }
-            }, 300);
-        },
-        error: function(error) {
-            console.error('Error:', error);
-            $('#cerradura_estado')
-                .html('<i class="fas fa-exclamation-triangle"></i> Error')
-                .css('color', '#ef4444');
-            $('#equipo_info_titulo').html('<i class="fas fa-vault mr-1" style="color: #ef4444;"></i> ' + numeconomico + ' - Error');
+        $('#total_ingresos_dia').html('<i class="fas fa-dollar-sign mr-1"></i> ' + total);
 
-            // Centrar en México sin marcador
-            var myLatlng = MEXICO_CENTER;
-            var mapDiv = document.getElementById('googleMap');
-            
-            if (!googleMapInstance) {
-                googleMapInstance = new google.maps.Map(mapDiv, {
-                    zoom: 6,
-                    center: myLatlng,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    styles: [
-                        { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
-                        { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
-                        { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
-                        { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
-                        { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283955" }] },
-                        { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
-                        { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] }
-                    ]
-                });
-                googleMarkerInstance = null;
-            } else {
-                googleMapInstance.setCenter(myLatlng);
-                googleMapInstance.setZoom(6);
-                if (googleMarkerInstance) {
-                    if (googleMarkerInstance._label) {
-                        googleMarkerInstance._label.setMap(null);
-                    }
-                    googleMarkerInstance.setMap(null);
-                    googleMarkerInstance = null;
-                }
-            }
-            
-            setTimeout(function() {
-                if (googleMapInstance) {
-                    google.maps.event.trigger(googleMapInstance, 'resize');
-                    googleMapInstance.setCenter(myLatlng);
-                }
-            }, 300);
+        $('#equipo_info_titulo').html(
+          '<i class="fas fa-vault mr-1" style="color: var(--accent-cyan);"></i> ' + 
+          numEconomicoActual + ' — ' + fecha
+        );
+
+        var mapDiv = document.getElementById('googleMap');
+
+        if (!googleMapInstance) {
+          googleMapInstance = new google.maps.Map(mapDiv, {
+            zoom: 6,
+            center: MEXICO_CENTER,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            styles: [
+              { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
+              { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
+              { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
+              { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
+              { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283955" }] },
+              { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
+              { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] }
+            ]
+          });
         }
+
+        if (total === 0) {
+          googleMapInstance.setCenter(MEXICO_CENTER);
+          googleMapInstance.setZoom(6);
+          return;
+        }
+
+        var bounds = new google.maps.LatLngBounds();
+        var infoWindow = new google.maps.InfoWindow();
+
+        ingresos.forEach(function(ing, i) {
+          var lat = parseFloat(ing.latitud);
+          var lng = parseFloat(ing.longitud);
+
+          if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) return;
+
+          var pos = { lat: lat, lng: lng };
+          bounds.extend(pos);
+
+          var marker = new google.maps.Marker({
+            position: pos,
+            map: googleMapInstance,
+            icon: {
+              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">' +
+                  '<circle cx="20" cy="20" r="18" fill="#22c55e" stroke="#ffffff" stroke-width="2"/>' +
+                  '<text x="20" y="27" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff" font-family="Arial">$</text>' +
+                '</svg>'
+              ),
+              scaledSize: new google.maps.Size(40, 40),
+              anchor: new google.maps.Point(20, 20)
+            },
+            title: 'Ingreso #' + (i + 1) + ' — ' + ing.datetime,
+            animation: google.maps.Animation.DROP
+          });
+
+          marker.addListener('click', function() {
+            var contenido = '<div style="color:#000; font-size:13px;">' +
+                            '<b>Ingreso #' + (i + 1) + '</b><br>' +
+                            'Fecha: ' + ing.datetime + '<br>' +
+                            'Estado: ' + (ing.estado || '-') +
+                            '</div>';
+            infoWindow.setContent(contenido);
+            infoWindow.open(googleMapInstance, marker);
+          });
+
+          googleMarkers.push(marker);
+        });
+
+        if (googleMarkers.length > 1) {
+          googleMapInstance.fitBounds(bounds);
+        } else if (googleMarkers.length === 1) {
+          googleMapInstance.setCenter(bounds.getCenter());
+          googleMapInstance.setZoom(16);
+        }
+
+        setTimeout(function() {
+          if (googleMapInstance) {
+            google.maps.event.trigger(googleMapInstance, 'resize');
+            if (googleMarkers.length > 1) {
+              googleMapInstance.fitBounds(bounds);
+            }
+          }
+        }, 300);
+      },
+      error: function(err) {
+        console.error('Error:', err);
+        $('#total_ingresos_dia').html('<i class="fas fa-exclamation-triangle"></i> Error');
+      }
     });
-}
+  }
+
+  function LimpiarMarcadores() {
+    googleMarkers.forEach(function(m) { m.setMap(null); });
+    googleMarkers = [];
+  }
 
   function AbrirModalEditar(id, numeconomico, matricula, mac) {
     $('#edit_numeconomico').val(numeconomico);
@@ -731,9 +584,7 @@
 
   function inicializarAplicacion() {
     console.log('Google Maps API cargada correctamente');
-    // Aquí puedes inicializar cosas si es necesario
   }
-
 </script>
 
 <!-- ============================================ -->
@@ -746,7 +597,6 @@
 $(document).ready(function() {
     console.log('🚀 Iniciando Firebase...');
 
-    // Configuración de Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDz7FUkBtpZt9PBYoLXrxyOizg7BDVOmr4",
         authDomain: "oii-on.firebaseapp.com",
@@ -757,7 +607,6 @@ $(document).ready(function() {
         measurementId: "G-D2Y68ZNJ9D"
     };
 
-    // Inicializar Firebase
     if (typeof firebase !== 'undefined' && !firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
         console.log('✅ Firebase inicializado correctamente');
@@ -767,7 +616,6 @@ $(document).ready(function() {
 
     const database = firebase.database();
 
-    // IDs de equipos desde la vista
     const equiposIds = [];
     @foreach($equipos as $equipo)
         equiposIds.push('{{ $equipo->id }}');
@@ -775,7 +623,6 @@ $(document).ready(function() {
 
     console.log(`📋 Escuchando ${equiposIds.length} equipos:`, equiposIds);
 
-    // Escuchar cambios por cada equipo
     equiposIds.forEach(function(equipoId, index) {
         const ref = database.ref('estados/' + equipoId);
         
@@ -785,8 +632,6 @@ $(document).ready(function() {
             if (data) {
                 console.log(`🔔 CAMBIO RECIBIDO para equipo: ${equipoId}`);
                 console.log(`📦 Datos:`, data);
-                
-                // Actualizar la UI
                 actualizarEstadoEquipo(equipoId, data);
             }
         }, function(error) {
@@ -794,9 +639,6 @@ $(document).ready(function() {
         });
     });
 
-    // ============================================
-    // FUNCIÓN PARA ACTUALIZAR SOLO EL ESTADO
-    // ============================================
     function actualizarEstadoEquipo(equipoId, data) {
         const $tarjeta = $(`[data-equipo-id="${equipoId}"]`);
         if ($tarjeta.length === 0) {
@@ -804,28 +646,23 @@ $(document).ready(function() {
             return;
         }
 
-        // Badge de chapa (el primero)
         const $badge = $tarjeta.find('.status-badge:first');
         const $texto = $badge.find('.badge-text');
-        const $icono = $badge.find('.fa-lock, .fa-lock-open, .fa-question-circle');
+        const $icono = $badge.find('.fa-lock, .fa-lock-open, .fa-question-circle, .fa-dollar-sign');
 
-        // Quitar todas las clases de estado
-        $badge.removeClass('abierto cerrado sin-estado');
+        $badge.removeClass('abierto cerrado sin-estado movimiento');
 
         if (data.cerrado === 0) {
-            // Abierto - solo agrega la clase
             $badge.addClass('abierto');
             $texto.text('Abierto');
             $icono.attr('class', 'fas fa-lock-open ml-1');
             
         } else if (data.cerrado === 1) {
-            // Cerrado - solo agrega la clase
             $badge.addClass('cerrado');
             $texto.text('Cerrado');
             $icono.attr('class', 'fas fa-lock ml-1');
         }
 
-        // Si el modal está abierto, actualizar también
         if ($('#modalcodegen').hasClass('show')) {
             const $estado = $('#cerradura_estado');
             if (data.cerrado === 0) {

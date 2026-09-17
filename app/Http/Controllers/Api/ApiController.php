@@ -531,6 +531,7 @@ class ApiController extends Controller
 
             $guardados = 0;
             $errores = [];
+            $macsProcesadas = [];
 
             foreach ($datos as $item) {
                 try {
@@ -543,7 +544,7 @@ class ApiController extends Controller
 
                     // Guardar en equipo_estados con UUID
                     \DB::table('equipo_estados')->insert([
-                        'id' => GetUuid(), // ✅ ID generado por tu helper
+                        'id' => GetUuid(),
                         'mac' => $item['mac'],
                         'evento' => $evento,
                         'estado' => $estado,
@@ -556,6 +557,12 @@ class ApiController extends Controller
 
                     $guardados++;
 
+                    // Guardar MAC unica para consultar despues
+                    $macLimpia = strtolower(trim($item['mac']));
+                    if (!in_array($macLimpia, $macsProcesadas)) {
+                        $macsProcesadas[] = $macLimpia;
+                    }
+
                 } catch (\Exception $e) {
                     $errores[] = [
                         'registro' => $item,
@@ -567,13 +574,52 @@ class ApiController extends Controller
 
             \Log::info("✅ Registros guardados: " . $guardados);
 
+            // ============================================
+            // ENVIAR EL ULTIMO ESTADO DE CADA MAC A FIREBASE
+            // ============================================
+            $resultadosFirebase = [];
+
+            if (!empty($macsProcesadas)) {
+                // Obtener el ultimo registro de cada MAC desde la BD
+                $ultimosEstados = \DB::table('equipo_estados')
+                    ->whereIn('mac', $macsProcesadas)
+                    ->whereRaw('datetime = (
+                        SELECT MAX(datetime) 
+                        FROM equipo_estados AS e2 
+                        WHERE e2.mac = equipo_estados.mac
+                    )')
+                    ->get();
+
+                foreach ($ultimosEstados as $estado) {
+                    // Convertir evento a "cerrado" (0 = abierto, 1 = cerrado)
+                    $cerrado = ($estado->evento === 'cierre') ? 1 : 0;
+
+                    $resultado = EnviarAfirebase(
+                        $estado->mac,
+                        $cerrado,
+                        $estado->latitud ?? 0,
+                        $estado->longitud ?? 0
+                    );
+
+                    $resultadosFirebase[] = [
+                        'mac' => $estado->mac,
+                        'evento' => $estado->evento,
+                        'cerrado' => $cerrado,
+                        'datetime' => $estado->datetime,
+                        'success' => $resultado['success'] ?? false,
+                        'error' => $resultado['error'] ?? null
+                    ];
+                }
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => "{$guardados} registros sincronizados correctamente",
                 'status' => 1,
                 'data' => [
                     'guardados' => $guardados,
-                    'errores' => count($errores)
+                    'errores' => count($errores),
+                    'firebase' => $resultadosFirebase
                 ]
             ], 200);
 
