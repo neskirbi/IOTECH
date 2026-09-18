@@ -19,42 +19,25 @@ class DashboardController extends Controller
         $totalOperadores = DB::table('operadores')->where('activo', 1)->where('id_administrador', '=', $adminId)->count();
         $totalGeocercas = DB::table('geocercas')->where('activa', 1)->where('id_administrador', '=', $adminId)->count();
 
-        // 2. Cajas Abiertas (por MAC: se decide con el ultimo y penultimo evento)
-        $equiposAdmin = DB::table('equipos')
-            ->where('id_administrador', '=', $adminId)
-            ->where('activo', 1)
-            ->pluck('mac');
+        // 2. Cajas Abiertas: primer filtro (solo apertura/cierre), luego el mas nuevo por MAC, luego contar abiertas
+        $eventosAperturaCierre = DB::table('equipos')
+            ->join('equipo_estados', 'equipos.mac', '=', 'equipo_estados.mac')
+            ->where('equipos.id_administrador', '=', $adminId)
+            ->where('equipos.activo', 1)
+            ->whereIn('equipo_estados.evento', ['apertura', 'cierre'])
+            ->select('equipo_estados.id', 'equipo_estados.mac', 'equipo_estados.evento', 'equipo_estados.datetime')
+            ->get();
 
-        $totalCajasAbiertas = 0;
+        $ultimoPorMac = $eventosAperturaCierre
+            ->sortByDesc('datetime')
+            ->groupBy('mac')
+            ->map(function ($eventos) {
+                return $eventos->first();
+            });
 
-        foreach ($equiposAdmin as $mac) {
-            $ultimos = DB::table('equipo_estados')
-                ->where('mac', '=', $mac)
-                ->orderBy('datetime', 'DESC')
-                ->limit(2)
-                ->get();
-
-            if ($ultimos->isEmpty()) {
-                continue;
-            }
-
-            $ultimo = $ultimos->first();
-            $penultimo = $ultimos->count() > 1 ? $ultimos->get(1) : null;
-
-            $estaAbierta = false;
-
-            if ($ultimo->evento === 'apertura') {
-                $estaAbierta = true;
-            } elseif ($ultimo->evento === 'ingreso') {
-                if ($penultimo && $penultimo->evento === 'apertura') {
-                    $estaAbierta = true;
-                }
-            }
-
-            if ($estaAbierta) {
-                $totalCajasAbiertas++;
-            }
-        }
+        $totalCajasAbiertas = $ultimoPorMac
+            ->where('evento', 'apertura')
+            ->count();
 
         // 3. Ingresos de Dinero del dia actual
         //    Cuenta TODOS los eventos 'ingreso' del dia, sin importar el orden.
