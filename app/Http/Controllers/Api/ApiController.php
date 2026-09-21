@@ -580,18 +580,19 @@ class ApiController extends Controller
             $resultadosFirebase = [];
 
             if (!empty($macsProcesadas)) {
-                // Obtener el ultimo registro de cada MAC desde la BD
-                $ultimosEstados = \DB::table('equipo_estados')
-                    ->whereIn('mac', $macsProcesadas)
-                    ->whereRaw('datetime = (
-                        SELECT MAX(datetime) 
-                        FROM equipo_estados AS e2 
-                        WHERE e2.mac = equipo_estados.mac
-                    )')
-                    ->get();
 
-                foreach ($ultimosEstados as $estado) {
-                    // Convertir evento a "cerrado" (0 = abierto, 1 = cerrado)
+                // PASO 1: por cada MAC, traer solo registros de cierre o apertura
+                $estadosFiltrados = \DB::table('equipo_estados')
+                    ->whereIn('mac', $macsProcesadas)
+                    ->whereIn('evento', ['cierre', 'apertura'])
+                    ->orderBy('datetime', 'desc')
+                    ->get()
+                    ->groupBy('mac');
+
+                // PASO 2: de cada grupo, tomar solo el mas reciente
+                foreach ($estadosFiltrados as $mac => $registros) {
+                    $estado = $registros->first();
+
                     $cerrado = ($estado->evento === 'cierre') ? 1 : 0;
 
                     $resultado = EnviarAfirebase(
