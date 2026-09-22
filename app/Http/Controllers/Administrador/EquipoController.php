@@ -46,15 +46,22 @@ class EquipoController extends Controller
      */
     public function store(Request $request)
     {
+        // Validar que la MAC no esté registrada
+        $existe = Equipo::where('mac', $request->mac)->exists();
+
+        if ($existe) {
+            return redirect('equipos')->with('error', 'La MAC ya está registrada.');
+        }
+
         $equipo = new Equipo();
         $equipo->id = GetUuid();
-        $equipo->id_administrador=GetId();
+        $equipo->id_administrador = GetId();
         $equipo->numeconomico = $request->numeconomico;
         $equipo->mac = $request->mac;
-        $equipo->matricula = $request->matricula; 
+        $equipo->matricula = $request->matricula;
         $equipo->save();
 
-        return redirect('equipos')->with('success','Los datos se guardaron.');
+        return redirect('equipos')->with('success', 'Los datos se guardaron.');
     }
 
     /**
