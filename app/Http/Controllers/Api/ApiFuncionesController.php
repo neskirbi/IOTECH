@@ -165,10 +165,6 @@ class ApiFuncionesController extends Controller
             ->where('mac', $mac)
             ->where('evento', 'ingreso')
             ->whereDate('datetime', $fecha)
-            ->whereNotNull('latitud')
-            ->whereNotNull('longitud')
-            ->where('latitud', '!=', 0)
-            ->where('longitud', '!=', 0)
             ->orderBy('datetime', 'ASC')
             ->get(['id', 'latitud', 'longitud', 'datetime', 'estado']);
 
