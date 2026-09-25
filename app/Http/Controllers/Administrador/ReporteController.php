@@ -44,6 +44,9 @@ class ReporteController extends Controller
 
         $nombreArchivo = 'reporte_ingresos_' . $fechaInicio . '_a_' . $fechaFin . '.xlsx';
 
-        return Excel::download(new IngresoExport($registros), $nombreArchivo);
+        return Excel::download(
+            new IngresoExport($registros, $fechaInicio, $fechaFin),
+            $nombreArchivo
+        );
     }
 }
