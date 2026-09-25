@@ -159,8 +159,9 @@ class ApiFuncionesController extends Controller
     }
 
 
-    public function ObtenerIngresosPorFecha($mac, $fecha)
+   public function ObtenerIngresosPorFecha($mac, $fecha)
     {
+        // 1. Consulta para los pines: solo ingresos con coordenadas válidas
         $ingresos = DB::table('equipo_estados')
             ->where('mac', $mac)
             ->where('evento', 'ingreso')
@@ -172,12 +173,24 @@ class ApiFuncionesController extends Controller
             ->orderBy('datetime', 'ASC')
             ->get(['id', 'latitud', 'longitud', 'datetime', 'estado']);
 
+        // 2. Consulta para el total real: TODOS los ingresos del día, tengan o no coordenadas
+        $total = DB::table('equipo_estados')
+            ->where('mac', $mac)
+            ->where('evento', 'ingreso')
+            ->whereDate('datetime', $fecha)
+            ->count();
+
+        $totalConCoords = $ingresos->count();
+        $totalSinCoords = $total - $totalConCoords;
+
         return response()->json([
-            'success' => true,
-            'mac' => $mac,
-            'fecha' => $fecha,
-            'total' => $ingresos->count(),
-            'ingresos' => $ingresos
+            'success'          => true,
+            'mac'              => $mac,
+            'fecha'            => $fecha,
+            'total'            => $total,
+            'total_con_coords' => $totalConCoords,
+            'total_sin_coords' => $totalSinCoords,
+            'ingresos'         => $ingresos
         ]);
     }
 }

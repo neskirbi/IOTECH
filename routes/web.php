@@ -84,6 +84,7 @@ Route::middleware(['auth:administradores'])->group(function () {
     Route::resource('operadores', 'App\Http\Controllers\Administrador\OperadorController');
     Route::get('BorrarOperador/{id}', 'App\Http\Controllers\Administrador\OperadorController@BorrarOperador');
     Route::resource('soporte', 'App\Http\Controllers\Administrador\SoporteController');
+    Route::get('reportes/ingresos', 'App\Http\Controllers\Administrador\ReporteController@ingresos');
 });
 
 // ============================================
