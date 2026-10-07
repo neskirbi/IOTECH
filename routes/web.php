@@ -78,6 +78,8 @@ Route::resource('equiposs', 'App\Http\Controllers\SuperUsuario\EquipoController'
 // ============================================
 Route::middleware(['auth:administradores'])->group(function () {        
     Route::resource('dashboard', 'App\Http\Controllers\Administrador\DashboardController');
+    Route::get('historial', 'App\Http\Controllers\Administrador\HistorialController@index')->name('historial.index');
+    Route::get('historial/excel', 'App\Http\Controllers\Administrador\HistorialController@excel')->name('historial.excel');
     Route::resource('geocercas', 'App\Http\Controllers\Administrador\GeocercaController');
     Route::resource('equipos', 'App\Http\Controllers\Administrador\EquipoController');
     Route::get('BorrarEquipo/{id}', 'App\Http\Controllers\Administrador\EquipoController@BorrarEquipo');

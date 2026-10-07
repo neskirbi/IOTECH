@@ -170,6 +170,11 @@
                 </h3>
               </div>
               <div class="card-body p-0">
+                <div class="d-flex justify-content-end p-3">
+                  <a href="{{ route('historial.index') }}" class="btn btn-sm btn-info">
+                    <i class="fas fa-history mr-1"></i> Ver Historial Completo
+                  </a>
+                </div>
                 <div class="table-responsive">
                   <table class="table table-borderless table-striped text-white mb-0" style="background-color: transparent;">
                     <thead style="background-color: rgba(10, 15, 29, 0.8); border-bottom: 1px solid var(--border-color);">
