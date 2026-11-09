@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Mcp\Servers\SistemaGeolocalizacionServer;
+use Laravel\Mcp\Facades\Mcp;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,3 +105,7 @@ Route::post('cotizacion/enviar', 'App\Http\Controllers\CotizacionController@envi
 Route::get('cambiopass', function (){
     return view('operadores.equipos.index');
 });
+
+
+// ChatGPT y otros clientes remotos se conectan por HTTP POST a esta URL
+Mcp::web('/mcp/geolocalizacion', SistemaGeolocalizacionServer::class);

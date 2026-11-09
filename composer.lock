@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dc916d071019d325595e66e17ec4acde",
+    "content-hash": "0620307df76eb0176e6679203ba9f27e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1242,6 +1242,79 @@
                 }
             ],
             "time": "2023-12-03T20:05:35+00:00"
+        },
+        {
+            "name": "huysynf/laravel-mcp-laravel8",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/huysynf/mcp.git",
+                "reference": "8375d6276147f22d74487c2649829d706e7076d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/huysynf/mcp/zipball/8375d6276147f22d74487c2649829d706e7076d3",
+                "reference": "8375d6276147f22d74487c2649829d706e7076d3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "illuminate/console": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
+                "illuminate/container": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
+                "illuminate/contracts": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
+                "illuminate/http": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
+                "illuminate/routing": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
+                "illuminate/support": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
+                "illuminate/validation": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
+                "php": "^7.4|^8.0|^8.1"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.20",
+                "orchestra/testbench": "^8.36|^9.15|^10.8",
+                "pestphp/pest": "^2.36.0|^3.8.4|^4.1.0",
+                "phpstan/phpstan": "^2.1.27",
+                "rector/rector": "^2.2.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Mcp": "Laravel\\Mcp\\Server\\Facades\\Mcp"
+                    },
+                    "providers": [
+                        "Laravel\\Mcp\\Server\\McpServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Mcp\\": "src/",
+                    "Laravel\\Mcp\\Server\\": "src/Server/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Huy Sy",
+                    "email": "huysynf@gmail.com",
+                    "role": "Maintainer (Laravel 8 Backport)"
+                }
+            ],
+            "description": "Laravel MCP backported for Laravel 8+ support. Rapidly build MCP servers for your Laravel applications.",
+            "homepage": "https://github.com/huysynf/mcp",
+            "keywords": [
+                "laravel",
+                "mcp"
+            ],
+            "support": {
+                "issues": "https://github.com/huysynf/mcp/issues",
+                "source": "https://github.com/huysynf/mcp"
+            },
+            "time": "2026-01-23T17:07:24+00:00"
         },
         {
             "name": "laravel/framework",
@@ -8410,12 +8483,12 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^7.3|^8.0"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
