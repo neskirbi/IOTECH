@@ -65,13 +65,17 @@ class HistorialEquipoTool extends Tool
                 : null,
         ])->all();
 
-        return Response::structured([
+        $resultado = [
             'equipo'    => $equipo->numeconomico,
             'mac'       => $equipo->mac,
             'total'     => $total,
             'mostrados' => count($eventos),
             'truncado'  => $total > 100,
             'eventos'   => $eventos,
-        ]);
+        ];
+
+        return Response::text(
+            json_encode($resultado, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        );
     }
 }

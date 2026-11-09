@@ -57,9 +57,13 @@ class ListarGeocercasTool extends Tool
             ];
         });
 
-        return Response::structured([
+        $resultado = [
             'total'     => $geocercas->count(),
             'geocercas' => $geocercas->all(),
-        ]);
+        ];
+
+        return Response::text(
+            json_encode($resultado, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        );
     }
 }
