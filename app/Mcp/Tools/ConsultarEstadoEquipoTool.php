@@ -2,17 +2,19 @@
 
 namespace App\Mcp\Tools;
 
-use Laravel\Mcp\Request;
-use Laravel\Mcp\Response;
-use Laravel\Mcp\Server\Attributes\Description;
-use Laravel\Mcp\Server\Tool;
+use Wizcoders\Mcp\Tool;
+use Wizcoders\Mcp\Request;
 use App\Models\Equipo;
 use App\Models\EquipoEstado;
 
-#[Description('Obtiene el último estado conocido (evento, latitud, longitud, fecha) de un equipo GPS mediante su MAC o número económico. Parámetros: "mac" (string, opcional) o "numeconomico" (string, opcional). Se debe enviar al menos uno.')]
 class ConsultarEstadoEquipoTool extends Tool
 {
-    public function handle(Request $request): Response
+    public function description()
+    {
+        return 'Obtiene el último estado conocido (evento, latitud, longitud, fecha) de un equipo GPS mediante su MAC o número económico.';
+    }
+
+    public function handle(Request $request)
     {
         $validated = $request->validate([
             'mac'           => 'nullable|string|max:50',
@@ -20,7 +22,7 @@ class ConsultarEstadoEquipoTool extends Tool
         ]);
 
         if (empty($validated['mac']) && empty($validated['numeconomico'])) {
-            return Response::error('Debes proporcionar "mac" o "numeconomico".');
+            return "Error: Debes proporcionar 'mac' o 'numeconomico'.";
         }
 
         $adminId = auth()->user()?->administrador_id ?? null;
@@ -39,7 +41,7 @@ class ConsultarEstadoEquipoTool extends Tool
         $equipo = $equipoQuery->first();
 
         if (!$equipo) {
-            return Response::error('No se encontró ningún equipo con los datos proporcionados.');
+            return "Error: No se encontró ningún equipo con los datos proporcionados.";
         }
 
         $ultimoEstado = EquipoEstado::where('mac', $equipo->mac)
@@ -47,7 +49,7 @@ class ConsultarEstadoEquipoTool extends Tool
             ->first();
 
         if (!$ultimoEstado) {
-            return Response::text("El equipo {$equipo->numeconomico} ({$equipo->mac}) no tiene estados registrados.");
+            return "El equipo {$equipo->numeconomico} ({$equipo->mac}) no tiene estados registrados.";
         }
 
         $datos = [
@@ -63,6 +65,6 @@ class ConsultarEstadoEquipoTool extends Tool
             'activo'       => (bool) $equipo->activo,
         ];
 
-        return Response::structured($datos);
+        return json_encode($datos, JSON_PRETTY_PRINT);
     }
 }

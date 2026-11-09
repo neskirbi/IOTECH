@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0620307df76eb0176e6679203ba9f27e",
+    "content-hash": "ea3c04393e9d4095377eeb6a6d25bb52",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1242,79 +1242,6 @@
                 }
             ],
             "time": "2023-12-03T20:05:35+00:00"
-        },
-        {
-            "name": "huysynf/laravel-mcp-laravel8",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/huysynf/mcp.git",
-                "reference": "8375d6276147f22d74487c2649829d706e7076d3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/huysynf/mcp/zipball/8375d6276147f22d74487c2649829d706e7076d3",
-                "reference": "8375d6276147f22d74487c2649829d706e7076d3",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "illuminate/console": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
-                "illuminate/container": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
-                "illuminate/contracts": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
-                "illuminate/http": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
-                "illuminate/routing": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
-                "illuminate/support": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
-                "illuminate/validation": "^8.0|^9.0|^10.49.0|^11.45.3|^12.41.1",
-                "php": "^7.4|^8.0|^8.1"
-            },
-            "require-dev": {
-                "laravel/pint": "^1.20",
-                "orchestra/testbench": "^8.36|^9.15|^10.8",
-                "pestphp/pest": "^2.36.0|^3.8.4|^4.1.0",
-                "phpstan/phpstan": "^2.1.27",
-                "rector/rector": "^2.2.4"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Mcp": "Laravel\\Mcp\\Server\\Facades\\Mcp"
-                    },
-                    "providers": [
-                        "Laravel\\Mcp\\Server\\McpServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\Mcp\\": "src/",
-                    "Laravel\\Mcp\\Server\\": "src/Server/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Huy Sy",
-                    "email": "huysynf@gmail.com",
-                    "role": "Maintainer (Laravel 8 Backport)"
-                }
-            ],
-            "description": "Laravel MCP backported for Laravel 8+ support. Rapidly build MCP servers for your Laravel applications.",
-            "homepage": "https://github.com/huysynf/mcp",
-            "keywords": [
-                "laravel",
-                "mcp"
-            ],
-            "support": {
-                "issues": "https://github.com/huysynf/mcp/issues",
-                "source": "https://github.com/huysynf/mcp"
-            },
-            "time": "2026-01-23T17:07:24+00:00"
         },
         {
             "name": "laravel/framework",
@@ -6184,6 +6111,64 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "wizcoders/mcp",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wizcoders/mcp.git",
+                "reference": "48c60614d61667f03e756cb5aa11a8134c3831a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wizcoders/mcp/zipball/48c60614d61667f03e756cb5aa11a8134c3831a1",
+                "reference": "48c60614d61667f03e756cb5aa11a8134c3831a1",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.3|^8.0",
+                "psr/log": "^1.0|^2.0|^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Wizcoders\\Mcp\\Providers\\McpServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Wizcoders\\Mcp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Faisal Kaleem",
+                    "email": "faisal@wizcoders.com"
+                }
+            ],
+            "description": "Model Context Protocol server for Laravel — expose your application to MCP clients as RBAC-aware tools. Runs on PHP 7.3 / Laravel 8 and up.",
+            "keywords": [
+                "ai",
+                "json-rpc",
+                "laravel",
+                "mcp",
+                "model-context-protocol"
+            ],
+            "support": {
+                "issues": "https://github.com/wizcoders/mcp/issues",
+                "source": "https://github.com/wizcoders/mcp/tree/v1.0.0"
+            },
+            "time": "2026-08-24T15:42:33+00:00"
         }
     ],
     "packages-dev": [

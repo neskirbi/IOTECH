@@ -2,16 +2,18 @@
 
 namespace App\Mcp\Tools;
 
-use Laravel\Mcp\Request;
-use Laravel\Mcp\Response;
-use Laravel\Mcp\Server\Attributes\Description;
-use Laravel\Mcp\Server\Tool;
+use Wizcoders\Mcp\Tool;
+use Wizcoders\Mcp\Request;
 use App\Models\Geocerca;
 
-#[Description('Lista las geocercas del administrador con nombre, tipo, coordenadas [lat, lng] y radio. Parámetro: "solo_activas" (booleano, opcional, por defecto true).')]
 class ListarGeocercasTool extends Tool
 {
-    public function handle(Request $request): Response
+    public function description()
+    {
+        return 'Lista las geocercas activas del administrador autenticado, con nombre, tipo, coordenadas (formato [lat, lng]) y radio.';
+    }
+
+    public function handle(Request $request)
     {
         $validated = $request->validate([
             'solo_activas' => 'nullable|boolean',
@@ -37,7 +39,7 @@ class ListarGeocercasTool extends Tool
                 'id'               => $g->id,
                 'nombre'           => $g->nombre,
                 'descripcion'      => $g->descripcion,
-                'tipo'             => $g->tipo,
+                'tipo'             => $g->tipo, // 'poligono' | 'circular'
                 'latitud'          => $g->latitud ? (float) $g->latitud : null,
                 'longitud'         => $g->longitud ? (float) $g->longitud : null,
                 'radio'            => $g->radio ? (float) $g->radio : null,
@@ -48,9 +50,11 @@ class ListarGeocercasTool extends Tool
             ];
         });
 
-        return Response::structured([
+        $resultado = [
             'total'     => $geocercas->count(),
             'geocercas' => $geocercas->all(),
-        ]);
+        ];
+
+        return json_encode($resultado, JSON_PRETTY_PRINT);
     }
 }

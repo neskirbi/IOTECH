@@ -2,17 +2,19 @@
 
 namespace App\Mcp\Tools;
 
-use Laravel\Mcp\Request;
-use Laravel\Mcp\Response;
-use Laravel\Mcp\Server\Attributes\Description;
-use Laravel\Mcp\Server\Tool;
+use Wizcoders\Mcp\Tool;
+use Wizcoders\Mcp\Request;
 use App\Models\Equipo;
 use App\Models\EquipoEstado;
 
-#[Description('Obtiene el historial de eventos de un equipo en un rango de fechas (máx. 100 eventos). Parámetros: "mac" (string, requerido), "fecha_inicio" (string Y-m-d, requerido), "fecha_fin" (string Y-m-d, requerido). Las fechas son en UTC.')]
 class HistorialEquipoTool extends Tool
 {
-    public function handle(Request $request): Response
+    public function description()
+    {
+        return 'Obtiene el historial de eventos de un equipo en un rango de fechas (máx. 100 eventos más recientes). Las fechas se interpretan en UTC.';
+    }
+
+    public function handle(Request $request)
     {
         $validated = $request->validate([
             'mac'          => 'required|string',
@@ -29,7 +31,7 @@ class HistorialEquipoTool extends Tool
         $equipo = $equipoQuery->first();
 
         if (!$equipo) {
-            return Response::error("No se encontró un equipo con MAC {$validated['mac']}.");
+            return "Error: No se encontró un equipo con MAC {$validated['mac']}.";
         }
 
         $query = EquipoEstado::where('mac', $validated['mac'])
@@ -55,13 +57,15 @@ class HistorialEquipoTool extends Tool
                 : null,
         ])->all();
 
-        return Response::structured([
+        $resultado = [
             'equipo'    => $equipo->numeconomico,
             'mac'       => $equipo->mac,
             'total'     => $total,
             'mostrados' => count($eventos),
             'truncado'  => $total > 100,
             'eventos'   => $eventos,
-        ]);
+        ];
+
+        return json_encode($resultado, JSON_PRETTY_PRINT);
     }
 }
