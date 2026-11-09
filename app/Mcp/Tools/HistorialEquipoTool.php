@@ -2,7 +2,6 @@
 
 namespace App\Mcp\Tools;
 
-use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Attributes\Description;
@@ -10,18 +9,9 @@ use Laravel\Mcp\Server\Tool;
 use App\Models\Equipo;
 use App\Models\EquipoEstado;
 
-#[Description('Obtiene el historial de eventos de un equipo en un rango de fechas (máx. 100 eventos más recientes). Las fechas se interpretan en UTC.')]
+#[Description('Obtiene el historial de eventos de un equipo en un rango de fechas (máx. 100 eventos). Parámetros: "mac" (string, requerido), "fecha_inicio" (string Y-m-d, requerido), "fecha_fin" (string Y-m-d, requerido). Las fechas son en UTC.')]
 class HistorialEquipoTool extends Tool
 {
-    public function schema(JsonSchema $schema): array
-    {
-        return [
-            'mac'          => $schema->string()->description('MAC del equipo')->required(),
-            'fecha_inicio' => $schema->string()->description('Fecha inicio en formato Y-m-d (UTC)')->required(),
-            'fecha_fin'    => $schema->string()->description('Fecha fin en formato Y-m-d (UTC)')->required(),
-        ];
-    }
-
     public function handle(Request $request): Response
     {
         $validated = $request->validate([
@@ -60,7 +50,7 @@ class HistorialEquipoTool extends Tool
             'estado'   => $e->estado,
             'latitud'  => (float) $e->latitud,
             'longitud' => (float) $e->longitud,
-            'fecha' => $e->datetime
+            'fecha'    => $e->datetime
                 ? \Carbon\Carbon::parse($e->datetime)->toIso8601String()
                 : null,
         ])->all();

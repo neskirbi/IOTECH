@@ -2,7 +2,6 @@
 
 namespace App\Mcp\Tools;
 
-use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Attributes\Description;
@@ -10,20 +9,9 @@ use Laravel\Mcp\Server\Tool;
 use App\Models\Equipo;
 use App\Models\EquipoEstado;
 
-#[Description('Obtiene el último estado conocido (evento, latitud, longitud, fecha) de un equipo GPS mediante su MAC o número económico.')]
+#[Description('Obtiene el último estado conocido (evento, latitud, longitud, fecha) de un equipo GPS mediante su MAC o número económico. Parámetros: "mac" (string, opcional) o "numeconomico" (string, opcional). Se debe enviar al menos uno.')]
 class ConsultarEstadoEquipoTool extends Tool
 {
-    public function schema(JsonSchema $schema): array
-    {
-        return [
-            'mac' => $schema->string()
-                ->description('Dirección MAC del equipo (ej. 44:1D:64:E2:D3:46)')
-                ->required(),
-            'numeconomico' => $schema->string()
-                ->description('Número económico del equipo (alternativo a la MAC)'),
-        ];
-    }
-
     public function handle(Request $request): Response
     {
         $validated = $request->validate([
@@ -35,7 +23,6 @@ class ConsultarEstadoEquipoTool extends Tool
             return Response::error('Debes proporcionar "mac" o "numeconomico".');
         }
 
-        // Multi-tenant: solo equipos del administrador autenticado (si aplica)
         $adminId = auth()->user()?->administrador_id ?? null;
 
         $equipoQuery = Equipo::query();
