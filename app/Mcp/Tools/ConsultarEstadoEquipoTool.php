@@ -75,6 +75,8 @@ class ConsultarEstadoEquipoTool extends Tool
             'activo'       => (bool) $equipo->activo,
         ];
 
-        return Response::structured($datos);
+        return Response::text(
+            json_encode($datos, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        );
     }
 }
