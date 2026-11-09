@@ -2,18 +2,25 @@
 
 namespace App\Mcp\Tools;
 
-use Wizcoders\Mcp\Tool;
-use Wizcoders\Mcp\Request;
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Attributes\Description;
+use Laravel\Mcp\Server\Tool;
 use App\Models\Geocerca;
 
+#[Description('Lista las geocercas activas del administrador autenticado, con nombre, tipo, coordenadas (formato [lat, lng]) y radio.')]
 class ListarGeocercasTool extends Tool
 {
-    public function description()
+    public function schema(JsonSchema $schema): array
     {
-        return 'Lista las geocercas activas del administrador autenticado, con nombre, tipo, coordenadas (formato [lat, lng]) y radio.';
+        return [
+            'solo_activas' => $schema->boolean()
+                ->description('Si es true, devuelve solo geocercas activas (por defecto true)'),
+        ];
     }
 
-    public function handle(Request $request)
+    public function handle(Request $request): Response
     {
         $validated = $request->validate([
             'solo_activas' => 'nullable|boolean',
@@ -39,7 +46,7 @@ class ListarGeocercasTool extends Tool
                 'id'               => $g->id,
                 'nombre'           => $g->nombre,
                 'descripcion'      => $g->descripcion,
-                'tipo'             => $g->tipo, // 'poligono' | 'circular'
+                'tipo'             => $g->tipo,
                 'latitud'          => $g->latitud ? (float) $g->latitud : null,
                 'longitud'         => $g->longitud ? (float) $g->longitud : null,
                 'radio'            => $g->radio ? (float) $g->radio : null,
@@ -50,11 +57,9 @@ class ListarGeocercasTool extends Tool
             ];
         });
 
-        $resultado = [
+        return Response::structured([
             'total'     => $geocercas->count(),
             'geocercas' => $geocercas->all(),
-        ];
-
-        return json_encode($resultado, JSON_PRETTY_PRINT);
+        ]);
     }
 }

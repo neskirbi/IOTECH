@@ -2,19 +2,27 @@
 
 namespace App\Mcp\Tools;
 
-use Wizcoders\Mcp\Tool;
-use Wizcoders\Mcp\Request;
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Attributes\Description;
+use Laravel\Mcp\Server\Tool;
 use App\Models\Equipo;
 use App\Models\EquipoEstado;
 
+#[Description('Obtiene el historial de eventos de un equipo en un rango de fechas (máx. 100 eventos más recientes). Las fechas se interpretan en UTC.')]
 class HistorialEquipoTool extends Tool
 {
-    public function description()
+    public function schema(JsonSchema $schema): array
     {
-        return 'Obtiene el historial de eventos de un equipo en un rango de fechas (máx. 100 eventos más recientes). Las fechas se interpretan en UTC.';
+        return [
+            'mac'          => $schema->string()->description('MAC del equipo')->required(),
+            'fecha_inicio' => $schema->string()->description('Fecha inicio en formato Y-m-d (UTC)')->required(),
+            'fecha_fin'    => $schema->string()->description('Fecha fin en formato Y-m-d (UTC)')->required(),
+        ];
     }
 
-    public function handle(Request $request)
+    public function handle(Request $request): Response
     {
         $validated = $request->validate([
             'mac'          => 'required|string',
@@ -31,7 +39,7 @@ class HistorialEquipoTool extends Tool
         $equipo = $equipoQuery->first();
 
         if (!$equipo) {
-            return "Error: No se encontró un equipo con MAC {$validated['mac']}.";
+            return Response::error("No se encontró un equipo con MAC {$validated['mac']}.");
         }
 
         $query = EquipoEstado::where('mac', $validated['mac'])
@@ -57,15 +65,13 @@ class HistorialEquipoTool extends Tool
                 : null,
         ])->all();
 
-        $resultado = [
+        return Response::structured([
             'equipo'    => $equipo->numeconomico,
             'mac'       => $equipo->mac,
             'total'     => $total,
             'mostrados' => count($eventos),
             'truncado'  => $total > 100,
             'eventos'   => $eventos,
-        ];
-
-        return json_encode($resultado, JSON_PRETTY_PRINT);
+        ]);
     }
 }
